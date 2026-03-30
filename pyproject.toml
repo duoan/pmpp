@@ -1,0 +1,18 @@
+[project]
+name = "pmpp"
+version = "0.0.0"
+description = "Solutions and code for Programming Massively Parallel Processors (4th ed.)"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "torch",
+    "torchvision",
+    "ninja",
+    "pre-commit",
+    "gradio",
+    "cython",
+    "h5py",
+]
+
+[tool.uv]
+package = false

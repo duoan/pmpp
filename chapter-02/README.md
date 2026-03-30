@@ -18,10 +18,11 @@ make
 
 ### Python
 
-Set up the python env and install the required packages (`torch` and `Ninja`).
+Set up the Python environment and install dependencies from the repository root (`torch`, `ninja`, etc.).
 
 ```bash
-pip install -r requirements.txt
+# from the repository root
+uv sync
 ```
 
 and run the python script

@@ -68,6 +68,7 @@ Each chapter follows this structure:
 - NVIDIA GPU with CUDA support
 - CUDA Toolkit installed
 - Python 3.11+ (optional, for Python examples)
+- [uv](https://docs.astral.sh/uv/) (optional, for installing Python dependencies)
 
 ### Setup
 ```bash
@@ -78,7 +79,7 @@ cd pmpp
 # For Python examples (optional)
 conda create -n pmpp python=3.11
 conda activate pmpp
-pip install -r requirements.txt
+uv sync
 ```
 
 ### Running Examples

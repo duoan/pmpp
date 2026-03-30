@@ -1,9 +1,0 @@
-torch
-torchvision
-Ninja
-pre-commit
-gradio
-cython
-torchvision
-
-h5py #needed for MRI
