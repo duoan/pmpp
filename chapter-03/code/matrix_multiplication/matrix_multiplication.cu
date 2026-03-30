@@ -1,3 +1,4 @@
+#include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 
@@ -35,7 +36,7 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
     dim3 dimBlock(16, 16);
     dim3 dimGrid(cdiv(o, dimBlock.x), cdiv(m, dimBlock.y));
 
-    MatrixMulKernel<<<dimBlock, dimGrid, 0, torch::cuda::getCurrentCUDAStream()>>>(
+    MatrixMulKernel<<<dimBlock, dimGrid, 0, c10::cuda::getCurrentCUDAStream()>>>(
         M.data_ptr<float>(), N.data_ptr<float>(), P.data_ptr<float>(), m, n, o);
 
     return P;

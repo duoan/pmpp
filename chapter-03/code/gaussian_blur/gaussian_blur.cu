@@ -1,3 +1,4 @@
+#include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 #include <cuda_runtime.h>
@@ -49,7 +50,7 @@ torch::Tensor gaussian_blur(torch::Tensor img, int blurSize) {
     // auto result = torch::empty_like(img, torch::TensorOptions().dtype(torch::kByte));
     auto result = torch::empty_like(img);
 
-    blur_kernel<<<dimGrid, dimBlock, 0, torch::cuda::getCurrentCUDAStream()>>>(
+    blur_kernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         img.data_ptr<unsigned char>(), result.data_ptr<unsigned char>(), width, height, blurSize);
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();

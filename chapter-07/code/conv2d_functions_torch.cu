@@ -1,3 +1,4 @@
+#include <torch/all.h>
 #include <c10/cuda/CUDAStream.h>
 #include <torch/extension.h>
 

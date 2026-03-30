@@ -1,3 +1,4 @@
+#include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 
@@ -26,7 +27,7 @@ torch::Tensor matrix_vector_multiplication(torch::Tensor B, torch::Tensor c) {
     int threads_per_block = 16;
     int number_of_blocks = (matrix_rows + threads_per_block - 1) / threads_per_block;
 
-    matrixVecMulKernel<<<number_of_blocks, threads_per_block, 0, torch::cuda::getCurrentCUDAStream()>>>(
+    matrixVecMulKernel<<<number_of_blocks, threads_per_block, 0, c10::cuda::getCurrentCUDAStream()>>>(
         B.data_ptr<float>(), c.data_ptr<float>(), result.data_ptr<float>(), vector_size, matrix_rows);
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();

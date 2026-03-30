@@ -1,3 +1,4 @@
+#include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 #include <cuda_runtime.h>
@@ -37,7 +38,7 @@ torch::Tensor rgb_to_gray(torch::Tensor img) {
 
     auto result = torch::empty({height, width, 1}, torch::TensorOptions().dtype(torch::kByte).device(img.device()));
 
-    rgbToGrayscaleKernel<<<dimGrid, dimBlock, 0, torch::cuda::getCurrentCUDAStream()>>>(
+    rgbToGrayscaleKernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         img.data_ptr<unsigned char>(), result.data_ptr<unsigned char>(), width, height);
 
     C10_CUDA_KERNEL_LAUNCH_CHECK();
