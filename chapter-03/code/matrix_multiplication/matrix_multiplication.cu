@@ -4,13 +4,13 @@
 
 // assign a thread for each of output element.
 // output element will be sum(row_i_j * col_j_i)
-__global__ void MatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
-    int col = blockIdx.x * blockDim.x + threadIdx.x;
+__global__ void matrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
     int row = blockIdx.y * blockDim.y + threadIdx.y;
+    int col = blockIdx.x * blockDim.x + threadIdx.x;
 
     if (row < m && col < o) {
         float sum = 0;
-        for (int i = 0; i < n; ++i) {
+        for (unsigned int i = 0; i < n; ++i) {
             // M: (m x n); N(n x o), get everything from the row and everything from the column
             sum += M[row * n + i] * N[i * o + col];
         }
@@ -38,7 +38,7 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
     dim3 dimBlock(16, 16);
     dim3 dimGrid(cdiv(o, dimBlock.x), cdiv(m, dimBlock.y));
 
-    MatrixMulKernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
+    matrixMulKernel<<<dimGrid,dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         M.data_ptr<float>(), N.data_ptr<float>(), P.data_ptr<float>(), m, n, o);
 
     return P;

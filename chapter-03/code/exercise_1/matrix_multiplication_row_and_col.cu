@@ -2,19 +2,25 @@
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 
+/**
+ * Each thread produce one output matrix row
+ */
 __global__ void matrixMulRowKernel(float* M, float* N, float* P, int size) {
-    int row = blockIdx.x * blockDim.x + threadIdx.x;
-    if (row < size) {
-        for (int col = 0; col < size; ++col) {
+    int outRow = blockIdx.x * blockDim.x + threadIdx.x;
+    if (outRow < size) {
+        for (int outCol = 0; outCol < size; ++outCol) {
             float sum = 0;
             for (int j = 0; j < size; ++j) {
-                sum += M[row * size + j] * N[j * size + col];
+                sum += M[outRow * size + j] * N[j * size + outCol];
             }
-            P[row * size + col] = sum;
+            P[outRow * size + outCol] = sum;
         }
     }
 }
 
+/**
+ * Each thread produce one output matrix column
+ */
 __global__ void matrixMulColKernel(float* M, float* N, float* P, int size) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     if (col < size) {

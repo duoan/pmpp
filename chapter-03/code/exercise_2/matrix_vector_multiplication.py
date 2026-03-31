@@ -35,7 +35,7 @@ def main():
 
     print(res.shape, torch_res.shape)
 
-    print(torch.allclose(res, torch_res, rtol=1e-3, atol=1e-3))
+    print(f"allcose?:{torch.allclose(res, torch_res, rtol=1e-3, atol=1e-3)}")
     print()
     print(res[:4])
     print(torch_res[:4])
