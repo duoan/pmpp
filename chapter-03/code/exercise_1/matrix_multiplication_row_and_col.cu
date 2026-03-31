@@ -6,14 +6,15 @@
  * Each thread produce one output matrix row
  */
 __global__ void matrixMulRowKernel(float* M, float* N, float* P, int size) {
-    int outRow = blockIdx.x * blockDim.x + threadIdx.x;
-    if (outRow < size) {
-        for (int outCol = 0; outCol < size; ++outCol) {
+    int row = blockIdx.x * blockDim.x + threadIdx.x;
+    if (row < size) {
+        for (int col = 0; col < size; ++col) {
             float sum = 0;
             for (int j = 0; j < size; ++j) {
-                sum += M[outRow * size + j] * N[j * size + outCol];
+                sum += M[row * size + j] * N[j * size + col];
             }
-            P[outRow * size + outCol] = sum;
+            // stride = row * size + col
+            P[row * size + col] = sum;
         }
     }
 }
@@ -24,12 +25,12 @@ __global__ void matrixMulRowKernel(float* M, float* N, float* P, int size) {
 __global__ void matrixMulColKernel(float* M, float* N, float* P, int size) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     if (col < size) {
-        // do this for every element in the row:
         for (int row = 0; row < size; ++row) {
             float sum = 0;
             for (int j = 0; j < size; ++j) {
                 sum += M[row * size + j] * N[j * size + col];
             }
+            // stride = row * size + col
             P[row * size + col] = sum;
         }
     }
