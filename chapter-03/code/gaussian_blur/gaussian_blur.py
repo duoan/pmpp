@@ -19,11 +19,11 @@ def compile_extension():
 
 def main():
     current_dir = Path(__file__).parent
-    x = read_image(current_dir.parent / "Grace_Hopper.jpg").contiguous().cuda()
+    x = read_image(current_dir.parent / "Grace_Hopper.jpg").contiguous().cuda(non_blocking=True)
 
     print("Original:")
     print("mean:", x.float().mean())
-    print("Input image:", x.shape, x.dtype)
+    print(f"Input image: shape:{x.shape}, dtype:{x.dtype}, stride:{x.stride()}")
     print()
 
     ext = compile_extension()

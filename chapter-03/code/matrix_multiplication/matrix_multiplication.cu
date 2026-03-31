@@ -2,6 +2,8 @@
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
 
+// assign a thread for each of output element.
+// output element will be sum(row_i_j * col_j_i)
 __global__ void MatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
@@ -28,7 +30,7 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
 
     // matrices are m x n and n x o
     const auto m = M.size(0);
-    const auto n = M.size(1);
+    const auto n = M.size(1); // N is the reduction axis
     const auto o = N.size(1);
 
     auto P = torch::empty({m, o}, torch::TensorOptions().dtype(N.dtype()).device(N.device()));
@@ -36,7 +38,7 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
     dim3 dimBlock(16, 16);
     dim3 dimGrid(cdiv(o, dimBlock.x), cdiv(m, dimBlock.y));
 
-    MatrixMulKernel<<<dimBlock, dimGrid, 0, c10::cuda::getCurrentCUDAStream()>>>(
+    MatrixMulKernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         M.data_ptr<float>(), N.data_ptr<float>(), P.data_ptr<float>(), m, n, o);
 
     return P;

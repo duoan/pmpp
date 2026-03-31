@@ -3,11 +3,17 @@
 #include <c10/cuda/CUDAStream.h>
 #include <cuda_runtime.h>
 
-__global__ void blur_kernel(unsigned char* Pin, unsigned char* Pout, int width, int height, int blur_size) {
+__global__ void blur_kernel(
+    unsigned char* img_in, 
+    unsigned char* img_out, 
+    int width, int height, 
+    int blur_size) {
+    
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
 
     int channel = threadIdx.z;
+    // stride: H * W, W, 1
     int baseOffset = channel * height * width;
 
     if (col < width && row < height) {
@@ -18,17 +24,20 @@ __global__ void blur_kernel(unsigned char* Pin, unsigned char* Pout, int width, 
         int pixels = 0;
 
         for (int blurRow = -blur_size; blurRow < blur_size + 1; ++blurRow) {
+            int currRow = row + blurRow;
+            if (currRow <0 || currRow >= height) {
+                continue;
+            }
             for (int blurCol = -blur_size; blurCol < blur_size + 1; ++blurCol) {
                 int currCol = col + blurCol;
-                int currRow = row + blurRow;
-
-                if (currCol >= 0 && currCol < width && currRow >= 0 && currRow < height) {
-                    pixelValues += Pin[baseOffset + currRow * width + currCol];
-                    ++pixels;
+                if (currCol < 0 || currCol >= width) {
+                    continue;
                 }
+                pixelValues += img_in[baseOffset + currRow * width + currCol];
+                ++pixels;
             }
         }
-        Pout[baseOffset + row * width + col] = (unsigned char)(pixelValues / pixels);
+        img_out[baseOffset + row * width + col] = (unsigned char)(pixelValues / pixels);
     }
 }
 
@@ -39,7 +48,9 @@ inline unsigned int cdiv(unsigned int a, unsigned int b) {
 torch::Tensor gaussian_blur(torch::Tensor img, int blurSize) {
     assert(img.device().type() == torch::kCUDA);
     assert(img.dtype() == torch::kByte);
+    assert(img.is_contiguous());
 
+    // CHW image
     const auto channels = img.size(0);
     const auto height = img.size(1);
     const auto width = img.size(2);
