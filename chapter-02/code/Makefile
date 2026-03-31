@@ -7,7 +7,7 @@ run: vecMul
 	./vecMul
 
 vecMul: vecMul.cu
-	nvcc -o vecMul vecMul.cu
+	nvcc --ptxas-options=-v -o vecMul vecMul.cu
 
 clean:
 	rm -f vecMul
