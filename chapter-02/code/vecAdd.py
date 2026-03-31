@@ -13,21 +13,21 @@ def vector_multipication_loop(A: torch.Tensor, B: torch.Tensor) -> torch.Tensor:
     C = torch.empty_like(A)
     n = A.size(0)
     for i in range(n):
-        C[i] = A[i] * B[i]
+        C[i] = A[i] + B[i]
     return C
 
 
 def compile_extension():
-    cuda_source = (Path(__file__).parent / "vecMulTorchTensor.cu").read_text()
+    cuda_source = (Path(__file__).parent / "vecAddTorchTensor.cu").read_text()
     cpp_source = (
-        "torch::Tensor vector_multiplication(torch::Tensor A, torch::Tensor B_h);"
+        "torch::Tensor vector_add(torch::Tensor A_h, torch::Tensor B_h);"
     )
 
     return load_inline(
         name="extension",
         cpp_sources=cpp_source,
         cuda_sources=cuda_source,
-        functions=["vector_multiplication"],
+        functions=["vector_add"],
         with_cuda=True,
         # extra_cuda_cflags=["-O2"]
     )
@@ -40,26 +40,30 @@ def main():
     DTYPE = torch.float32
     NUM_ELEMENTS = 500_000
 
-    A = torch.tensor([i for i in range(NUM_ELEMENTS)]).to(DEVICE, DTYPE)
-    B = torch.tensor([i for i in range(NUM_ELEMENTS)]).to(DEVICE, DTYPE)
+    A = torch.tensor([i for i in range(NUM_ELEMENTS)]).to(DEVICE, DTYPE, non_blocking=True)
+    B = torch.tensor([i for i in range(NUM_ELEMENTS)]).to(DEVICE, DTYPE, non_blocking=True)
 
     start = time()
-    y_custom_kernel = ext.vector_multiplication(A, B)
+    C_cuda = ext.vector_add(A, B)
     stop = time()
-    print(f"Cuda custom kernel multiply: {stop - start:.2f}s")
+    print(f"Cuda custom kernel multiply: {stop - start:.6f}s")
 
     start = time()
-    vector_multipication_loop(A, B)
+    C_loop = vector_multipication_loop(A, B)
     stop = time()
-    print(f"Python loop: {stop - start:.2f}s")
+    print(f"Python loop: {stop - start:.6f}s")
 
     start = time()
-    A + B
+    C_torch = A + B
     stop = time()
-    print(f"Adding via PyTorch addition: {stop - start:.2f}s")
+    print(f"PyTorch *: {stop - start:.6f}s")
 
-    print("Size:", y_custom_kernel.size())
-    print("Y:", y_custom_kernel[:10])
+    print("Size:", C_cuda.size())
+    print("C_cuda:", C_cuda[:10])
+    print("C_loop:", C_loop[:10])
+    print("C_torch:", C_torch[:10])
+
+    torch.testing.assert_close(C_cuda, C_torch)
 
 
 if __name__ == "__main__":

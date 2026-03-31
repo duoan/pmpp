@@ -1,20 +1,20 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 
-void vecMulHost(float* A_h, float* B_h, float* C_h, int n) {
+void vecAddHost(float* A_h, float* B_h, float* C_h, int n) {
     for (int i = 0; i < n; i++) {
-        C_h[i] = A_h[i] * B_h[i];
+        C_h[i] = A_h[i] + B_h[i];
     }
 }
 
-__global__ void vecMulKernel(float* A, float* B, float* C, int n) {
+__global__ void vecAddKernel(float* A, float* B, float* C, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < n) {
-        C[i] = A[i] * B[i];
+        C[i] = A[i] + B[i];
     }
 }
 
-void vecMulDevice(float* A_h, float* B_h, float* C_h, int n) {
+void vecAddDevice(float* A_h, float* B_h, float* C_h, int n) {
     int size = n * sizeof(float);
     float *A_d, *B_d, *C_d;
 
@@ -29,7 +29,14 @@ void vecMulDevice(float* A_h, float* B_h, float* C_h, int n) {
     cudaMemcpy(B_d, B_h, size, cudaMemcpyHostToDevice);
 
     // invoke a kernel
-    vecMulKernel<<<ceil(n / 256.0), 256>>>(A_d, B_d, C_d, n);
+    // Timing for vecAddKernel
+    clock_t start_kernel = clock();
+    vecAddKernel<<<ceil(n / 256.0), 256>>>(A_d, B_d, C_d, n);
+    cudaDeviceSynchronize(); // wait for compute device finish
+    clock_t end_kernel = clock();
+    double time_kernel = (double)(end_kernel - start_kernel) / CLOCKS_PER_SEC;
+
+    printf("Time taken for vecAddKernel: %f seconds\n", time_kernel);
 
     // copy the result back to the host
     cudaMemcpy(C_h, C_d, size, cudaMemcpyDeviceToHost);
@@ -55,15 +62,15 @@ int main() {
         B[i] = i;  // Just an example value
     }
 
-    // Timing for vecMulHost
+    // Timing for vecAddHost
     clock_t start_host = clock();
-    vecMulHost(A, B, C, n);
+    vecAddHost(A, B, C, n);
     clock_t end_host = clock();
     double time_host = (double)(end_host - start_host) / CLOCKS_PER_SEC;
 
-    // Timing for vecMulDevice
+    // Timing for vecAddDevice
     clock_t start_device = clock();
-    vecMulDevice(A, B, C, n);
+    vecAddDevice(A, B, C, n);
     clock_t end_device = clock();
     double time_device = (double)(end_device - start_device) / CLOCKS_PER_SEC;
 

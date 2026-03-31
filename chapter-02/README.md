@@ -3,7 +3,7 @@ Solutions to the Programming Massively Parallel Processors book
 
 ## Code
 
-In chapter two create just a basic vector multiplication kernel. The kernel itself can be found in [vecMul.cu](code/vecMul.cu)
+In chapter two create just a basic vector multiplication kernel. The kernel itself can be found in [vecAdd.cu](code/vecAdd.cu)
 
 ### C
 To run the C code just run the [Makefile](code/Makefile)
