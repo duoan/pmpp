@@ -10,6 +10,10 @@ void vecAddHost(float* A_h, float* B_h, float* C_h, int n) {
 __global__ void vecAddKernel(float* A, float* B, float* C, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
     if (i < n) {
+        // float32, 
+        // memory, read 2 * 4bytes =? 8 bytes
+        // compute, 1 
+        // 1 / 8 => 0.125 OP/B
         C[i] = A[i] + B[i];
     }
 }

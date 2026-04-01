@@ -10,8 +10,12 @@ __global__ void matrixMulKernel(float* M, float* N, float* P, int m, int n, int 
 
     if (row < m && col < o) {
         float sum = 0;
+        // compute: 2 * N
         for (unsigned int i = 0; i < n; ++i) {
             // M: (m x n); N(n x o), get everything from the row and everything from the column
+            // memory: 2 x 4 bytes
+            // compute: 2 float operations, and 4 int operations
+            // 2 / 8 = 0.25 OP/B
             sum += M[row * n + i] * N[i * o + col];
         }
         // the resulting one is m x o
@@ -32,6 +36,10 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
     const auto m = M.size(0);
     const auto n = M.size(1); // N is the reduction axis
     const auto o = N.size(1);
+
+    // data loaded: (MN + NO) x 4 bytes = 8 MNNO
+    // operations: OM (output elements) * N * 2 (mul + add) = 2MNO
+    // Potentional compute-to-memory ratio: 2MNO / 8MNNO = > 0.25N OP/B
 
     auto P = torch::empty({m, o}, torch::TensorOptions().dtype(N.dtype()).device(N.device()));
 
