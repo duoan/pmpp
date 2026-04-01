@@ -80,11 +80,11 @@ Device 1: "NVIDIA GeForce RTX 4090"
 
 **a. What is the number of warps per block?**
 
-Each warp is 32 threads; there are 128 threads in each block (second argument in `<<...>>`), so there are `128/8=4` warps in each block. 
+Each warp is 32 threads; there are 128 threads in each block (second argument in `<<...>>`), so there are `128/32=4` warps in each block. 
 
 **b. What is the number of warps in the grid?**
 
-There are `(N + 128 - 1)/128 = (1024+128-1) = 8` blocks in total, each block having 4 warps (see a); therefore, there are 32 warps in the grid. 
+There are `(N + 128 - 1)/128 = (1024+128-1) = 8` blocks in total, each block having 4 warps (see a); therefore, there are `8 * 3 = 32` warps in the grid. 
 
 **c. For the statement on line 04:**
 
@@ -154,12 +154,16 @@ So line 10 will be executed 5 (5-0) times in 342 cases, 4 (5-1) times in 341 cas
 ### Exercise 2
 **For a vector addition, assume that the vector length is 2000, each thread calculates one output element, and the thread block size is 512 threads. How many threads will be in the grid?**
 
+ceil(2000 / 512)
+
 The minimum number of blocks of size 512 to cover 2000 elements is 4 - 2048 threads in total. 
 
 ### Exercise 3
 **For the previous question, how many warps do you expect to have divergence due to the boundary check on vector length?**
 
 There will be `2048 / 32 = 64` warps in total. The warp covering threads `2015-2047` will be inactive (aka skipped). The warp covering threeads `1984-2015` will be divergent. The threads 1984-1999 will have data to process, while the threads `2000-2015` will not. 
+
+> (2048 - 2000) / 32 = 48 / 32 = 1.5 => 1 warp completely inactive, and 0.5 warp is divergent. The divergent warp end at the thread is 2048 - 32 = 2016 -> 0_indexing, thread_id should be 2015, so the whole warp thread id range is (2015 - 32, 2015] -> [1984, 2015].
 
 ### Exercise 4
 **Consider a hypothetical block with 8 threads executing a section of code before reaching a barrier. The threads require the following amount of time (in microseconds) to execute the sections: 2.0, 2.3, 3.0, 2.8, 2.4, 1.9, 2.6, and 2.9; they spend the rest of their time waiting for the barrier. What percentage of the threads’ total execution time is spent waiting for the barrier?**
@@ -220,10 +224,12 @@ To answer this, we need to multiply the number of blocks by the block size and v
 ### Exercise 8
 **Consider a GPU with the following hardware limits: 2048 threads per SM, 32 blocks per SM, and 64K (65,536) registers per SM. For each of the following kernel characteristics, specify whether the kernel can achieve full occupancy. If not, specify the limiting factor.**
 
+The full occupacy is achieved if the SM can utilize all 2048 threads. We have three limiting factors: 
+1.  The SM supports up to 32 blocks.
+2.  The total threads <= 2,048.
+3.  The SM supports up to 65,536.
 
-The full occupacy is achieved if the SM can utilize all 2048 threads. We have two limiting factors: 
-1.  The SM supports up to 32 blocks
-2.  The SM supports up to 65,536.
+Fully occupancy #blocks = 2048 / threads_per_block
 
 We need to operate under these constraints. 
 
@@ -231,15 +237,17 @@ We need to operate under these constraints.
 
 Maximum number of blocks based on the block size: `2048 / 128 = 16`. `16` is below the hardware limit of `32` blocks, so this constraint is satisfied. 
 
-Number of registers per block: `128 x 30 = 3,840` registers per block. Maximum number of blocks based on the registers per block:  `65,536 / 3,840 = 17`. 17 is more than the limit impossed on us by the block size. 
+Number of registers per block: `128 x 30 = 3,840` registers per block. 16 blocks will take `16 x 3,840 = 61,440 < 65,536`. Maximum number of blocks based on the registers per block:  `65,536 / 3,840 = 17`. 17 is more than the limit impossed on us by the block size. 
 
 So the total number of threads for this setting is: `16 x 128 = 2048` threads, so we get full utilization: `(2048 / 2048 = 100%)`.
 
 **b. The kernel uses 32 threads per block and 29 registers per thread.**
 Maximum number of blocks based on the block size: `2048 / 32 = 64`. 64 is above the hardware limit of 32 blocks per SM the constraint is not satisfied, and we can't operate those mamy blocks. 
 
-Number of registers per block: `32 x 29 = 928`. Maximum number of blocks based on the registers per block:  `65,536 / 928 = 70`. The SM limitation is 32 blocks per SM; we can't operate that many.
+The SM only support 32 blocks at maixum.
 
+Number of registers per block: `32 x 29 = 928`. `32 blocks * 32 threads * 29 register = 29,696` registers. Maximum number of blocks based on the registers per block:  `65,536 / 928 = 70`. The SM limitation is 32 blocks per SM; we can't operate that many.
+ 
 So the total number of threads for this setting is `32 x 32 =1024` threads, so we get 50% `1024/2048=0.5=50%` utilization.
 
 The limiting factor is the number of blocks supported by the GPU.
@@ -247,14 +255,16 @@ The limiting factor is the number of blocks supported by the GPU.
 **c. The kernel uses 256 threads per block and 34 registers per thread.**
 Maximum number of blocks based on the block size: `2048 / 256 = 8`. 8 is below the hardware limit of `32` blocks, so this constraint is satisfied. mamy blocks.
 
+`8 blocks * 256 threads * 34 registers = 69,632 > 65,536 registers`. So need to reduce the block numbers. `65,536 registers / (256 threads * 34 registers) = 7.53` => floor(7.53) => 7 blocks.
+
 Number of registers per block: `256 x 34 = 8,704`. Maximum number of blocks based on the registers per block:  `65,536 / 8,704 = 7`. So 7 is the new number of blocks. 
 
 The total number of threads will be `256 x 7 = 1,792` threads. So we have `1,792 / 2048 = 0,87 = 87%`. So we don't get the full occupancy. 
 
-The limiting factor is the register limit. 
+The limiting factor is the register limit.
 
 ### Exercise 9
 **A student mentions that they were able to multiply two 1024 × 1024 matrices using a matrix multiplication kernel with 32 × 32 thread blocks. The student is using a CUDA device that allows up to 512 threads per block and up to 8 blocks per SM. The student further mentions that each thread in a thread block calculates one element of the result matrix. What would be your reaction and why?**
 
 
-There are `1024 x 1024 = 1.048.576` elements in the matrix. The student is using a grid with `32 x 32 = 1024` blocks, each block supporting `512 threads`. In total, there will be only `1024 x 512 = 524.288` threads in the grid. Students claim that each thread is calculating only one element of the result matrix, which is not possible based on the above configuration. The number of SM blocks per SM is irrelevant to this problem.
+There are `1024 x 1024 = 1,048,576` elements in the matrix. The student is using a grid with `32 x 32 = 1024` blocks, each block supporting `512 threads`. In total, there will be only `1024 x 512 = 524,288` threads in the grid. Students claim that each thread is calculating only one element of the result matrix, which is not possible based on the above configuration. The number of SM blocks per SM is irrelevant to this problem.
