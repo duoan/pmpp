@@ -1,0 +1,4 @@
+{
+  "julia.executablePath": "${userHome}/.juliaup/bin/julia",
+  "julia.environmentPath": "${workspaceFolder}"
+}

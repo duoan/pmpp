@@ -5,7 +5,7 @@
 #include <cmath>
 #include <iomanip>
 #include <iostream>
-#define TILE_WIDTH 32
+#define TILE_WIDTH 64
 
 #define gpuErrchk(ans) \
     { gpuAssert((ans), __FILE__, __LINE__); }
@@ -31,7 +31,7 @@ void clear_l2() {
     gpuErrchk(cudaMemset(gpu_scratch_l2_clear, 0, l2_clear_size));
 }
 
-__global__ void MatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
+__global__ void NaiveMatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -73,8 +73,8 @@ __global__ void TiledMatrixMulKernel(float* M, float* N, float* P, int m, int n,
 
         __syncthreads();  // make sure everything is loaded to both tile matrices
 
-        for (int k = 0; k < TILE_WIDTH; k++) {
-            PValue += Mds[ty][k] * Nds[k][tx];
+        for (int i = 0; i < TILE_WIDTH; i++) {
+            PValue += Mds[ty][i] * Nds[i][tx];
         }
         __syncthreads();  // make sure we update this for every thread and we can start overwriting
     }
@@ -84,67 +84,47 @@ __global__ void TiledMatrixMulKernel(float* M, float* N, float* P, int m, int n,
     }
 }
 
-void matrixMul(float* M, float* N, float* P, int m, int n, int o) {
-    float *d_M, *d_N, *d_P;
-
-    cudaMalloc((void**)&d_M, m * n * sizeof(float));
-    cudaMalloc((void**)&d_N, n * o * sizeof(float));
-    cudaMalloc((void**)&d_P, m * o * sizeof(float));
-
-    cudaMemcpy(d_M, M, m * n * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_N, N, n * o * sizeof(float), cudaMemcpyHostToDevice);
-
+void launchNaiveMatrixMul(float* d_M, float* d_N, float* d_P, int m, int n, int o) {
     dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
     dim3 dimGrid((o + dimBlock.x - 1) / dimBlock.x, (m + dimBlock.y - 1) / dimBlock.y);
-
-    MatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
-
-    cudaMemcpy(P, d_P, m * o * sizeof(float), cudaMemcpyDeviceToHost);
-
-    cudaFree(d_M);
-    cudaFree(d_N);
-    cudaFree(d_P);
+    NaiveMatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
 }
 
-void matrixMulTiling(float* M, float* N, float* P, int m, int n, int o) {
-    float *d_M, *d_N, *d_P;
-
-    cudaMalloc((void**)&d_M, m * n * sizeof(float));
-    cudaMalloc((void**)&d_N, n * o * sizeof(float));
-    cudaMalloc((void**)&d_P, m * o * sizeof(float));
-
-    cudaMemcpy(d_M, M, m * n * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_N, N, n * o * sizeof(float), cudaMemcpyHostToDevice);
-
+void launchTiledMatrixMul(float* d_M, float* d_N, float* d_P, int m, int n, int o) {
     dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
     dim3 dimGrid((o + dimBlock.x - 1) / dimBlock.x, (m + dimBlock.y - 1) / dimBlock.y);
-
     TiledMatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
-
-    cudaMemcpy(P, d_P, m * o * sizeof(float), cudaMemcpyDeviceToHost);
-
-    cudaFree(d_M);
-    cudaFree(d_N);
-    cudaFree(d_P);
 }
 
-float benchmark(void (*func)(float*, float*, float*, int, int, int), float* M, float* N, float* P, int m, int n, int o,
-                int warmup = 25, int reps = 100) {
+// Times only kernel execution: alloc, H2D, D2H, and free are outside the timed region.
+float benchmarkKernel(void (*launch)(float*, float*, float*, int, int, int), float* h_M, float* h_N, float* h_P_out,
+                      int m, int n, int o, int warmup = 25, int reps = 100) {
+    float *d_M, *d_N, *d_P;
+    gpuErrchk(cudaMalloc((void**)&d_M, m * n * sizeof(float)));
+    gpuErrchk(cudaMalloc((void**)&d_N, n * o * sizeof(float)));
+    gpuErrchk(cudaMalloc((void**)&d_P, m * o * sizeof(float)));
+
+    gpuErrchk(cudaMemcpy(d_M, h_M, m * n * sizeof(float), cudaMemcpyHostToDevice));
+    gpuErrchk(cudaMemcpy(d_N, h_N, n * o * sizeof(float), cudaMemcpyHostToDevice));
+
     for (int i = 0; i < warmup; ++i) {
-        func(M, N, P, m, n, o);
+        launch(d_M, d_N, d_P, m, n, o);
+        gpuErrchk(cudaDeviceSynchronize());
+        clear_l2();
     }
 
+    gpuErrchk(cudaDeviceSynchronize());
+
     cudaEvent_t iterStart, iterStop;
-    cudaEventCreate(&iterStart);
-    cudaEventCreate(&iterStop);
+    gpuErrchk(cudaEventCreate(&iterStart));
+    gpuErrchk(cudaEventCreate(&iterStop));
 
     float totalTime_ms = 0.0f;
-
     for (int i = 0; i < reps; ++i) {
-        cudaEventRecord(iterStart);
-        func(M, N, P, m, n, o);
-        cudaEventRecord(iterStop);
-        cudaEventSynchronize(iterStop);
+        gpuErrchk(cudaEventRecord(iterStart));
+        launch(d_M, d_N, d_P, m, n, o);
+        gpuErrchk(cudaEventRecord(iterStop));
+        gpuErrchk(cudaEventSynchronize(iterStop));
 
         float iterTime = 0.0f;
         cudaEventElapsedTime(&iterTime, iterStart, iterStop);
@@ -153,15 +133,21 @@ float benchmark(void (*func)(float*, float*, float*, int, int, int), float* M, f
         clear_l2();
     }
 
-    cudaEventDestroy(iterStart);
-    cudaEventDestroy(iterStop);
+    gpuErrchk(cudaEventDestroy(iterStart));
+    gpuErrchk(cudaEventDestroy(iterStop));
+
+    gpuErrchk(cudaMemcpy(h_P_out, d_P, m * o * sizeof(float), cudaMemcpyDeviceToHost));
+
+    cudaFree(d_M);
+    cudaFree(d_N);
+    cudaFree(d_P);
 
     return totalTime_ms / reps;
 }
 
-bool allclose(float* M, float* N, int m, int n, float tol = 1e-5) {
-    for (int i = 0; i < m; ++i) {
-        for (int j = 0; j < n; ++j) {
+inline bool allclose(const float* M, const float* N, const int m, const int n, const float tol = 1e-5) {
+    for (unsigned int i = 0; i < m; ++i) {
+        for (unsigned int j = 0; j < n; ++j) {
             if (fabs(M[i * n + j] - N[i * n + j]) > tol) {
                 return false;
             }
@@ -170,9 +156,9 @@ bool allclose(float* M, float* N, int m, int n, float tol = 1e-5) {
     return true;
 }
 
-void printMatrix(float* matrix, int rows, int cols) {
-    for (int i = 0; i < rows; ++i) {
-        for (int j = 0; j < cols; ++j) {
+void printMatrix(const float* matrix, const int rows, const int cols) {
+    for (unsigned int i = 0; i < rows; ++i) {
+        for (unsigned int j = 0; j < cols; ++j) {
             std::cout << std::setw(6) << matrix[i * cols + j] << " ";
         }
         std::cout << std::endl;
@@ -181,7 +167,7 @@ void printMatrix(float* matrix, int rows, int cols) {
 
 int main() {
     // change these to experiment with sizes, here I get a substantial boost just via using TILING
-    int m = 4096, n = 4096, o = 4096;
+    int m = 8192, n = 8192, o = 8192;
 
     float* M = new float[m * n];
     float* N = new float[n * o];
@@ -195,12 +181,11 @@ int main() {
         N[i] = static_cast<float>(1.5);
     }
 
-    // Benchmark matrixMul function
-    float avgTimeMatrixMulTiling = benchmark(matrixMulTiling, M, N, P1, m, n, o);
-    std::cout << "Average time for matrixMulTiling: " << avgTimeMatrixMulTiling << " ms" << std::endl;
+    float avgTimeMatrixMulTiled = benchmarkKernel(launchTiledMatrixMul, M, N, P1, m, n, o);
+    std::cout << "Average kernel time (tiled): " << avgTimeMatrixMulTiled << " ms" << std::endl;
 
-    float avgTimeMatrixMul = benchmark(matrixMul, M, N, P2, m, n, o);
-    std::cout << "Average time for matrixMul: " << avgTimeMatrixMul << " ms" << std::endl;
+    float avgTimeMatrixMulNaive = benchmarkKernel(launchNaiveMatrixMul, M, N, P2, m, n, o);
+    std::cout << "Average kernel time (naive): " << avgTimeMatrixMulNaive << " ms" << std::endl;
 
     bool same = allclose(P1, P2, m, o);
     std::cout << "Outputs are " << (same ? "approximately the same" : "different") << std::endl;

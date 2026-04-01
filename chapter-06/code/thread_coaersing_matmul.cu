@@ -32,7 +32,7 @@ void clear_l2() {
     gpuErrchk(cudaMemset(gpu_scratch_l2_clear, 0, l2_clear_size));
 }
 
-__global__ void MatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
+__global__ void NaiveMatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -105,7 +105,7 @@ void matrixMul(float* M, float* N, float* P, int m, int n, int o) {
     dim3 dimBlock(TILE_WIDTH, TILE_WIDTH);
     dim3 dimGrid((o + dimBlock.x - 1) / dimBlock.x, (m + dimBlock.y - 1) / dimBlock.y);
 
-    MatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
+    NaiveMatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
 
     cudaMemcpy(P, d_P, m * o * sizeof(float), cudaMemcpyDeviceToHost);
 

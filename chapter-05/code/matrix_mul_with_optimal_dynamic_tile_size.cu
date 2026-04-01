@@ -62,7 +62,7 @@ __device__ void printDeviceMatrix(float* matrix, int width, int height, const ch
     printf("\n");
 }
 
-__global__ void MatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
+__global__ void NaiveMatrixMulKernel(float* M, float* N, float* P, int m, int n, int o) {
     int col = blockIdx.x * blockDim.x + threadIdx.x;
     int row = blockIdx.y * blockDim.y + threadIdx.y;
 
@@ -119,7 +119,7 @@ __global__ void TiledMatrixMulKernel(float* M, float* N, float* P, int m, int n,
     }
 }
 
-void matrixMul(float* M, float* N, float* P, int m, int n, int o) {
+void matrixMulNaive(float* M, float* N, float* P, int m, int n, int o) {
     float *d_M, *d_N, *d_P;
 
     cudaMalloc((void**)&d_M, m * n * sizeof(float));
@@ -132,7 +132,7 @@ void matrixMul(float* M, float* N, float* P, int m, int n, int o) {
     dim3 dimBlock(16, 16);
     dim3 dimGrid((o + dimBlock.x - 1) / dimBlock.x, (m + dimBlock.y - 1) / dimBlock.y);
 
-    MatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
+    NaiveMatrixMulKernel<<<dimGrid, dimBlock>>>(d_M, d_N, d_P, m, n, o);
 
     cudaMemcpy(P, d_P, m * o * sizeof(float), cudaMemcpyDeviceToHost);
 
@@ -141,7 +141,7 @@ void matrixMul(float* M, float* N, float* P, int m, int n, int o) {
     cudaFree(d_P);
 }
 
-void matrixMulTiling(float* M, float* N, float* P, int m, int n, int o) {
+void matrixMulTiled(float* M, float* N, float* P, int m, int n, int o) {
     float *d_M, *d_N, *d_P;
     // int tileWidth = calculateOptimalTileWidth();
     int tileWidth = calculateOptimalTileWidth(m, n, o);
@@ -237,12 +237,12 @@ int main() {
         N[i] = static_cast<float>(1.5);
     }
 
-    // Benchmark matrixMul function
-    float avgTimeMatrixMulTiling = benchmark(matrixMulTiling, M, N, P1, m, n, o);
-    std::cout << "Average time for matrixMulTiling: " << avgTimeMatrixMulTiling << " ms" << std::endl;
+    // Benchmark matrixMulNaive function
+    float avgTimeMatrixMulTiled = benchmark(matrixMulTiled, M, N, P1, m, n, o);
+    std::cout << "Average time for matrixMulTiled: " << avgTimeMatrixMulTiled << " ms" << std::endl;
 
-    float avgTimeMatrixMul = benchmark(matrixMul, M, N, P2, m, n, o);
-    std::cout << "Average time for matrixMul: " << avgTimeMatrixMul << " ms" << std::endl;
+    float avgTimeMatrixMulNavie = benchmark(matrixMulNaive, M, N, P2, m, n, o);
+    std::cout << "Average time for matrixMulNaive: " << avgTimeMatrixMulNavie << " ms" << std::endl;
 
     bool same = allclose(P1, P2, m, o);
     std::cout << "Outputs are " << (same ? "approximately the same" : "different") << std::endl;
@@ -251,7 +251,7 @@ int main() {
         std::cout << "\nMatrix P1 (from matrixMulTiling):" << std::endl;
         printMatrix(P1, m, o);
 
-        std::cout << "\nMatrix P2 (from matrixMul):" << std::endl;
+        std::cout << "\nMatrix P2 (from matrixMulNaive):" << std::endl;
         printMatrix(P2, m, o);
     }
 
