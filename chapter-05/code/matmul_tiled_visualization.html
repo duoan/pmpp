@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Tiled MatMul 动画可视化</title>
+<script src="https://cdn.jsdelivr.net/npm/d3@7.9.0/dist/d3.min.js"></script>
+<style>
+:root {
+  --bg:#0d1117; --panel:#161b22; --text:#e6edf3; --muted:#8b949e;
+  --teal:#3fb8af; --orange:#ff6b4a; --gold:#f0c040; --blue:#58a6ff;
+  --grid:#30363d; --darker:#0b0e13;
+  --font: system-ui, -apple-system, sans-serif;
+  --mono: "SF Mono","Cascadia Code","Consolas", monospace;
+}
+* { box-sizing:border-box; margin:0; padding:0 }
+body { background:var(--bg); color:var(--text); font-family:var(--font); line-height:1.5 }
+
+.wrap { max-width:1060px; margin:0 auto; padding:1.5rem 1rem 4rem }
+h1 { font-size:1.4rem; font-weight:700; margin-bottom:.15rem }
+.intro { color:var(--muted); font-size:.86rem; margin-bottom:1.2rem }
+.intro code { color:var(--teal); font-family:var(--mono); font-size:.8rem }
+
+/* toolbar */
+.bar {
+  display:flex; flex-wrap:wrap; align-items:center; gap:.5rem;
+  background:var(--panel); border:1px solid var(--grid); border-radius:10px;
+  padding:.55rem .9rem; margin-bottom:1rem;
+}
+.bar button {
+  font-family:var(--font); font-size:.8rem; padding:.35rem .65rem;
+  border-radius:6px; border:1px solid var(--grid); background:rgba(48,54,61,.7);
+  color:var(--text); cursor:pointer;
+}
+.bar button:hover { border-color:var(--teal) }
+.bar button.on { background:rgba(63,184,175,.22); border-color:var(--teal) }
+.bar .sep { width:1px; height:22px; background:var(--grid) }
+.bar label { font-size:.8rem; color:var(--muted) }
+.bar input[type=range] { width:90px; accent-color:var(--teal) }
+.bar .step-num { font-family:var(--mono); font-size:.78rem; color:var(--muted) }
+
+/* narration */
+.narration {
+  background:var(--panel); border:1px solid var(--grid); border-radius:10px;
+  padding:.8rem 1rem; margin-bottom:1rem; min-height:80px;
+}
+.narration .title { font-size:1.05rem; font-weight:700; margin-bottom:.25rem }
+.narration .body { font-size:.88rem; color:var(--muted); line-height:1.6 }
+.narration .body code { color:var(--teal); font-family:var(--mono); font-size:.8rem }
+.narration .body strong { color:var(--text) }
+.narration .body .orange { color:var(--orange) }
+.narration .body .gold { color:var(--gold) }
+
+svg { display:block; width:100%; height:auto }
+.cell { stroke:var(--grid); stroke-width:.6 }
+.blk-border { fill:none; stroke:var(--blue); stroke-width:2.2; rx:2; pointer-events:none }
+.blk-active { stroke:var(--gold); stroke-width:3 }
+
+/* counter */
+.ctr-row { display:flex; gap:1.2rem; margin-top:.5rem }
+.ctr {
+  font-family:var(--mono); font-size:.78rem; padding:.3rem .55rem;
+  border-radius:6px; border:1px solid var(--grid); background:rgba(0,0,0,.2);
+}
+.ctr .n { font-weight:700; font-size:1rem }
+.ctr.naive .n { color:var(--orange) }
+.ctr.tiled .n { color:var(--teal) }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>Tiled Matrix Multiply — 从 Grid 到线程到 Shared Memory</h1>
+  <p class="intro">
+    对齐 <code>matrix_mul.cu</code>。用 8×8 矩阵 + <code>TILE = 4</code> 缩小示意（真实：1024×1024, TILE=32）。
+    点播放看完整动画，或手动逐步。
+  </p>
+
+  <div class="bar">
+    <button id="btnPrev">⏮ 上一步</button>
+    <button id="btnNext" class="on">下一步 ⏭</button>
+    <div class="sep"></div>
+    <button id="btnPlay" class="on">▶ 播放</button>
+    <button id="btnReset">⟲ 重置</button>
+    <div class="sep"></div>
+    <label>速度</label>
+    <input type="range" id="spdSlider" min="0.3" max="3" step="0.1" value="1"/>
+    <span class="step-num" id="stepNum">0 / 0</span>
+  </div>
+
+  <div class="narration">
+    <div class="title" id="nTitle">准备开始</div>
+    <div class="body" id="nBody">点「下一步」或「▶ 播放」开始。我们会一步步看到：Grid → Block → 线程 → Shared Memory → 为什么快。</div>
+  </div>
+
+  <div id="stage"></div>
+
+  <div class="ctr-row" id="ctrRow" style="display:none">
+    <div class="ctr naive">朴素全局读：<span class="n" id="cNaive">0</span></div>
+    <div class="ctr tiled">Tiled 全局读：<span class="n" id="cTiled">0</span></div>
+  </div>
+</div>
+
+<script>
+(function(){
+const N=8, T=4, PH=N/T;
+
+// random matrices
+const A=[],B=[];
+for(let i=0;i<N;i++){A[i]=[];B[i]=[];for(let j=0;j<N;j++){A[i][j]=1+Math.floor(Math.random()*9);B[i][j]=1+Math.floor(Math.random()*9);}}
+
+let spd=1;
+function dur(ms){return ms/spd;}
+
+// ─── SVG setup ───
+const cs=38; // cell size
+const W=920, H=620;
+const svg=d3.select("#stage").append("svg").attr("viewBox",`0 0 ${W} ${H}`);
+const gAll=svg.append("g");
+
+// positions
+const P={
+  // full 8×8 matrices (scene 0)
+  Ax:30,  Ay:45,
+  Bx:370, By:45,
+  Cx:370, Cy:360,
+  // zoomed block (scene 1-2)
+  zBx:560, zBy:60,
+  // shared memory (scene 3+)
+  sAx:520, sAy:45,
+  sBx:520, sBy:230,
+  // output cell C (scene 3+)
+  oCx:710, oCy:140,
+};
+
+const nTitle=document.getElementById("nTitle");
+const nBody=document.getElementById("nBody");
+const stepNumEl=document.getElementById("stepNum");
+const ctrRow=document.getElementById("ctrRow");
+const cNaive=document.getElementById("cNaive");
+const cTiled=document.getElementById("cTiled");
+
+let naiveR=0, tiledR=0;
+function showCtr(){ctrRow.style.display="flex";cNaive.textContent=naiveR;cTiled.textContent=tiledR;}
+
+// block colors
+const bClr=[
+  ["#264653","#2a9d8f","#e9c46a","#f4a261"],
+  ["#457b9d","#1d3557","#e76f51","#606c38"],
+  ["#6d597a","#b56576","#355070","#eaac8b"],
+  ["#3a506b","#5bc0be","#0b132b","#6fffe9"],
+];
+function blkColor(bx,by){return bClr[by%4][bx%4]}
+
+// ─── Drawing helpers ───
+function drawMat(g, data, ox, oy, rows, cols, id, opts={}){
+  const gg=g.append("g").attr("id",id).attr("transform",`translate(${ox},${oy})`);
+  for(let r=0;r<rows;r++) for(let c=0;c<cols;c++){
+    gg.append("rect").attr("class","cell").attr("id",`${id}-c-${r}-${c}`)
+      .attr("x",c*cs).attr("y",r*cs).attr("width",cs).attr("height",cs)
+      .attr("fill",opts.fill||"rgba(22,27,34,.9)");
+    if(opts.vals) gg.append("text").attr("id",`${id}-v-${r}-${c}`)
+      .attr("x",c*cs+cs/2).attr("y",r*cs+cs/2+4).attr("text-anchor","middle")
+      .attr("font-family","var(--mono)").attr("font-size","11px")
+      .attr("fill",opts.valClr||"var(--muted)").text(data?data[r][c]:"");
+  }
+  return gg;
+}
+
+function lbl(g,x,y,text,o={}){
+  return g.append("text").attr("x",x).attr("y",y).attr("text-anchor",o.anchor||"start")
+    .attr("fill",o.fill||"var(--muted)").attr("font-size",o.size||"12px")
+    .attr("font-weight",o.bold?"700":"400").attr("font-family",o.mono?"var(--mono)":"var(--font)")
+    .text(text);
+}
+
+// ─── Step definitions ───
+const steps=[];
+function addStep(title,body,draw){steps.push({title,body,draw});}
+
+// ====== Scene 0: show C = A × B ======
+addStep(
+  "① 目标：C = A × B",
+  `三个 <strong>8×8 矩阵</strong>。GPU 要算出 C 的每一个元素 —— 比如 <code>C[2][3]</code> = A 第 2 行 · B 第 3 列的点积。`,
+  function(g){
+    lbl(g,P.Ax,P.Ay-8,"矩阵 A  (8×8)",{bold:true,fill:"var(--teal)"});
+    drawMat(g,A,P.Ax,P.Ay,N,N,"mA",{vals:true,valClr:"rgba(200,220,230,.5)"});
+    lbl(g,P.Bx,P.By-8,"矩阵 B  (8×8)",{bold:true,fill:"var(--orange)"});
+    drawMat(g,B,P.Bx,P.By,N,N,"mB",{vals:true,valClr:"rgba(200,220,230,.5)"});
+    lbl(g,P.Cx,P.Cy-8,"输出 C  (8×8)  ← 要算的目标",{bold:true,fill:"var(--gold)"});
+    drawMat(g,null,P.Cx,P.Cy,N,N,"mC",{fill:"rgba(240,192,64,.07)"});
+    // multiplication signs
+    lbl(g,P.Ax+N*cs+12,P.Ay+N*cs/2,"×",{size:"22px",fill:"var(--text)",bold:true});
+    lbl(g,P.Bx+N*cs+12,P.By+N*cs/2+120,"=",{size:"22px",fill:"var(--text)",bold:true});
+  }
+);
+
+// ====== Scene 1: show Grid of Blocks on C ======
+addStep(
+  "② Grid：把 C 切成 Block",
+  `GPU 启动一个 <strong>Grid</strong>（2×2 个 Block）。每个 Block 负责 C 里 <strong>4×4 的一块</strong>。` +
+  `<br/>颜色 = 不同 Block；标签 = <code>(bx, by)</code> 即 <code>blockIdx.x/y</code>。` +
+  `<br/>你的代码里：<code>dim3 dimGrid(width/TILE, width/TILE)</code>。`,
+  function(g){
+    lbl(g,P.Cx,P.Cy-8,"输出 C → 被 Grid 切成 2×2 个 Block",{bold:true,fill:"var(--gold)"});
+    const gg=drawMat(g,null,P.Cx,P.Cy,N,N,"mC2",{fill:"rgba(22,27,34,.9)"});
+    for(let by=0;by<PH;by++) for(let bx=0;bx<PH;bx++){
+      const clr=blkColor(bx,by);
+      for(let r=0;r<T;r++) for(let c=0;c<T;c++){
+        d3.select(`#mC2-c-${by*T+r}-${bx*T+c}`).attr("fill",clr).attr("opacity",.55);
+      }
+      gg.append("rect").attr("class","blk-border")
+        .attr("x",bx*T*cs).attr("y",by*T*cs).attr("width",T*cs).attr("height",T*cs);
+      gg.append("text").attr("x",bx*T*cs+T*cs/2).attr("y",by*T*cs+T*cs/2+5)
+        .attr("text-anchor","middle").attr("fill","#fff").attr("font-size","15px")
+        .attr("font-weight","700").attr("font-family","var(--mono)")
+        .text(`(${bx},${by})`);
+    }
+    // legend
+    lbl(g,30,P.Cy,"Grid = 所有 Block 的集合",{size:"13px",fill:"var(--text)",bold:true});
+    lbl(g,30,P.Cy+20,"每个 Block 大小 = TILE × TILE = 4×4",{size:"12px"});
+    lbl(g,30,P.Cy+40,"Block 被调度到不同的 SM 上并行执行",{size:"12px"});
+    lbl(g,30,P.Cy+60,"标签 (bx,by) = blockIdx.x, blockIdx.y",{size:"12px",mono:true});
+
+    // arrows pointing
+    for(let by=0;by<PH;by++) for(let bx=0;bx<PH;bx++){
+      gg.append("rect").attr("x",bx*T*cs+2).attr("y",by*T*cs+2)
+        .attr("width",T*cs-4).attr("height",T*cs-4).attr("rx",4)
+        .attr("fill","none").attr("stroke",blkColor(bx,by)).attr("stroke-width",3).attr("opacity",.8);
+    }
+  }
+);
+
+// ====== Scene 2: zoom into block(0,0), show threads ======
+addStep(
+  "③ Block 内部：每个线程 → C 的一个元素",
+  `选中 <strong class="gold">Block (0,0)</strong>（左上 4×4）。Block 里有 <strong>4×4 = 16 个线程</strong>，` +
+  `每个线程算 <strong>C 的恰好一个元素</strong>。` +
+  `<br/><code>tx = threadIdx.x, ty = threadIdx.y</code>` +
+  `<br/><code>Row = by×TILE + ty,  Col = bx×TILE + tx</code>` +
+  `<br/>比如线程 <code>(1,2)</code> → <code>C[2][1]</code>。`,
+  function(g){
+    // left: C with block(0,0) highlighted
+    lbl(g,30,38,"C：Block(0,0) 高亮",{bold:true,fill:"var(--gold)"});
+    const gC=drawMat(g,null,30,48,N,N,"mC3",{fill:"rgba(22,27,34,.5)"});
+    for(let by=0;by<PH;by++) for(let bx=0;bx<PH;bx++){
+      gC.append("rect").attr("class","blk-border")
+        .attr("x",bx*T*cs).attr("y",by*T*cs).attr("width",T*cs).attr("height",T*cs);
+    }
+    for(let r=0;r<T;r++) for(let c=0;c<T;c++){
+      d3.select(`#mC3-c-${r}-${c}`).attr("fill","rgba(240,192,64,.25)");
+    }
+    gC.append("rect").attr("class","blk-border blk-active")
+      .attr("x",0).attr("y",0).attr("width",T*cs).attr("height",T*cs);
+
+    // right: zoomed block with thread labels
+    const zx=480, zy=48;
+    const zcs=65;
+    lbl(g,zx,zy-12,"Block (0,0) 放大 — 16 个线程",{bold:true,fill:"var(--text)"});
+    const gZ=g.append("g").attr("transform",`translate(${zx},${zy})`);
+    for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+      gZ.append("rect").attr("x",tx*zcs).attr("y",ty*zcs).attr("width",zcs-2).attr("height",zcs-2)
+        .attr("rx",5).attr("fill","rgba(240,192,64,.12)").attr("stroke","var(--grid)");
+      gZ.append("text").attr("x",tx*zcs+zcs/2-1).attr("y",ty*zcs+22)
+        .attr("text-anchor","middle").attr("fill","var(--blue)").attr("font-size","12px")
+        .attr("font-family","var(--mono)").attr("font-weight","600")
+        .text(`tx=${tx}`);
+      gZ.append("text").attr("x",tx*zcs+zcs/2-1).attr("y",ty*zcs+37)
+        .attr("text-anchor","middle").attr("fill","var(--blue)").attr("font-size","12px")
+        .attr("font-family","var(--mono)").attr("font-weight","600")
+        .text(`ty=${ty}`);
+      gZ.append("text").attr("x",tx*zcs+zcs/2-1).attr("y",ty*zcs+55)
+        .attr("text-anchor","middle").attr("fill","var(--gold)").attr("font-size","11px")
+        .attr("font-family","var(--mono)")
+        .text(`C[${ty}][${tx}]`);
+    }
+    // warp note
+    lbl(g,zx,zy+T*zcs+18,"同一行 (ty 相同) 的 4 个线程 → 真实代码里 32 个 = 1 个 Warp",{size:"11px"});
+    gZ.append("rect").attr("x",-3).attr("y",1*zcs-1).attr("width",T*zcs+2).attr("height",zcs)
+      .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",2).attr("stroke-dasharray","5 3")
+      .attr("rx",4);
+    lbl(g,zx+T*zcs+8,zy+1*zcs+zcs/2+4,"← 1 Warp",{fill:"var(--teal)",size:"11px",mono:true});
+
+    // arrow from C to zoom
+    g.append("path")
+      .attr("d",`M${30+T*cs+5},${48+T*cs/2} L${zx-15},${zy+T*zcs/2}`)
+      .attr("fill","none").attr("stroke","var(--gold)").attr("stroke-width",2)
+      .attr("marker-end","url(#arrowGold)");
+  }
+);
+
+// arrow marker
+svg.append("defs").append("marker").attr("id","arrowGold").attr("viewBox","0 0 10 10")
+  .attr("refX",9).attr("refY",5).attr("markerWidth",8).attr("markerHeight",8)
+  .attr("orient","auto-start-reverse")
+  .append("path").attr("d","M 0 0 L 10 5 L 0 10 z").attr("fill","var(--gold)");
+svg.select("defs").append("marker").attr("id","arrowTeal").attr("viewBox","0 0 10 10")
+  .attr("refX",9).attr("refY",5).attr("markerWidth",8).attr("markerHeight",8)
+  .attr("orient","auto-start-reverse")
+  .append("path").attr("d","M 0 0 L 10 5 L 0 10 z").attr("fill","var(--teal)");
+svg.select("defs").append("marker").attr("id","arrowOrange").attr("viewBox","0 0 10 10")
+  .attr("refX",9).attr("refY",5).attr("markerWidth",8).attr("markerHeight",8)
+  .attr("orient","auto-start-reverse")
+  .append("path").attr("d","M 0 0 L 10 5 L 0 10 z").attr("fill","var(--orange)");
+
+// ====== Scene 3: what one thread needs ======
+addStep(
+  "④ 一个线程要算什么？",
+  `以线程 <strong class="gold">(tx=1, ty=2)</strong> 为例 → 它负责 <code>C[2][1]</code>。` +
+  `<br/>它需要 A 的<strong>第 2 行</strong>（整行，8 个数）和 B 的<strong>第 1 列</strong>（整列，8 个数），做点积。` +
+  `<br/>朴素写法：<strong class="orange">每个线程各自从全局内存读 2×8 = 16 个数</strong>，所有线程合计读非常多次。`,
+  function(g){
+    const ty=2,tx=1;
+    // Matrix A
+    lbl(g,30,38,"矩阵 A",{bold:true,fill:"var(--teal)"});
+    drawMat(g,A,30,48,N,N,"sc3A",{vals:true,valClr:"rgba(180,200,210,.35)"});
+    for(let c=0;c<N;c++){
+      d3.select(`#sc3A-c-${ty}-${c}`).attr("fill","rgba(63,184,175,.35)");
+      d3.select(`#sc3A-v-${ty}-${c}`).attr("fill","var(--teal)").attr("font-weight","700");
+    }
+    // Matrix B
+    lbl(g,30,48+N*cs+30,"矩阵 B",{bold:true,fill:"var(--orange)"});
+    drawMat(g,B,30,48+N*cs+40,N,N,"sc3B",{vals:true,valClr:"rgba(180,200,210,.35)"});
+    for(let r=0;r<N;r++){
+      d3.select(`#sc3B-c-${r}-${tx}`).attr("fill","rgba(255,107,74,.3)");
+      d3.select(`#sc3B-v-${r}-${tx}`).attr("fill","var(--orange)").attr("font-weight","700");
+    }
+    // output cell
+    const ox=500, oy=160;
+    lbl(g,ox,oy-15,`C[${ty}][${tx}] = A 第${ty}行 · B 第${tx}列`,{bold:true,fill:"var(--gold)"});
+    g.append("rect").attr("x",ox).attr("y",oy).attr("width",80).attr("height",60).attr("rx",8)
+      .attr("fill","rgba(240,192,64,.15)").attr("stroke","var(--gold)").attr("stroke-width",2);
+    let dotStr=A[ty].map((v,k)=>`${v}×${B[k][tx]}`).join(" + ");
+    let dotVal=0; for(let k=0;k<N;k++) dotVal+=A[ty][k]*B[k][tx];
+    g.append("text").attr("x",ox+40).attr("y",oy+25).attr("text-anchor","middle")
+      .attr("fill","var(--gold)").attr("font-size","18px").attr("font-weight","700").attr("font-family","var(--mono)")
+      .text(dotVal);
+    g.append("text").attr("x",ox+40).attr("y",oy+45).attr("text-anchor","middle")
+      .attr("fill","var(--muted)").attr("font-size","9px").attr("font-family","var(--mono)")
+      .text("= Σ(row·col)");
+
+    // arrows
+    g.append("path").attr("d",`M${30+N*cs+5},${48+ty*cs+cs/2} L${ox-8},${oy+20}`)
+      .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",1.5)
+      .attr("marker-end","url(#arrowTeal)").attr("opacity",.6);
+    g.append("path").attr("d",`M${30+tx*cs+cs/2},${48+N*cs+40-5} L${ox+20},${oy+55}`)
+      .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",1.5)
+      .attr("marker-end","url(#arrowOrange)").attr("opacity",.6);
+
+    // note
+    lbl(g,500,oy+100,"问题：全 8 个 k 值都从全局内存读",{fill:"var(--orange)",bold:true,size:"13px"});
+    lbl(g,500,oy+118,"→ 延迟 ~400 cycles/次，很慢！",{size:"12px"});
+    lbl(g,500,oy+140,"解决：用 Tiled + Shared Memory →",{fill:"var(--teal)",bold:true,size:"13px"});
+  }
+);
+
+// ====== Scene 4+: animated tiled phases ======
+// We pre-compute shared memory contents for block(0,0)
+const partialC=[];
+for(let r=0;r<T;r++){partialC[r]=[];for(let c=0;c<T;c++)partialC[r][c]=0;}
+
+for(let ph=0;ph<PH;ph++){
+  const k0=ph*T;
+
+  // --- step: show the tiles on A and B ---
+  addStep(
+    `⑤-${ph+1}a  Phase ${ph}：定位 A 和 B 上的 Tile`,
+    `沿 k 维第 ${ph} 段（k ∈ [${k0}, ${k0+T-1}]）。` +
+    `<br/>A 上：Block(0,0) 的 4 行 × 第 ${ph} 个 4 列段（<strong style="color:var(--teal)">绿色</strong>）。` +
+    `<br/>B 上：第 ${ph} 个 4 行段 × Block(0,0) 的 4 列（<strong class="orange">橙色</strong>）。` +
+    `<br/>这两块 Tile 即将被装进 Shared Memory。`,
+    function(g){
+      drawFullAB(g,ph);
+    }
+  );
+
+  // --- step: animate load ---
+  addStep(
+    `⑤-${ph+1}b  Phase ${ph}：协作加载 → Shared Memory`,
+    `<strong>16 个线程各从全局内存读 1 个数</strong>。` +
+    `<br/><code>s_A[ty][tx] = A[Row][ph×TILE+tx]</code>  — 线程 (tx,ty) 负责 s_A 的第 ty 行 tx 列。` +
+    `<br/><code>s_B[ty][tx] = B[ph×TILE+ty][Col]</code>  — 同理。` +
+    `<br/>一个 phase：<strong>2×16 = 32 次全局读</strong>，就把两张 4×4 表填满。然后 <code>__syncthreads()</code>。`,
+    function(g){
+      return drawLoadAnim(g,ph);
+    }
+  );
+
+  // --- step: compute from shared ---
+  addStep(
+    `⑤-${ph+1}c  Phase ${ph}：在 Shared 里做乘加（复用！）`,
+    `现在 <code>s_A</code>、<code>s_B</code> 已填满。每个线程读 <code>s_A</code> 的一整行 × <code>s_B</code> 的一整列 → ${T} 次乘加。` +
+    `<br/><strong>关键</strong>：<code>s_A</code> 第 k 行的数据被<strong>同行所有线程复用</strong>，<code>s_B</code> 第 k 列同理。` +
+    `<br/>→ <strong>全在 Shared (~5 cycles) 里读，零次全局访问</strong>！` +
+    `<br/>对比朴素方法：同样的乘加需要 <strong class="orange">16 个线程 × 2×4 = 128 次全局读</strong>。`,
+    function(g){
+      return drawComputeAnim(g,ph);
+    }
+  );
+}
+
+// ====== Final ======
+addStep(
+  "⑥ 完成！对比全局读取次数",
+  `Block(0,0) 的 4×4 = 16 个输出元素全部算完。` +
+  `<br/><strong class="orange">朴素写法</strong>：每个线程读 2×N=16 次全局 × 16 线程 = <strong class="orange">256 次</strong>。` +
+  `<br/><strong style="color:var(--teal)">Tiled 写法</strong>：每 phase 2×16 = 32 次 × ${PH} phase = <strong style="color:var(--teal)">${PH*2*T*T} 次</strong>。` +
+  `<br/>省了 <strong>${256/(PH*2*T*T)}×</strong>！真实代码里（N=1024, TILE=32）省 <strong>32×</strong>。`,
+  function(g){
+    drawFinal(g);
+  }
+);
+
+// ─── Drawing functions for scenes 4+ ───
+function drawFullAB(g, ph){
+  const ax=30,ay=48,bx=30,by=ay+N*cs+32;
+  lbl(g,ax,ay-10,"矩阵 A — 绿色 = 本 phase 要搬的 Tile",{bold:true,fill:"var(--teal)"});
+  drawMat(g,A,ax,ay,N,N,"phA",{vals:true,valClr:"rgba(180,200,210,.3)"});
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    const r=ty, c=ph*T+tx;
+    d3.select(`#phA-c-${r}-${c}`).attr("fill","rgba(63,184,175,.4)");
+    d3.select(`#phA-v-${r}-${c}`).attr("fill","#fff").attr("font-weight","700");
+  }
+  g.append("rect").attr("x",ax+ph*T*cs).attr("y",ay).attr("width",T*cs).attr("height",T*cs)
+    .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",3).attr("rx",3);
+
+  lbl(g,bx,by-10,"矩阵 B — 橙色 = 本 phase 要搬的 Tile",{bold:true,fill:"var(--orange)"});
+  drawMat(g,B,bx,by,N,N,"phB",{vals:true,valClr:"rgba(180,200,210,.3)"});
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    const r=ph*T+ty, c=tx;
+    d3.select(`#phB-c-${r}-${c}`).attr("fill","rgba(255,107,74,.3)");
+    d3.select(`#phB-v-${r}-${c}`).attr("fill","#fff").attr("font-weight","700");
+  }
+  g.append("rect").attr("x",bx).attr("y",by+ph*T*cs).attr("width",T*cs).attr("height",T*cs)
+    .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",3).attr("rx",3);
+
+  // shared boxes (empty, target)
+  const sx=520,say=48,sby=say+T*cs+40;
+  lbl(g,sx,say-10,"s_A (Shared Memory)",{bold:true,fill:"var(--teal)",mono:true});
+  drawMat(g,null,sx,say,T,T,"sha0",{fill:"rgba(63,184,175,.08)"});
+  g.append("rect").attr("x",sx-4).attr("y",say-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",2).attr("rx",6);
+  lbl(g,sx,sby-10,"s_B (Shared Memory)",{bold:true,fill:"var(--orange)",mono:true});
+  drawMat(g,null,sx,sby,T,T,"shb0",{fill:"rgba(255,107,74,.06)"});
+  g.append("rect").attr("x",sx-4).attr("y",sby-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",2).attr("rx",6);
+
+  // arrows
+  g.append("path")
+    .attr("d",`M${ax+ph*T*cs+T*cs+8},${ay+T*cs/2} L${sx-10},${say+T*cs/2}`)
+    .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",2)
+    .attr("marker-end","url(#arrowTeal)");
+  g.append("path")
+    .attr("d",`M${bx+T*cs+8},${by+ph*T*cs+T*cs/2} L${sx-10},${sby+T*cs/2}`)
+    .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",2)
+    .attr("marker-end","url(#arrowOrange)");
+}
+
+function drawLoadAnim(g, ph){
+  const ax=30,ay=55,bx=30,by=ay+T*cs+55;
+  const sx=450,say=55,sby=say+T*cs+55;
+
+  lbl(g,ax,ay-15,"A 的 Tile（全局内存，慢）",{bold:true,fill:"var(--teal)",size:"11px"});
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    const r=ty, c=ph*T+tx, v=A[r][c];
+    g.append("rect").attr("id",`la-${ty}-${tx}`).attr("x",ax+tx*cs).attr("y",ay+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(63,184,175,.25)").attr("stroke","var(--grid)");
+    g.append("text").attr("x",ax+tx*cs+cs/2).attr("y",ay+ty*cs+cs/2+4)
+      .attr("text-anchor","middle").attr("fill","var(--teal)").attr("font-size","12px")
+      .attr("font-family","var(--mono)").attr("font-weight","600").text(v);
+  }
+
+  lbl(g,bx,by-15,"B 的 Tile（全局内存，慢）",{bold:true,fill:"var(--orange)",size:"11px"});
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    const r=ph*T+ty, c=tx, v=B[r][c];
+    g.append("rect").attr("x",bx+tx*cs).attr("y",by+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(255,107,74,.2)").attr("stroke","var(--grid)");
+    g.append("text").attr("x",bx+tx*cs+cs/2).attr("y",by+ty*cs+cs/2+4)
+      .attr("text-anchor","middle").attr("fill","var(--orange)").attr("font-size","12px")
+      .attr("font-family","var(--mono)").attr("font-weight","600").text(v);
+  }
+
+  lbl(g,sx,say-15,"s_A (Shared, ~5 cycles!)",{bold:true,fill:"var(--teal)",mono:true,size:"11px"});
+  g.append("rect").attr("x",sx-4).attr("y",say-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",2).attr("rx",6);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("id",`sa2-${ty}-${tx}`).attr("x",sx+tx*cs).attr("y",say+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(20,26,33,.9)").attr("stroke","var(--grid)");
+    g.append("text").attr("id",`sa2t-${ty}-${tx}`)
+      .attr("x",sx+tx*cs+cs/2).attr("y",say+ty*cs+cs/2+4).attr("text-anchor","middle")
+      .attr("fill","var(--teal)").attr("font-size","12px").attr("font-family","var(--mono)")
+      .attr("font-weight","600").attr("opacity",0);
+  }
+
+  lbl(g,sx,sby-15,"s_B (Shared, ~5 cycles!)",{bold:true,fill:"var(--orange)",mono:true,size:"11px"});
+  g.append("rect").attr("x",sx-4).attr("y",sby-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",2).attr("rx",6);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("id",`sb2-${ty}-${tx}`).attr("x",sx+tx*cs).attr("y",sby+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(20,26,33,.9)").attr("stroke","var(--grid)");
+    g.append("text").attr("id",`sb2t-${ty}-${tx}`)
+      .attr("x",sx+tx*cs+cs/2).attr("y",sby+ty*cs+cs/2+4).attr("text-anchor","middle")
+      .attr("fill","var(--orange)").attr("font-size","12px").attr("font-family","var(--mono)")
+      .attr("font-weight","600").attr("opacity",0);
+  }
+
+  // thread labels between them
+  const mx=(ax+T*cs+sx)/2;
+  lbl(g,mx-20,say+T*cs+12,"每个线程搬 1 个",{size:"11px",fill:"var(--muted)"});
+  lbl(g,mx-20,say+T*cs+26,"(tx,ty) ← 一一对应",{size:"10px",mono:true,fill:"var(--muted)"});
+
+  // animate!
+  return new Promise(resolve=>{
+    let done=0;
+    const total=T*T*2;
+    for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+      const delay=(ty*T+tx)*dur(50);
+      const vA=A[ty][ph*T+tx];
+      const vB=B[ph*T+ty][tx];
+
+      // A dot
+      const da=g.append("circle").attr("cx",ax+tx*cs+cs/2).attr("cy",ay+ty*cs+cs/2)
+        .attr("r",7).attr("fill","var(--teal)").attr("opacity",.85);
+      da.transition().delay(delay).duration(dur(450))
+        .attr("cx",sx+tx*cs+cs/2).attr("cy",say+ty*cs+cs/2).attr("r",4).attr("opacity",.4)
+        .on("end",function(){
+          d3.select(this).remove();
+          d3.select(`#sa2-${ty}-${tx}`).attr("fill","rgba(63,184,175,.22)");
+          d3.select(`#sa2t-${ty}-${tx}`).text(vA).attr("opacity",1);
+          tiledR++;showCtr();
+          done++;if(done===total)resolve();
+        });
+
+      // B dot
+      const db=g.append("circle").attr("cx",bx+tx*cs+cs/2).attr("cy",by+ty*cs+cs/2)
+        .attr("r",7).attr("fill","var(--orange)").attr("opacity",.85);
+      db.transition().delay(delay+dur(60)).duration(dur(450))
+        .attr("cx",sx+tx*cs+cs/2).attr("cy",sby+ty*cs+cs/2).attr("r",4).attr("opacity",.4)
+        .on("end",function(){
+          d3.select(this).remove();
+          d3.select(`#sb2-${ty}-${tx}`).attr("fill","rgba(255,107,74,.18)");
+          d3.select(`#sb2t-${ty}-${tx}`).text(vB).attr("opacity",1);
+          tiledR++;showCtr();
+          done++;if(done===total)resolve();
+        });
+    }
+  });
+}
+
+function drawComputeAnim(g, ph){
+  const sx=60,say=50,sby=say+T*cs+50;
+  const oX=420,oY=say;
+  const zcs=50;
+
+  // draw filled s_A
+  lbl(g,sx,say-15,"s_A (已填满, Shared)",{bold:true,fill:"var(--teal)",mono:true,size:"11px"});
+  g.append("rect").attr("x",sx-4).attr("y",say-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--teal)").attr("stroke-width",2).attr("rx",6);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("id",`csa-${ty}-${tx}`).attr("x",sx+tx*cs).attr("y",say+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(63,184,175,.18)").attr("stroke","var(--grid)");
+    g.append("text").attr("x",sx+tx*cs+cs/2).attr("y",say+ty*cs+cs/2+4)
+      .attr("text-anchor","middle").attr("fill","var(--teal)").attr("font-size","12px")
+      .attr("font-family","var(--mono)").attr("font-weight","600")
+      .text(A[ty][ph*T+tx]);
+  }
+
+  // draw filled s_B
+  lbl(g,sx,sby-15,"s_B (已填满, Shared)",{bold:true,fill:"var(--orange)",mono:true,size:"11px"});
+  g.append("rect").attr("x",sx-4).attr("y",sby-4).attr("width",T*cs+8).attr("height",T*cs+8)
+    .attr("fill","none").attr("stroke","var(--orange)").attr("stroke-width",2).attr("rx",6);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("id",`csb-${ty}-${tx}`).attr("x",sx+tx*cs).attr("y",sby+ty*cs)
+      .attr("width",cs).attr("height",cs).attr("fill","rgba(255,107,74,.14)").attr("stroke","var(--grid)");
+    g.append("text").attr("x",sx+tx*cs+cs/2).attr("y",sby+ty*cs+cs/2+4)
+      .attr("text-anchor","middle").attr("fill","var(--orange)").attr("font-size","12px")
+      .attr("font-family","var(--mono)").attr("font-weight","600")
+      .text(B[ph*T+ty][tx]);
+  }
+
+  // output block
+  lbl(g,oX,oY-15,"C  block(0,0) 输出",{bold:true,fill:"var(--gold)"});
+  g.append("rect").attr("x",oX-4).attr("y",oY-4).attr("width",T*zcs+8).attr("height",T*zcs+8)
+    .attr("fill","none").attr("stroke","var(--gold)").attr("stroke-width",2).attr("rx",6);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("id",`co-${ty}-${tx}`).attr("x",oX+tx*zcs).attr("y",oY+ty*zcs)
+      .attr("width",zcs).attr("height",zcs).attr("fill","rgba(240,192,64,.06)").attr("stroke","var(--grid)");
+    g.append("text").attr("id",`co-v-${ty}-${tx}`)
+      .attr("x",oX+tx*zcs+zcs/2).attr("y",oY+ty*zcs+zcs/2+5).attr("text-anchor","middle")
+      .attr("fill","var(--gold)").attr("font-size","12px").attr("font-family","var(--mono)")
+      .attr("font-weight","600").text(partialC[ty][tx]||"");
+  }
+
+  // labels showing reuse
+  lbl(g,oX,oY+T*zcs+22,"每行 s_A 被该行 4 个线程共享读取（复用 4×）",{size:"11px",fill:"var(--teal)"});
+  lbl(g,oX,oY+T*zcs+38,"每列 s_B 被该列 4 个线程共享读取（复用 4×）",{size:"11px",fill:"var(--orange)"});
+
+  // animate per thread
+  return new Promise(resolve=>{
+    let done=0;
+    for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+      const delay=(ty*T+tx)*dur(180);
+      setTimeout(()=>{
+        // flash row of s_A
+        for(let k=0;k<T;k++){
+          d3.select(`#csa-${ty}-${k}`).transition().duration(dur(100)).attr("fill","rgba(63,184,175,.55)")
+            .transition().duration(dur(200)).attr("fill","rgba(63,184,175,.22)");
+          d3.select(`#csb-${k}-${tx}`).transition().duration(dur(100)).attr("fill","rgba(255,107,74,.5)")
+            .transition().duration(dur(200)).attr("fill","rgba(255,107,74,.18)");
+        }
+        // compute
+        let sum=0;
+        for(let k=0;k<T;k++) sum+=A[ty][ph*T+k]*B[ph*T+k][tx];
+        partialC[ty][tx]+=sum;
+        naiveR+=2*T;
+
+        setTimeout(()=>{
+          d3.select(`#co-${ty}-${tx}`).transition().duration(dur(200)).attr("fill","rgba(240,192,64,.22)")
+            .transition().duration(dur(200)).attr("fill","rgba(240,192,64,.1)");
+          d3.select(`#co-v-${ty}-${tx}`).text(partialC[ty][tx]);
+          showCtr();
+          done++;
+          if(done===T*T) resolve();
+        },dur(300));
+      },delay);
+    }
+  });
+}
+
+function drawFinal(g){
+  const ox=100,oy=50,zcs=60;
+  lbl(g,ox,oy-18,"C  block(0,0) — 最终结果",{bold:true,fill:"var(--gold)",size:"16px"});
+  g.append("rect").attr("x",ox-5).attr("y",oy-5).attr("width",T*zcs+10).attr("height",T*zcs+10)
+    .attr("fill","none").attr("stroke","var(--gold)").attr("stroke-width",3).attr("rx",8);
+  for(let ty=0;ty<T;ty++) for(let tx=0;tx<T;tx++){
+    g.append("rect").attr("x",ox+tx*zcs).attr("y",oy+ty*zcs).attr("width",zcs).attr("height",zcs)
+      .attr("fill","rgba(240,192,64,.18)").attr("stroke","var(--grid)").attr("rx",3);
+    g.append("text").attr("x",ox+tx*zcs+zcs/2).attr("y",oy+ty*zcs+zcs/2+5)
+      .attr("text-anchor","middle").attr("fill","var(--gold)").attr("font-size","15px")
+      .attr("font-weight","700").attr("font-family","var(--mono)")
+      .text(partialC[ty][tx]);
+  }
+  // note
+  const nx=ox+T*zcs+50,ny=oy+20;
+  lbl(g,nx,ny,"为什么 Tiled 更快？",{bold:true,fill:"var(--text)",size:"14px"});
+  lbl(g,nx,ny+24,"朴素：每个 C 元素需要从全局读 2×N 个数",{size:"12px",fill:"var(--orange)"});
+  lbl(g,nx,ny+42,"       16 个元素 × 16 次 = 256 次全局读",{size:"12px",fill:"var(--orange)",mono:true});
+  lbl(g,nx,ny+68,"Tiled：每 phase 只需 2×16 = 32 次全局读",{size:"12px",fill:"var(--teal)"});
+  lbl(g,nx,ny+86,"       2 个 phase × 32 = 64 次全局读",{size:"12px",fill:"var(--teal)",mono:true});
+  lbl(g,nx,ny+114,"省下 4× 的全局访问（真实 TILE=32 时省 32×）",{size:"13px",fill:"var(--text)",bold:true});
+  lbl(g,nx,ny+140,"原因：搬进 shared 后，同一行/列被多个线程复用",{size:"12px"});
+  lbl(g,nx,ny+158,"复用率 = TILE = 4（每份数据被 4 个线程共享读取）",{size:"12px",fill:"var(--teal)"});
+}
+
+// ─── Step machine ───
+let cur=-1, busy=false, playing=false;
+
+function show(idx){
+  if(idx<0||idx>=steps.length)return Promise.resolve();
+  cur=idx;
+  stepNumEl.textContent=`${idx+1} / ${steps.length}`;
+  const s=steps[idx];
+  nTitle.textContent=s.title;
+  nBody.innerHTML=s.body;
+  gAll.selectAll("*").remove();
+  const g=gAll.append("g");
+  const r=s.draw(g);
+  return r instanceof Promise?r:Promise.resolve();
+}
+
+async function next(){
+  if(busy||cur>=steps.length-1)return;
+  busy=true;await show(cur+1);busy=false;
+}
+async function prev(){
+  if(busy||cur<=0)return;
+  // rewind: rebuild partialC & counters up to target
+  const target=cur-1;
+  resetState();
+  const oldSpd=spd;spd=999;
+  for(let i=0;i<=target;i++){
+    const s=steps[i];
+    gAll.selectAll("*").remove();
+    const g=gAll.append("g");
+    const r=s.draw(g);
+    if(r instanceof Promise) await r;
+  }
+  spd=oldSpd;
+  cur=target;
+  stepNumEl.textContent=`${cur+1} / ${steps.length}`;
+  nTitle.textContent=steps[cur].title;
+  nBody.innerHTML=steps[cur].body;
+}
+
+function resetState(){
+  cur=-1;playing=false;btnPlay.textContent="▶ 播放";
+  naiveR=0;tiledR=0;showCtr();ctrRow.style.display="none";
+  for(let r=0;r<T;r++)for(let c=0;c<T;c++)partialC[r][c]=0;
+  gAll.selectAll("*").remove();
+  nTitle.textContent="准备开始";
+  nBody.innerHTML="点「下一步」或「▶ 播放」开始。";
+  stepNumEl.textContent=`0 / ${steps.length}`;
+}
+
+async function playLoop(){
+  while(playing&&cur<steps.length-1){
+    await next();
+    if(playing)await new Promise(r=>setTimeout(r,dur(500)));
+  }
+  playing=false;btnPlay.textContent="▶ 播放";
+}
+
+const btnPlay=document.getElementById("btnPlay");
+document.getElementById("btnNext").addEventListener("click",()=>{if(cur>=3)ctrRow.style.display="flex";next();});
+document.getElementById("btnPrev").addEventListener("click",prev);
+document.getElementById("btnReset").addEventListener("click",resetState);
+document.getElementById("spdSlider").addEventListener("input",e=>{spd=+e.target.value;});
+btnPlay.addEventListener("click",()=>{
+  if(playing){playing=false;btnPlay.textContent="▶ 播放";return;}
+  if(cur>=steps.length-1)resetState();
+  ctrRow.style.display="flex";
+  playing=true;btnPlay.textContent="⏸ 暂停";playLoop();
+});
+})();
+</script>
+</body>
+</html>

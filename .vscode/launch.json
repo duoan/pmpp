@@ -1,0 +1,42 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "CUDA Debug (Nsight)",
+            "type": "cuda-gdb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
+            "preLaunchTask": "C/C++: nvcc build active file"
+        },
+        {
+            "name": "Host Debug (cppdbg)",
+            "type": "cppdbg",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "stopAtEntry": false,
+            "cwd": "${fileDirname}",
+            "environment": [],
+            "externalConsole": false,
+            "MIMode": "gdb",
+            "miDebuggerPath": "/usr/local/cuda/bin/cuda-gdb",
+            "setupCommands": [
+                {
+                    "description": "Enable pretty-printing",
+                    "text": "-enable-pretty-printing",
+                    "ignoreFailures": true
+                },
+                {
+                    "description": "Allow pending breakpoints for device code",
+                    "text": "set breakpoint pending on",
+                    "ignoreFailures": true
+                }
+            ],
+            "preLaunchTask": "C/C++: nvcc build active file"
+        }
+    ]
+}
