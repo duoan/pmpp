@@ -2,11 +2,75 @@
     "tasks": [
         {
             "type": "shell",
+            "label": "CUDA: build and run (release)",
+            "command": "/usr/local/cuda/bin/nvcc",
+            "args": [
+                "-arch=sm_120",
+                "-O3",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}",
+                "&&",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "group": {
+                "kind": "build",
+                "isDefault": false
+            },
+            "detail": "Blackwell (sm_120) 编译+直接运行，无调试器开销"
+        },
+        {
+            "type": "shell",
+            "label": "CUDA: build (release)",
+            "command": "/usr/local/cuda/bin/nvcc",
+            "args": [
+                "-arch=sm_120",
+                "-O3",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Blackwell (sm_120) optimized build"
+        },
+        {
+            "type": "shell",
+            "label": "CUDA: build (debug)",
+            "command": "/usr/local/cuda/bin/nvcc",
+            "args": [
+                "-arch=sm_120",
+                "-g",
+                "-G",
+                "${file}",
+                "-o",
+                "${fileDirname}/${fileBasenameNoExtension}"
+            ],
+            "options": {
+                "cwd": "${fileDirname}"
+            },
+            "problemMatcher": [
+                "$gcc"
+            ],
+            "detail": "Blackwell (sm_120) debug build (-G disables device optimizations)"
+        },
+        {
+            "type": "cppbuild",
             "label": "C/C++: nvcc build active file",
             "command": "/usr/local/cuda/bin/nvcc",
             "args": [
+                "-fdiagnostics-color=always",
                 "-g",
-                "-G",
                 "${file}",
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"

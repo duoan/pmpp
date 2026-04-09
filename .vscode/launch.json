@@ -2,6 +2,17 @@
     "version": "0.2.0",
     "configurations": [
         {
+            "name": "CUDA Run (Release)",
+            "type": "cuda-gdb",
+            "request": "launch",
+            "program": "${fileDirname}/${fileBasenameNoExtension}",
+            "args": [],
+            "cwd": "${fileDirname}",
+            "stopAtEntry": false,
+            "console": "integratedTerminal",
+            "preLaunchTask": "CUDA: build (release)"
+        },
+        {
             "name": "CUDA Debug (Nsight)",
             "type": "cuda-gdb",
             "request": "launch",
@@ -10,7 +21,7 @@
             "cwd": "${fileDirname}",
             "stopAtEntry": false,
             "console": "integratedTerminal",
-            "preLaunchTask": "C/C++: nvcc build active file"
+            "preLaunchTask": "CUDA: build (debug)"
         },
         {
             "name": "Host Debug (cppdbg)",
@@ -36,7 +47,7 @@
                     "ignoreFailures": true
                 }
             ],
-            "preLaunchTask": "C/C++: nvcc build active file"
+            "preLaunchTask": "CUDA: build (debug)"
         }
     ]
 }
