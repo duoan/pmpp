@@ -1,0 +1,728 @@
+{
+  "communities": {
+    "0": [
+      "activations",
+      "activations_flatten",
+      "activations_flatten_backward",
+      "activations_flatten_forward",
+      "activations_flatten_get_gradients",
+      "activations_flatten_init",
+      "activations_flatten_parameters",
+      "activations_relu",
+      "activations_relu_backward",
+      "activations_relu_forward",
+      "activations_relu_get_gradients",
+      "activations_relu_init",
+      "activations_relu_parameters",
+      "activations_sigmoid",
+      "activations_sigmoid_backward",
+      "activations_sigmoid_forward",
+      "activations_sigmoid_get_gradients",
+      "activations_sigmoid_init",
+      "activations_sigmoid_parameters",
+      "base",
+      "base_layer",
+      "base_layer_backward",
+      "base_layer_call",
+      "base_layer_forward",
+      "base_layer_parameters",
+      "conv",
+      "conv_conv2d",
+      "conv_conv2d_backward",
+      "conv_conv2d_forward",
+      "conv_conv2d_get_gradients",
+      "conv_conv2d_init",
+      "conv_conv2d_parameters",
+      "layer",
+      "linear",
+      "linear_linear",
+      "linear_linear_backward",
+      "linear_linear_forward",
+      "linear_linear_get_gradients",
+      "linear_linear_init",
+      "linear_linear_parameters",
+      "pooling",
+      "pooling_maxpooling2d",
+      "pooling_maxpooling2d_backward",
+      "pooling_maxpooling2d_forward",
+      "pooling_maxpooling2d_get_gradients",
+      "pooling_maxpooling2d_init",
+      "pooling_maxpooling2d_parameters",
+      "pooling_poolinglayer_forward"
+    ],
+    "1": [
+      "heat_simulation",
+      "heat_simulation_heatanimator",
+      "heat_simulation_heatanimator_animate_frame",
+      "heat_simulation_heatanimator_create_animation",
+      "heat_simulation_heatanimator_init",
+      "heat_simulation_heatanimator_setup_plot",
+      "heat_simulation_heatequationcuda",
+      "heat_simulation_heatequationcuda_del",
+      "heat_simulation_heatequationcuda_init",
+      "heat_simulation_heatequationcuda_load_library",
+      "heat_simulation_heatequationcuda_solve_step",
+      "heat_simulation_heatsimulation",
+      "heat_simulation_heatsimulation_create_initial_conditions",
+      "heat_simulation_heatsimulation_get_slice",
+      "heat_simulation_heatsimulation_init",
+      "heat_simulation_heatsimulation_step",
+      "heat_simulation_main",
+      "heat_simulation_rationale_100",
+      "heat_simulation_rationale_103",
+      "heat_simulation_rationale_134",
+      "heat_simulation_rationale_155",
+      "heat_simulation_rationale_160",
+      "heat_simulation_rationale_180",
+      "heat_simulation_rationale_19",
+      "heat_simulation_rationale_191",
+      "heat_simulation_rationale_22",
+      "heat_simulation_rationale_225",
+      "heat_simulation_rationale_242",
+      "heat_simulation_rationale_256",
+      "heat_simulation_rationale_31",
+      "heat_simulation_rationale_66",
+      "heat_simulation_rationale_94"
+    ],
+    "2": [
+      "conv2d_backward_main_compare_with_pytorch",
+      "conv2d_backward_setup_extension",
+      "conv_ops_conv_layer_backward_x_grad",
+      "conversion",
+      "conversion_np_to_c_float_p",
+      "conversion_np_to_c_int_p",
+      "cublas_wrapper",
+      "cublas_wrapper_cleanup_cublas",
+      "cublas_wrapper_cublas_matmul",
+      "cublas_wrapper_gpu_alloc",
+      "cublas_wrapper_gpu_free",
+      "cublas_wrapper_gpu_to_host",
+      "cublas_wrapper_init_cublas",
+      "cublas_wrapper_rationale_37",
+      "cublas_wrapper_sgemm_wrapper",
+      "layers_conv_2d",
+      "layers_layer",
+      "layers_linear",
+      "layers_max_pooling_2d",
+      "mnist_example",
+      "mnist_example_mnist_cnn_example",
+      "pooling_main_benchmark_pooling",
+      "pooling_main_test_pooling_accuracy",
+      "pooling_pooling_layer_forward"
+    ],
+    "3": [
+      "autograd",
+      "autograd_backward",
+      "autograd_forward",
+      "autograd_linear",
+      "autograd_linear_call",
+      "autograd_linear_init",
+      "autograd_linearfunction",
+      "autograd_main",
+      "autograd_mseloss",
+      "autograd_mseloss_call",
+      "autograd_sgd",
+      "autograd_sgd_init",
+      "autograd_sgd_step",
+      "autograd_sgd_zero_grad",
+      "autograd_sigmoid",
+      "autograd_sigmoid_call",
+      "autograd_sigmoidfunction",
+      "autograd_simplenetwork",
+      "autograd_simplenetwork_call",
+      "autograd_simplenetwork_forward",
+      "autograd_simplenetwork_init",
+      "autograd_train_model",
+      "function"
+    ],
+    "4": [
+      "loss_mse_loss",
+      "model",
+      "model_sequential",
+      "model_sequential_add",
+      "model_sequential_backward",
+      "model_sequential_call",
+      "model_sequential_forward",
+      "model_sequential_get_gradients",
+      "model_sequential_init",
+      "model_sequential_parameters",
+      "optim",
+      "optim_adam",
+      "optim_adam_init",
+      "optim_adam_step",
+      "optim_sgd",
+      "optim_sgd_init",
+      "optim_sgd_step",
+      "xor_example",
+      "xor_example_rationale_12",
+      "xor_example_train_model",
+      "xor_example_xor_example"
+    ],
+    "5": [
+      "quadtree_visualizer",
+      "quadtree_visualizer_main",
+      "quadtree_visualizer_quadtreevisualizer",
+      "quadtree_visualizer_quadtreevisualizer_build_quadtree",
+      "quadtree_visualizer_quadtreevisualizer_draw_quadtree_boundaries",
+      "quadtree_visualizer_quadtreevisualizer_generate_sample_points",
+      "quadtree_visualizer_quadtreevisualizer_init",
+      "quadtree_visualizer_quadtreevisualizer_visualize_quadtree_division",
+      "quadtree_visualizer_rationale_11",
+      "quadtree_visualizer_rationale_144",
+      "quadtree_visualizer_rationale_201",
+      "quadtree_visualizer_rationale_299",
+      "quadtree_visualizer_rationale_38",
+      "quadtree_visualizer_rationale_93"
+    ],
+    "6": [
+      "loss",
+      "loss_cross_entropy_loss",
+      "loss_crossentropyloss",
+      "loss_crossentropyloss_backward",
+      "loss_crossentropyloss_call",
+      "loss_crossentropyloss_forward",
+      "loss_crossentropyloss_init",
+      "loss_mseloss",
+      "loss_mseloss_backward",
+      "loss_mseloss_call",
+      "loss_mseloss_forward",
+      "loss_mseloss_init",
+      "loss_softmax"
+    ],
+    "7": [
+      "bezier",
+      "bezier_analyze_tessellation_comparison",
+      "bezier_benchmark_performance",
+      "bezier_bezierlinec",
+      "bezier_plot_curves_comparison",
+      "bezier_rationale_109",
+      "bezier_rationale_18",
+      "bezier_rationale_239",
+      "bezier_rationale_285",
+      "bezier_rationale_64",
+      "bezier_simple_tessellate_dynamic",
+      "bezier_simple_tessellate_static"
+    ],
+    "8": [
+      "ch02_heterogeneous_data_parallel",
+      "ch08_stencil",
+      "ch18_electrostatic_potential",
+      "ch19_computational_thinking",
+      "ch20_heterogeneous_cluster_mpi_cuda",
+      "concept_cuda_aware_mpi",
+      "concept_gather_vs_scatter_potential",
+      "concept_mpi_halo_exchange",
+      "concept_thread_coarsening_energy",
+      "rationale_thread_coarsening_tradeoffs",
+      "readme_book_kirk_hwu_pmpp_4e",
+      "readme_pmpp_repository"
+    ],
+    "9": [
+      "ch09_histogram_atomics",
+      "ch11_prefix_sum_scan",
+      "ch14_sparse_spmv",
+      "concept_brent_kung_scan",
+      "concept_coo_csr_ell_jds",
+      "concept_coo_to_csr_histogram_scan",
+      "concept_domino_interblock_scan",
+      "concept_double_buffering_scan",
+      "concept_kogge_stone_scan"
+    ],
+    "10": [
+      "exercise2_coo_coordinate_format",
+      "exercise2_csr_column_indices",
+      "exercise2_csr_compressed_sparse_row",
+      "exercise2_csr_row_pointers",
+      "exercise2_csr_values",
+      "exercise2_ell_ellpack_storage",
+      "exercise2_jds_jagged_diagonal_storage",
+      "exercise2_sparse_4x4_matrix"
+    ],
+    "11": [
+      "autograd_manual_init_py",
+      "autograd_manual_main_py_entry",
+      "autograd_py_custom_functions",
+      "conv2dcuda_wrapper_so_native",
+      "cublas_wrapper_py_sgemm",
+      "cudnn_wrapper_py_conv_pool",
+      "libcublas_wrapper_so_native"
+    ],
+    "12": [
+      "exercise_1_question_eight_node_directed_graph",
+      "exercise_1a_adjacency_matrix_8x8",
+      "exercise_1b_csr_style_three_rows",
+      "exercise_2_figure_10_8_thread_assignment",
+      "exercise_3_sixteen_element_reduction_stages",
+      "exercise_6a_handdrawn_parallel_sum_reduction",
+      "exercise_6b_handdrawn_parallel_reduction"
+    ],
+    "13": [
+      "bfs_parallel",
+      "bfs_sequential",
+      "device_memory",
+      "graph_conversions",
+      "graph_generators",
+      "graph_structures"
+    ],
+    "14": [
+      "main",
+      "main_benchmark_pooling",
+      "main_compare_with_pytorch",
+      "main_main",
+      "main_run_multiple_tests",
+      "main_test_pooling_accuracy"
+    ],
+    "15": [
+      "vecadd",
+      "vecadd_compile_extension",
+      "vecadd_main",
+      "vecadd_profile_test",
+      "vecadd_vector_multipication_loop"
+    ],
+    "16": [
+      "gaussian_blur",
+      "gaussian_blur_compile_extension",
+      "gaussian_blur_main",
+      "gradio_visualization",
+      "gradio_visualization_blur"
+    ],
+    "17": [
+      "ch17_mri_iterative_reconstruction",
+      "concept_loop_fission_fhd",
+      "concept_loop_interchange_fhd",
+      "rationale_kx_indexing_fhd_kernel",
+      "rationale_loop_interchange_associativity"
+    ],
+    "18": [
+      "exercise1_hillis_steele_inclusive_prefix_scan",
+      "exercise5_inclusive_prefix_sum_reduction_reversed_tree",
+      "exercise7_figure_11_4_exclusive_scan_kogge_stone",
+      "exercise7_kogge_stone_adder_design",
+      "image_pmpp_textbook_cover_4th_edition"
+    ],
+    "19": [
+      "2d_conv_N1_N2_kernel_to_output",
+      "2d_conv_NN_kernel_sliding_padding",
+      "fft_representation_blurry_lowpass_fft_pipeline",
+      "fft_representation_highpass_fft_edge_map",
+      "lenna_color_test_image"
+    ],
+    "20": [
+      "conv_2d",
+      "conv_2d_get_filter_radius_from_header",
+      "conv_2d_load_conv2d_extension",
+      "conv_2d_main"
+    ],
+    "21": [
+      "bfs_parallel_h_parallel_bfs",
+      "bfs_sequential_h_bfs",
+      "graph_conversions_h_format_converters",
+      "graph_structures_h_csr_csc_coo"
+    ],
+    "22": [
+      "bezier_py_cuda_tessellation",
+      "libbezier_so_native_api",
+      "quadtree_so_build_quadtree",
+      "quadtree_visualizer_py_quadtree_cuda"
+    ],
+    "23": [
+      "ch05_memory_locality_tiling",
+      "ch06_performance_coalescing",
+      "rationale_shared_mem_not_matadd",
+      "rationale_syncthreads_tile_mm"
+    ],
+    "24": [
+      "ch12_merge_corank",
+      "ch13_sorting",
+      "concept_corank_merge",
+      "concept_single_kernel_radix_deadlock"
+    ],
+    "25": [
+      "exercise2_merged_output_c",
+      "exercise2_parallel_merge_iteration0",
+      "exercise2_sorted_array_a",
+      "exercise2_sorted_array_b"
+    ],
+    "26": [
+      "cg_algo",
+      "cg_algo_conjugate_gradient",
+      "cg_algo_rationale_5"
+    ],
+    "27": [
+      "matrix_vector_multiplication",
+      "matrix_vector_multiplication_compile_extension",
+      "matrix_vector_multiplication_main"
+    ],
+    "28": [
+      "matrix_multiplication_row_and_col",
+      "matrix_multiplication_row_and_col_compile_extension",
+      "matrix_multiplication_row_and_col_main"
+    ],
+    "29": [
+      "matrix_multiplication",
+      "matrix_multiplication_compile_extension",
+      "matrix_multiplication_main"
+    ],
+    "30": [
+      "rgb_to_grayscale",
+      "rgb_to_grayscale_compile_extension",
+      "rgb_to_grayscale_main"
+    ],
+    "31": [
+      "bsf",
+      "bsf_dfs",
+      "bsf_rationale_2"
+    ],
+    "32": [
+      "cudnn_wrapper",
+      "cudnn_wrapper_cleanup_cudnn",
+      "cudnn_wrapper_rationale_98"
+    ],
+    "33": [
+      "vecAdd_python_benchmark_main",
+      "vecAdd_python_cuda_vector_add",
+      "vecAdd_python_elementwise_loop"
+    ],
+    "34": [
+      "mnist_handwritten_digit_image",
+      "mnist_pred_and_true_labels",
+      "mnist_predictions_digit_grid"
+    ],
+    "35": [
+      "stencil",
+      "stencil_cdiv"
+    ],
+    "36": [
+      "conv_ops",
+      "conv_ops_convlayer_backward_x_grad"
+    ],
+    "37": [
+      "benchmark_h_energy_benchmark",
+      "cenergy_h_coulomb_kernels"
+    ],
+    "38": [
+      "ch04_compute_architecture_scheduling",
+      "ch10_reduction"
+    ],
+    "39": [
+      "ch07_convolution",
+      "ch16_deep_learning_cnn"
+    ],
+    "40": [
+      "ch21_cuda_dynamic_parallelism",
+      "concept_dp_child_parent_memory"
+    ],
+    "41": [
+      "ch15_graph_bfs",
+      "concept_bfs_push_pull_frontier"
+    ],
+    "42": [
+      "exercise2_ell_colidx_grid",
+      "exercise2_ell_value_grid"
+    ],
+    "43": [
+      "exercise_2a_shared_memory_tiling",
+      "exercise_2b_vectorized_row_loads"
+    ],
+    "44": [
+      "benchmark"
+    ],
+    "45": [
+      "cenergy"
+    ],
+    "46": [
+      "gpu_radix_sort"
+    ],
+    "47": [
+      "gpu_merge_sort"
+    ],
+    "48": [
+      "utils"
+    ],
+    "49": [
+      "init"
+    ],
+    "50": [
+      "setup"
+    ],
+    "51": [
+      "vecAdd_jl_profiling_harness"
+    ],
+    "52": [
+      "conv2d_load_and_bench"
+    ],
+    "53": [
+      "conv2d_filter_radius_from_header"
+    ],
+    "54": [
+      "stencil_h_api"
+    ],
+    "55": [
+      "stencil_h_dual_tile_comment_rationale"
+    ],
+    "56": [
+      "heat_simulation_cuda_wrapper"
+    ],
+    "57": [
+      "heat_simulation_manager"
+    ],
+    "58": [
+      "heat_simulation_animator"
+    ],
+    "59": [
+      "gpu_radix_sort_header"
+    ],
+    "60": [
+      "gpu_merge_sort_header"
+    ],
+    "61": [
+      "bsf_py_queue_traversal"
+    ],
+    "62": [
+      "device_memory_h"
+    ],
+    "63": [
+      "graph_generators_h"
+    ],
+    "64": [
+      "utils_h_bfs_compare"
+    ],
+    "65": [
+      "cg_algo_py_conjugate_gradient"
+    ],
+    "66": [
+      "layers_flatten"
+    ],
+    "67": [
+      "layers_sigmoid"
+    ],
+    "68": [
+      "layers_relu"
+    ],
+    "69": [
+      "pooling_setup_extension"
+    ],
+    "70": [
+      "ch03_multidimensional_grids"
+    ]
+  },
+  "cohesion": {
+    "0": 0.05,
+    "1": 0.08,
+    "2": 0.09,
+    "3": 0.14,
+    "4": 0.13,
+    "5": 0.2,
+    "6": 0.18,
+    "7": 0.2,
+    "8": 0.18,
+    "9": 0.22,
+    "10": 0.39,
+    "11": 0.33,
+    "12": 0.38,
+    "13": 0.33,
+    "14": 0.33,
+    "15": 0.6,
+    "16": 0.6,
+    "17": 0.4,
+    "18": 0.6,
+    "19": 0.6,
+    "20": 0.83,
+    "21": 0.67,
+    "22": 0.5,
+    "23": 0.5,
+    "24": 0.5,
+    "25": 0.83,
+    "26": 0.67,
+    "27": 1.0,
+    "28": 1.33,
+    "29": 1.33,
+    "30": 1.0,
+    "31": 0.67,
+    "32": 0.67,
+    "33": 0.67,
+    "34": 1.0,
+    "35": 1.0,
+    "36": 1.0,
+    "37": 1.0,
+    "38": 1.0,
+    "39": 1.0,
+    "40": 1.0,
+    "41": 1.0,
+    "42": 1.0,
+    "43": 1.0,
+    "44": 1.0,
+    "45": 1.0,
+    "46": 1.0,
+    "47": 1.0,
+    "48": 1.0,
+    "49": 1.0,
+    "50": 1.0,
+    "51": 1.0,
+    "52": 1.0,
+    "53": 1.0,
+    "54": 1.0,
+    "55": 1.0,
+    "56": 1.0,
+    "57": 1.0,
+    "58": 1.0,
+    "59": 1.0,
+    "60": 1.0,
+    "61": 1.0,
+    "62": 1.0,
+    "63": 1.0,
+    "64": 1.0,
+    "65": 1.0,
+    "66": 1.0,
+    "67": 1.0,
+    "68": 1.0,
+    "69": 1.0,
+    "70": 1.0
+  },
+  "gods": [
+    {
+      "id": "model_sequential",
+      "label": "Sequential",
+      "edges": 15
+    },
+    {
+      "id": "base_layer",
+      "label": "Layer",
+      "edges": 11
+    },
+    {
+      "id": "linear_linear",
+      "label": "Linear",
+      "edges": 9
+    },
+    {
+      "id": "activations_sigmoid",
+      "label": "Sigmoid",
+      "edges": 9
+    },
+    {
+      "id": "activations_relu",
+      "label": "ReLU",
+      "edges": 9
+    },
+    {
+      "id": "pooling_maxpooling2d",
+      "label": "MaxPooling2D",
+      "edges": 8
+    },
+    {
+      "id": "activations_flatten",
+      "label": "Flatten",
+      "edges": 8
+    },
+    {
+      "id": "conv_conv2d",
+      "label": "Conv2D",
+      "edges": 8
+    },
+    {
+      "id": "quadtree_visualizer_quadtreevisualizer",
+      "label": "QuadtreeVisualizer",
+      "edges": 7
+    },
+    {
+      "id": "heat_simulation_heatequationcuda",
+      "label": "HeatEquationCUDA",
+      "edges": 7
+    }
+  ],
+  "surprises": [
+    {
+      "source": "Stencil (3D, shared memory, register tiling)",
+      "target": "Heterogeneous Computing Cluster (MPI + CUDA)",
+      "source_files": [
+        "chapter-08/README.md",
+        "chapter-20/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Thread coarsening for electrostatic energy grid",
+      "target": "Stencil (3D, shared memory, register tiling)",
+      "source_files": [
+        "chapter-18/README.md",
+        "chapter-08/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "semantically_similar_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories; semantically similar concepts with no structural link"
+    },
+    {
+      "source": "Parallel Programming and Computational Thinking",
+      "target": "Kirk & Hwu Programming Massively Parallel Processors 4th Edition",
+      "source_files": [
+        "chapter-19/README.md",
+        "README.md"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "references",
+      "why": "ambiguous connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Exercise 1b: three-row array diagram (CSR-style offsets, indices, unit weights)",
+      "target": "Figure 10.8: thread-to-index assignment for reduced control divergence (16-element reduction)",
+      "source_files": [
+        "chapter-15/exercise_1b.png",
+        "chapter-10/exercise_2_visualization.png"
+      ],
+      "confidence": "AMBIGUOUS",
+      "relation": "conceptually_related_to",
+      "why": "ambiguous connection - not explicitly stated in source; connects across different repos/directories"
+    },
+    {
+      "source": "Compute Architecture and Scheduling",
+      "target": "Reduction (tree, divergence, coarsening)",
+      "source_files": [
+        "chapter-04/README.md",
+        "chapter-10/README.md"
+      ],
+      "confidence": "INFERRED",
+      "relation": "conceptually_related_to",
+      "why": "inferred connection - not explicitly stated in source; connects across different repos/directories"
+    }
+  ],
+  "questions": [
+    {
+      "type": "ambiguous_edge",
+      "question": "What is the exact relationship between `autograd_manual CLI entry (XOR / MNIST)` and `autograd_manual package initializer`?",
+      "why": "Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low."
+    },
+    {
+      "type": "ambiguous_edge",
+      "question": "What is the exact relationship between `Kirk & Hwu Programming Massively Parallel Processors 4th Edition` and `Parallel Programming and Computational Thinking`?",
+      "why": "Edge tagged AMBIGUOUS (relation: references) - confidence is low."
+    },
+    {
+      "type": "ambiguous_edge",
+      "question": "What is the exact relationship between `Exercise 1b: three-row array diagram (CSR-style offsets, indices, unit weights)` and `Figure 10.8: thread-to-index assignment for reduced control divergence (16-element reduction)`?",
+      "why": "Edge tagged AMBIGUOUS (relation: conceptually_related_to) - confidence is low."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Train a neural network model on the provided data.      Args:         model: The` connect `Community 4` to `Community 0`, `Community 6`?",
+      "why": "High betweenness centrality (0.049) - this node is a cross-community bridge."
+    },
+    {
+      "type": "bridge_node",
+      "question": "Why does `Sequential` connect `Community 4` to `Community 2`?",
+      "why": "High betweenness centrality (0.039) - this node is a cross-community bridge."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 3 inferred relationships involving `Sequential` (e.g. with `Train a neural network model on the provided data.      Args:         model: The` and `Adam`) actually correct?",
+      "why": "`Sequential` has 3 INFERRED edges - model-reasoned connections that need verification."
+    },
+    {
+      "type": "verify_inferred",
+      "question": "Are the 6 inferred relationships involving `Layer` (e.g. with `MaxPooling2D` and `Linear`) actually correct?",
+      "why": "`Layer` has 6 INFERRED edges - model-reasoned connections that need verification."
+    }
+  ]
+}
