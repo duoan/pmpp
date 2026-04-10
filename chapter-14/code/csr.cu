@@ -1,7 +1,6 @@
 #include <cuda_runtime.h>
 
 #include <cstdio>
-#include <iostream>
 
 struct CSRMatrix {
     int numRows;

@@ -1,13 +1,13 @@
 #include <cuda_runtime.h>
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
 
 
 // Definitions for utility functions
 #define CHECK_CUDA_ERROR(call) do { \
     cudaError_t err = call; \
     if (err != cudaSuccess) { \
-        std::cerr << "CUDA error in " << __FILE__ << "(" << __LINE__ << "):" \
-        << cudaGetErrorString(err) << std::endl; \
+        fprintf(stderr, "CUDA error in %s(%d): %s\n", __FILE__, __LINE__, cudaGetErrorString(err)); \
         exit(EXIT_FAILURE); \
     } \
 } while(0)
@@ -68,7 +68,7 @@ __global__ void textureMemoryUsage(cudaTextureObject_t texObj, float* d_out, int
 // Function to initialize data
 void initializeData(float* data, int N) {
     for (int i = 0; i < N; ++i) {
-        data[i] = static_cast<float>(i);
+        data[i] = (float)i;
     }
 }
 
@@ -77,8 +77,8 @@ int main() {
     const size_t size = N * sizeof(float);
 
     // Host and device arrays
-    float* h_in = new float[N];
-    float* h_out = new float[N];
+    float* h_in = (float*)malloc(N * sizeof(float));
+    float* h_out = (float*)malloc(N * sizeof(float));
     float *d_in, *d_out;
     initializeData(h_in, N);
 
@@ -129,18 +129,18 @@ int main() {
     CHECK_CUDA_ERROR(cudaMemcpy(h_out, d_out, size, cudaMemcpyDeviceToHost));
 
     // Output some results for validation
-    std::cout << "Sample output " << std::endl;
+    printf("Sample output\n");
     for (int i = 0; i < 5; ++i) {
-        std::cout << h_out[i] << " ";
+        printf("%f ", h_out[i]);
     } 
-    std::cout << std::endl;
+    printf("\n");
 
     // Cleanup
     cudaDestroyTextureObject(texObj);
     cudaFree(d_in);
     cudaFree(d_out);
-    delete[] h_in;
-    delete[] h_out;
+    free(h_in);
+    free(h_out);
 
     return 0;
 

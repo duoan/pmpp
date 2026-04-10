@@ -1,5 +1,6 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 __global__ void spmv_coo_kernel(int nnz, int* rowIdx, int* colIdx, float* values, float* x, float* y) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -31,7 +32,7 @@ void spmv_coo(int nnz, int rows, int cols, int* h_rowIdx, int* h_colIdx, float* 
     int gridSize = (nnz + blockSize - 1) / blockSize;
     spmv_coo_kernel<<<gridSize, blockSize>>>(nnz, d_rowIdx, d_colIdx, d_values, d_x, d_y);
 
-    float* h_y = new float[rows];
+    float* h_y = (float*)malloc(rows * sizeof(float));
     cudaMemcpy(h_y, d_y, rows * sizeof(float), cudaMemcpyDeviceToHost);
 
     printf("Result vector y:\n");
@@ -40,7 +41,7 @@ void spmv_coo(int nnz, int rows, int cols, int* h_rowIdx, int* h_colIdx, float* 
     }
     printf("\n");
 
-    delete[] h_y;
+    free(h_y);
     cudaFree(d_rowIdx);
     cudaFree(d_colIdx);
     cudaFree(d_values);

@@ -1,128 +1,7 @@
 {
   "directed": false,
   "multigraph": false,
-  "graph": {
-    "hyperedges": [
-      {
-        "id": "graph_formats_and_bfs_variants",
-        "label": "Shared graph layouts feeding BFS and conversion APIs",
-        "nodes": [
-          "graph_structures_h_csr_csc_coo",
-          "graph_conversions_h_format_converters",
-          "bfs_parallel_h_parallel_bfs",
-          "bfs_sequential_h_bfs"
-        ],
-        "relation": "participate_in",
-        "confidence": "INFERRED",
-        "confidence_score": 0.78,
-        "source_file": "chapter-15/code/include/graph_structures.h"
-      },
-      {
-        "id": "cuda_energy_kernel_benchmarking",
-        "label": "Benchmark harness typed for Coulomb energy grid kernels",
-        "nodes": [
-          "benchmark_h_energy_benchmark",
-          "cenergy_h_coulomb_kernels"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.86,
-        "source_file": "chapter-18/code/benchmark.h"
-      },
-      {
-        "id": "python_ctypes_cuda_interop",
-        "label": "Python loads CUDA via ctypes shared libraries",
-        "nodes": [
-          "bezier_py_cuda_tessellation",
-          "quadtree_visualizer_py_quadtree_cuda",
-          "cublas_wrapper_py_sgemm",
-          "cudnn_wrapper_py_conv_pool"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.79,
-        "source_file": "chapter-21/code/bezier.py"
-      },
-      {
-        "id": "numpy_to_c_gpu_bridge",
-        "label": "NumPy to C pointer bridge for cuDNN layers",
-        "nodes": [
-          "layers_max_pooling_2d",
-          "layers_conv_2d",
-          "conversion_np_to_c_float_p"
-        ],
-        "relation": "participate_in",
-        "confidence": "INFERRED",
-        "confidence_score": 0.88,
-        "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py"
-      },
-      {
-        "id": "sequential_training_examples",
-        "label": "Sequential model training driver examples",
-        "nodes": [
-          "xor_example_train_model",
-          "mnist_example_mnist_cnn_example",
-          "model_sequential"
-        ],
-        "relation": "form",
-        "confidence": "INFERRED",
-        "confidence_score": 0.8,
-        "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py"
-      },
-      {
-        "id": "c_extension_kernels",
-        "label": "C/CUDA reference and extension kernels",
-        "nodes": [
-          "pooling_pooling_layer_forward",
-          "conv_ops_conv_layer_backward_x_grad",
-          "cublas_wrapper_sgemm_wrapper"
-        ],
-        "relation": "implement",
-        "confidence": "INFERRED",
-        "confidence_score": 0.82,
-        "source_file": "chapter-16/code/pooling/pooling.c"
-      },
-      {
-        "id": "coo_to_csr_parallel_primitives",
-        "label": "COO to CSR conversion using histogram then exclusive scan",
-        "nodes": [
-          "concept_coo_to_csr_histogram_scan",
-          "ch09_histogram_atomics",
-          "ch11_prefix_sum_scan"
-        ],
-        "relation": "implement",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "chapter-14/README.md"
-      },
-      {
-        "id": "mpi_cuda_stencil_pipeline",
-        "label": "Multi-stage stencil with CUDA streams and MPI halo exchange",
-        "nodes": [
-          "ch20_heterogeneous_cluster_mpi_cuda",
-          "concept_mpi_halo_exchange",
-          "concept_cuda_aware_mpi"
-        ],
-        "relation": "participate_in",
-        "confidence": "INFERRED",
-        "confidence_score": 0.78,
-        "source_file": "chapter-20/README.md"
-      },
-      {
-        "id": "gpu_sort_merge_radix_ecosystem",
-        "label": "Chapter 13 sort benchmarks tie radix variants to merge sort and CPU quicksort",
-        "nodes": [
-          "ch13_sorting",
-          "ch12_merge_corank",
-          "concept_single_kernel_radix_deadlock"
-        ],
-        "relation": "participate_in",
-        "confidence": "EXTRACTED",
-        "confidence_score": 1.0,
-        "source_file": "chapter-13/README.md"
-      }
-    ]
-  },
+  "graph": {},
   "nodes": [
     {
       "label": "benchmark.h",
@@ -130,7 +9,7 @@
       "source_file": "chapter-18/code/benchmark.h",
       "source_location": "L1",
       "id": "benchmark",
-      "community": 44
+      "community": 26
     },
     {
       "label": "cenergy.h",
@@ -138,7 +17,7 @@
       "source_file": "chapter-18/code/cenergy.h",
       "source_location": "L1",
       "id": "cenergy",
-      "community": 45
+      "community": 27
     },
     {
       "label": "cg_algo.py",
@@ -146,7 +25,7 @@
       "source_file": "chapter-17/code/cg_algo.py",
       "source_location": "L1",
       "id": "cg_algo",
-      "community": 26
+      "community": 15
     },
     {
       "label": "conjugate_gradient()",
@@ -154,7 +33,7 @@
       "source_file": "chapter-17/code/cg_algo.py",
       "source_location": "L4",
       "id": "cg_algo_conjugate_gradient",
-      "community": 26
+      "community": 15
     },
     {
       "label": "Solve the linear system Ax = b using the Conjugate Gradient method.      Paramet",
@@ -162,7 +41,7 @@
       "source_file": "chapter-17/code/cg_algo.py",
       "source_location": "L5",
       "id": "cg_algo_rationale_5",
-      "community": 26
+      "community": 15
     },
     {
       "label": "conv_2d.py",
@@ -170,7 +49,7 @@
       "source_file": "chapter-07/code/conv_2d.py",
       "source_location": "L1",
       "id": "conv_2d",
-      "community": 20
+      "community": 14
     },
     {
       "label": "load_conv2d_extension()",
@@ -178,7 +57,7 @@
       "source_file": "chapter-07/code/conv_2d.py",
       "source_location": "L14",
       "id": "conv_2d_load_conv2d_extension",
-      "community": 20
+      "community": 14
     },
     {
       "label": "get_filter_radius_from_header()",
@@ -186,7 +65,7 @@
       "source_file": "chapter-07/code/conv_2d.py",
       "source_location": "L26",
       "id": "conv_2d_get_filter_radius_from_header",
-      "community": 20
+      "community": 14
     },
     {
       "label": "main()",
@@ -194,7 +73,7 @@
       "source_file": "chapter-07/code/conv_2d.py",
       "source_location": "L39",
       "id": "conv_2d_main",
-      "community": 20
+      "community": 14
     },
     {
       "label": "gpu_radix_sort.h",
@@ -202,7 +81,7 @@
       "source_file": "chapter-13/code/gpu_radix_sort.h",
       "source_location": "L1",
       "id": "gpu_radix_sort",
-      "community": 46
+      "community": 28
     },
     {
       "label": "gpu_merge_sort.h",
@@ -210,7 +89,7 @@
       "source_file": "chapter-13/code/gpu_merge_sort.h",
       "source_location": "L1",
       "id": "gpu_merge_sort",
-      "community": 47
+      "community": 29
     },
     {
       "label": "vecAdd.py",
@@ -218,7 +97,7 @@
       "source_file": "chapter-02/code/vecAdd.py",
       "source_location": "L1",
       "id": "vecadd",
-      "community": 15
+      "community": 12
     },
     {
       "label": "profile_test()",
@@ -226,7 +105,7 @@
       "source_file": "chapter-02/code/vecAdd.jl",
       "source_location": "L1",
       "id": "vecadd_profile_test",
-      "community": 15
+      "community": 12
     },
     {
       "label": "vector_multipication_loop()",
@@ -234,7 +113,7 @@
       "source_file": "chapter-02/code/vecAdd.py",
       "source_location": "L8",
       "id": "vecadd_vector_multipication_loop",
-      "community": 15
+      "community": 12
     },
     {
       "label": "compile_extension()",
@@ -242,7 +121,7 @@
       "source_file": "chapter-02/code/vecAdd.py",
       "source_location": "L20",
       "id": "vecadd_compile_extension",
-      "community": 15
+      "community": 12
     },
     {
       "label": "main()",
@@ -250,7 +129,7 @@
       "source_file": "chapter-02/code/vecAdd.py",
       "source_location": "L36",
       "id": "vecadd_main",
-      "community": 15
+      "community": 12
     },
     {
       "label": "gradio_visualization.py",
@@ -258,7 +137,7 @@
       "source_file": "chapter-03/code/gaussian_blur/gradio_visualization.py",
       "source_location": "L1",
       "id": "gradio_visualization",
-      "community": 16
+      "community": 13
     },
     {
       "label": "blur()",
@@ -266,7 +145,7 @@
       "source_file": "chapter-03/code/gaussian_blur/gradio_visualization.py",
       "source_location": "L11",
       "id": "gradio_visualization_blur",
-      "community": 16
+      "community": 13
     },
     {
       "label": "gaussian_blur.py",
@@ -274,7 +153,7 @@
       "source_file": "chapter-03/code/gaussian_blur/gaussian_blur.py",
       "source_location": "L1",
       "id": "gaussian_blur",
-      "community": 16
+      "community": 13
     },
     {
       "label": "compile_extension()",
@@ -282,7 +161,7 @@
       "source_file": "chapter-03/code/gaussian_blur/gaussian_blur.py",
       "source_location": "L7",
       "id": "gaussian_blur_compile_extension",
-      "community": 16
+      "community": 13
     },
     {
       "label": "main()",
@@ -290,7 +169,7 @@
       "source_file": "chapter-03/code/gaussian_blur/gaussian_blur.py",
       "source_location": "L20",
       "id": "gaussian_blur_main",
-      "community": 16
+      "community": 13
     },
     {
       "label": "matrix_vector_multiplication.py",
@@ -298,7 +177,7 @@
       "source_file": "chapter-03/code/exercise_2/matrix_vector_multiplication.py",
       "source_location": "L1",
       "id": "matrix_vector_multiplication",
-      "community": 27
+      "community": 16
     },
     {
       "label": "compile_extension()",
@@ -306,7 +185,7 @@
       "source_file": "chapter-03/code/exercise_2/matrix_vector_multiplication.py",
       "source_location": "L7",
       "id": "matrix_vector_multiplication_compile_extension",
-      "community": 27
+      "community": 16
     },
     {
       "label": "main()",
@@ -314,7 +193,7 @@
       "source_file": "chapter-03/code/exercise_2/matrix_vector_multiplication.py",
       "source_location": "L24",
       "id": "matrix_vector_multiplication_main",
-      "community": 27
+      "community": 16
     },
     {
       "label": "matrix_multiplication_row_and_col.py",
@@ -322,7 +201,7 @@
       "source_file": "chapter-03/code/exercise_1/matrix_multiplication_row_and_col.py",
       "source_location": "L1",
       "id": "matrix_multiplication_row_and_col",
-      "community": 28
+      "community": 17
     },
     {
       "label": "compile_extension()",
@@ -330,7 +209,7 @@
       "source_file": "chapter-03/code/exercise_1/matrix_multiplication_row_and_col.py",
       "source_location": "L7",
       "id": "matrix_multiplication_row_and_col_compile_extension",
-      "community": 28
+      "community": 17
     },
     {
       "label": "main()",
@@ -338,7 +217,7 @@
       "source_file": "chapter-03/code/exercise_1/matrix_multiplication_row_and_col.py",
       "source_location": "L26",
       "id": "matrix_multiplication_row_and_col_main",
-      "community": 28
+      "community": 17
     },
     {
       "label": "matrix_multiplication.py",
@@ -346,7 +225,7 @@
       "source_file": "chapter-03/code/matrix_multiplication/matrix_multiplication.py",
       "source_location": "L1",
       "id": "matrix_multiplication",
-      "community": 29
+      "community": 18
     },
     {
       "label": "compile_extension()",
@@ -354,7 +233,7 @@
       "source_file": "chapter-03/code/matrix_multiplication/matrix_multiplication.py",
       "source_location": "L7",
       "id": "matrix_multiplication_compile_extension",
-      "community": 29
+      "community": 18
     },
     {
       "label": "main()",
@@ -362,7 +241,7 @@
       "source_file": "chapter-03/code/matrix_multiplication/matrix_multiplication.py",
       "source_location": "L20",
       "id": "matrix_multiplication_main",
-      "community": 29
+      "community": 18
     },
     {
       "label": "rgb_to_grayscale.py",
@@ -370,7 +249,7 @@
       "source_file": "chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.py",
       "source_location": "L1",
       "id": "rgb_to_grayscale",
-      "community": 30
+      "community": 19
     },
     {
       "label": "compile_extension()",
@@ -378,7 +257,7 @@
       "source_file": "chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.py",
       "source_location": "L7",
       "id": "rgb_to_grayscale_compile_extension",
-      "community": 30
+      "community": 19
     },
     {
       "label": "main()",
@@ -386,7 +265,7 @@
       "source_file": "chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.py",
       "source_location": "L20",
       "id": "rgb_to_grayscale_main",
-      "community": 30
+      "community": 19
     },
     {
       "label": "bezier.py",
@@ -394,7 +273,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L1",
       "id": "bezier",
-      "community": 7
+      "community": 4
     },
     {
       "label": "BezierLineC",
@@ -402,7 +281,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L9",
       "id": "bezier_bezierlinec",
-      "community": 7
+      "community": 4
     },
     {
       "label": "simple_tessellate_dynamic()",
@@ -410,7 +289,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L17",
       "id": "bezier_simple_tessellate_dynamic",
-      "community": 7
+      "community": 4
     },
     {
       "label": "simple_tessellate_static()",
@@ -418,7 +297,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L63",
       "id": "bezier_simple_tessellate_static",
-      "community": 7
+      "community": 4
     },
     {
       "label": "plot_curves_comparison()",
@@ -426,7 +305,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L106",
       "id": "bezier_plot_curves_comparison",
-      "community": 7
+      "community": 4
     },
     {
       "label": "analyze_tessellation_comparison()",
@@ -434,7 +313,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L236",
       "id": "bezier_analyze_tessellation_comparison",
-      "community": 7
+      "community": 4
     },
     {
       "label": "benchmark_performance()",
@@ -442,7 +321,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L284",
       "id": "bezier_benchmark_performance",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Dynamic parallelism tessellation using CUDA dynamic parallelism      Args:",
@@ -450,7 +329,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L18",
       "id": "bezier_rationale_18",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Static parallelism tessellation (original version)      Args:         control_po",
@@ -458,7 +337,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L64",
       "id": "bezier_rationale_64",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Compare static vs dynamic parallelism results",
@@ -466,7 +345,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L109",
       "id": "bezier_rationale_109",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Analyze and compare static vs dynamic results",
@@ -474,7 +353,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L239",
       "id": "bezier_rationale_239",
-      "community": 7
+      "community": 4
     },
     {
       "label": "Simple performance benchmark using triton",
@@ -482,7 +361,7 @@
       "source_file": "chapter-21/code/bezier.py",
       "source_location": "L285",
       "id": "bezier_rationale_285",
-      "community": 7
+      "community": 4
     },
     {
       "label": "quadtree_visualizer.py",
@@ -490,7 +369,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L1",
       "id": "quadtree_visualizer",
-      "community": 5
+      "community": 3
     },
     {
       "label": "QuadtreeVisualizer",
@@ -498,7 +377,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L9",
       "id": "quadtree_visualizer_quadtreevisualizer",
-      "community": 5
+      "community": 3
     },
     {
       "label": ".__init__()",
@@ -506,7 +385,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L10",
       "id": "quadtree_visualizer_quadtreevisualizer_init",
-      "community": 5
+      "community": 3
     },
     {
       "label": ".generate_sample_points()",
@@ -514,7 +393,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L37",
       "id": "quadtree_visualizer_quadtreevisualizer_generate_sample_points",
-      "community": 5
+      "community": 3
     },
     {
       "label": ".build_quadtree()",
@@ -522,7 +401,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L92",
       "id": "quadtree_visualizer_quadtreevisualizer_build_quadtree",
-      "community": 5
+      "community": 3
     },
     {
       "label": ".visualize_quadtree_division()",
@@ -530,7 +409,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L135",
       "id": "quadtree_visualizer_quadtreevisualizer_visualize_quadtree_division",
-      "community": 5
+      "community": 3
     },
     {
       "label": "._draw_quadtree_boundaries()",
@@ -538,7 +417,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L188",
       "id": "quadtree_visualizer_quadtreevisualizer_draw_quadtree_boundaries",
-      "community": 5
+      "community": 3
     },
     {
       "label": "main()",
@@ -546,7 +425,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L298",
       "id": "quadtree_visualizer_main",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Initialize the quadtree visualizer with CUDA library",
@@ -554,7 +433,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L11",
       "id": "quadtree_visualizer_rationale_11",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Generate sample 2D points for testing",
@@ -562,7 +441,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L38",
       "id": "quadtree_visualizer_rationale_38",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Build quadtree using CUDA implementation",
@@ -570,7 +449,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L93",
       "id": "quadtree_visualizer_rationale_93",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Visualize the original points and quadtree division",
@@ -578,7 +457,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L144",
       "id": "quadtree_visualizer_rationale_144",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Recursively draw quadtree boundaries (approximation)",
@@ -586,7 +465,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L201",
       "id": "quadtree_visualizer_rationale_201",
-      "community": 5
+      "community": 3
     },
     {
       "label": "Main demonstration function",
@@ -594,7 +473,7 @@
       "source_file": "chapter-21/code/quadtree_visualizer.py",
       "source_location": "L299",
       "id": "quadtree_visualizer_rationale_299",
-      "community": 5
+      "community": 3
     },
     {
       "label": "stencil.h",
@@ -602,7 +481,7 @@
       "source_file": "chapter-08/code/stencil.h",
       "source_location": "L1",
       "id": "stencil",
-      "community": 35
+      "community": 23
     },
     {
       "label": "cdiv()",
@@ -610,7 +489,7 @@
       "source_file": "chapter-08/code/stencil.h",
       "source_location": "L40",
       "id": "stencil_cdiv",
-      "community": 35
+      "community": 23
     },
     {
       "label": "heat_simulation.py",
@@ -874,7 +753,7 @@
       "source_file": "chapter-15/code/bsf.py",
       "source_location": "L1",
       "id": "bsf",
-      "community": 31
+      "community": 20
     },
     {
       "label": "dfs()",
@@ -882,7 +761,7 @@
       "source_file": "chapter-15/code/bsf.py",
       "source_location": "L1",
       "id": "bsf_dfs",
-      "community": 31
+      "community": 20
     },
     {
       "label": "we take a matrix in CRS format as an input and we return levels for all elements",
@@ -890,7 +769,7 @@
       "source_file": "chapter-15/code/bsf.py",
       "source_location": "L2",
       "id": "bsf_rationale_2",
-      "community": 31
+      "community": 20
     },
     {
       "label": "device_memory.h",
@@ -898,7 +777,7 @@
       "source_file": "chapter-15/code/include/device_memory.h",
       "source_location": "L1",
       "id": "device_memory",
-      "community": 13
+      "community": 10
     },
     {
       "label": "graph_generators.h",
@@ -906,7 +785,7 @@
       "source_file": "chapter-15/code/include/graph_generators.h",
       "source_location": "L1",
       "id": "graph_generators",
-      "community": 13
+      "community": 10
     },
     {
       "label": "utils.h",
@@ -914,7 +793,7 @@
       "source_file": "chapter-15/code/include/utils.h",
       "source_location": "L1",
       "id": "utils",
-      "community": 48
+      "community": 30
     },
     {
       "label": "bfs_parallel.h",
@@ -922,7 +801,7 @@
       "source_file": "chapter-15/code/include/bfs_parallel.h",
       "source_location": "L1",
       "id": "bfs_parallel",
-      "community": 13
+      "community": 10
     },
     {
       "label": "graph_structures.h",
@@ -930,7 +809,7 @@
       "source_file": "chapter-15/code/include/graph_structures.h",
       "source_location": "L1",
       "id": "graph_structures",
-      "community": 13
+      "community": 10
     },
     {
       "label": "bfs_sequential.h",
@@ -938,7 +817,7 @@
       "source_file": "chapter-15/code/include/bfs_sequential.h",
       "source_location": "L1",
       "id": "bfs_sequential",
-      "community": 13
+      "community": 10
     },
     {
       "label": "graph_conversions.h",
@@ -946,7 +825,7 @@
       "source_file": "chapter-15/code/include/graph_conversions.h",
       "source_location": "L1",
       "id": "graph_conversions",
-      "community": 13
+      "community": 10
     },
     {
       "label": "autograd.py",
@@ -954,7 +833,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L1",
       "id": "autograd",
-      "community": 3
+      "community": 2
     },
     {
       "label": "LinearFunction",
@@ -962,7 +841,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L5",
       "id": "autograd_linearfunction",
-      "community": 3
+      "community": 2
     },
     {
       "label": "Function",
@@ -970,7 +849,7 @@
       "source_file": "",
       "source_location": "",
       "id": "function",
-      "community": 3
+      "community": 2
     },
     {
       "label": "forward()",
@@ -978,7 +857,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L7",
       "id": "autograd_forward",
-      "community": 3
+      "community": 2
     },
     {
       "label": "backward()",
@@ -986,7 +865,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L15",
       "id": "autograd_backward",
-      "community": 3
+      "community": 2
     },
     {
       "label": "SigmoidFunction",
@@ -994,7 +873,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L35",
       "id": "autograd_sigmoidfunction",
-      "community": 3
+      "community": 2
     },
     {
       "label": "Linear",
@@ -1002,7 +881,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L54",
       "id": "autograd_linear",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__init__()",
@@ -1010,7 +889,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L55",
       "id": "autograd_linear_init",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__call__()",
@@ -1018,7 +897,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L60",
       "id": "autograd_linear_call",
-      "community": 3
+      "community": 2
     },
     {
       "label": "Sigmoid",
@@ -1026,7 +905,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L64",
       "id": "autograd_sigmoid",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__call__()",
@@ -1034,7 +913,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L65",
       "id": "autograd_sigmoid_call",
-      "community": 3
+      "community": 2
     },
     {
       "label": "MSELoss",
@@ -1042,7 +921,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L69",
       "id": "autograd_mseloss",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__call__()",
@@ -1050,7 +929,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L70",
       "id": "autograd_mseloss_call",
-      "community": 3
+      "community": 2
     },
     {
       "label": "SimpleNetwork",
@@ -1058,7 +937,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L74",
       "id": "autograd_simplenetwork",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__init__()",
@@ -1066,7 +945,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L75",
       "id": "autograd_simplenetwork_init",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".forward()",
@@ -1074,7 +953,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L83",
       "id": "autograd_simplenetwork_forward",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__call__()",
@@ -1082,7 +961,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L89",
       "id": "autograd_simplenetwork_call",
-      "community": 3
+      "community": 2
     },
     {
       "label": "SGD",
@@ -1090,7 +969,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L93",
       "id": "autograd_sgd",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".__init__()",
@@ -1098,7 +977,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L94",
       "id": "autograd_sgd_init",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".zero_grad()",
@@ -1106,7 +985,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L98",
       "id": "autograd_sgd_zero_grad",
-      "community": 3
+      "community": 2
     },
     {
       "label": ".step()",
@@ -1114,7 +993,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L103",
       "id": "autograd_sgd_step",
-      "community": 3
+      "community": 2
     },
     {
       "label": "train_model()",
@@ -1122,7 +1001,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L109",
       "id": "autograd_train_model",
-      "community": 3
+      "community": 2
     },
     {
       "label": "main()",
@@ -1130,7 +1009,7 @@
       "source_file": "chapter-16/code/autograd.py",
       "source_location": "L128",
       "id": "autograd_main",
-      "community": 3
+      "community": 2
     },
     {
       "label": "main.py",
@@ -1138,7 +1017,7 @@
       "source_file": "chapter-16/code/conv2d_backward/main.py",
       "source_location": "L1",
       "id": "main",
-      "community": 14
+      "community": 11
     },
     {
       "label": "main()",
@@ -1146,7 +1025,7 @@
       "source_file": "chapter-16/code/autograd_manual/main.py",
       "source_location": "L17",
       "id": "main_main",
-      "community": 14
+      "community": 11
     },
     {
       "label": " __init__.py",
@@ -1154,7 +1033,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/ __init__.py",
       "source_location": "L1",
       "id": "init",
-      "community": 49
+      "community": 31
     },
     {
       "label": "cublas_wrapper.c",
@@ -1162,7 +1041,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L1",
       "id": "cublas_wrapper",
-      "community": 2
+      "community": 7
     },
     {
       "label": "cleanup_cublas()",
@@ -1170,7 +1049,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L21",
       "id": "cublas_wrapper_cleanup_cublas",
-      "community": 2
+      "community": 7
     },
     {
       "label": "cublas_matmul()",
@@ -1178,7 +1057,7 @@
       "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
       "source_location": "L42",
       "id": "cublas_wrapper_cublas_matmul",
-      "community": 2
+      "community": 7
     },
     {
       "label": "Clean up cuBLAS resources",
@@ -1186,7 +1065,7 @@
       "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
       "source_location": "L37",
       "id": "cublas_wrapper_rationale_37",
-      "community": 2
+      "community": 7
     },
     {
       "label": "cudnn_wrapper.py",
@@ -1194,7 +1073,7 @@
       "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
       "source_location": "L1",
       "id": "cudnn_wrapper",
-      "community": 32
+      "community": 21
     },
     {
       "label": "cleanup_cudnn()",
@@ -1202,7 +1081,7 @@
       "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
       "source_location": "L97",
       "id": "cudnn_wrapper_cleanup_cudnn",
-      "community": 32
+      "community": 21
     },
     {
       "label": "Clean up cuDNN resources",
@@ -1210,7 +1089,7 @@
       "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
       "source_location": "L98",
       "id": "cudnn_wrapper_rationale_98",
-      "community": 32
+      "community": 21
     },
     {
       "label": "model.py",
@@ -1218,7 +1097,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L1",
       "id": "model",
-      "community": 4
+      "community": 8
     },
     {
       "label": "Sequential",
@@ -1226,7 +1105,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L2",
       "id": "model_sequential",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".__init__()",
@@ -1234,7 +1113,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L3",
       "id": "model_sequential_init",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".add()",
@@ -1242,7 +1121,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L6",
       "id": "model_sequential_add",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".forward()",
@@ -1250,7 +1129,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L9",
       "id": "model_sequential_forward",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".backward()",
@@ -1258,7 +1137,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L14",
       "id": "model_sequential_backward",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".__call__()",
@@ -1266,7 +1145,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L19",
       "id": "model_sequential_call",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".parameters()",
@@ -1274,7 +1153,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L22",
       "id": "model_sequential_parameters",
-      "community": 4
+      "community": 8
     },
     {
       "label": ".get_gradients()",
@@ -1282,7 +1161,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L28",
       "id": "model_sequential_get_gradients",
-      "community": 4
+      "community": 8
     },
     {
       "label": "optim.py",
@@ -1290,7 +1169,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L1",
       "id": "optim",
-      "community": 4
+      "community": 6
     },
     {
       "label": "Adam",
@@ -1298,7 +1177,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L4",
       "id": "optim_adam",
-      "community": 4
+      "community": 6
     },
     {
       "label": ".__init__()",
@@ -1306,7 +1185,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L5",
       "id": "optim_adam_init",
-      "community": 4
+      "community": 6
     },
     {
       "label": ".step()",
@@ -1314,7 +1193,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L22",
       "id": "optim_adam_step",
-      "community": 4
+      "community": 6
     },
     {
       "label": "SGD",
@@ -1322,7 +1201,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L52",
       "id": "optim_sgd",
-      "community": 4
+      "community": 6
     },
     {
       "label": ".__init__()",
@@ -1330,7 +1209,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L53",
       "id": "optim_sgd_init",
-      "community": 4
+      "community": 6
     },
     {
       "label": ".step()",
@@ -1338,7 +1217,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
       "source_location": "L63",
       "id": "optim_sgd_step",
-      "community": 4
+      "community": 6
     },
     {
       "label": "loss.py",
@@ -1346,7 +1225,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L1",
       "id": "loss",
-      "community": 6
+      "community": 5
     },
     {
       "label": "softmax()",
@@ -1354,7 +1233,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L5",
       "id": "loss_softmax",
-      "community": 6
+      "community": 5
     },
     {
       "label": "CrossEntropyLoss",
@@ -1362,7 +1241,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L12",
       "id": "loss_crossentropyloss",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".__init__()",
@@ -1370,7 +1249,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L13",
       "id": "loss_crossentropyloss_init",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".forward()",
@@ -1378,7 +1257,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L18",
       "id": "loss_crossentropyloss_forward",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".backward()",
@@ -1386,7 +1265,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L35",
       "id": "loss_crossentropyloss_backward",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".__call__()",
@@ -1394,7 +1273,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L50",
       "id": "loss_crossentropyloss_call",
-      "community": 6
+      "community": 5
     },
     {
       "label": "MSELoss",
@@ -1402,7 +1281,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L54",
       "id": "loss_mseloss",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".__init__()",
@@ -1410,7 +1289,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L55",
       "id": "loss_mseloss_init",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".forward()",
@@ -1418,7 +1297,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L59",
       "id": "loss_mseloss_forward",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".backward()",
@@ -1426,7 +1305,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L64",
       "id": "loss_mseloss_backward",
-      "community": 6
+      "community": 5
     },
     {
       "label": ".__call__()",
@@ -1434,7 +1313,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
       "source_location": "L68",
       "id": "loss_mseloss_call",
-      "community": 6
+      "community": 5
     },
     {
       "label": "pooling.c",
@@ -1762,7 +1641,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L1",
       "id": "conv",
-      "community": 0
+      "community": 9
     },
     {
       "label": "Conv2D",
@@ -1770,7 +1649,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L10",
       "id": "conv_conv2d",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".__init__()",
@@ -1778,7 +1657,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L11",
       "id": "conv_conv2d_init",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".forward()",
@@ -1786,7 +1665,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L56",
       "id": "conv_conv2d_forward",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".backward()",
@@ -1794,7 +1673,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L107",
       "id": "conv_conv2d_backward",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".parameters()",
@@ -1802,7 +1681,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L149",
       "id": "conv_conv2d_parameters",
-      "community": 0
+      "community": 9
     },
     {
       "label": ".get_gradients()",
@@ -1810,7 +1689,7 @@
       "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
       "source_location": "L152",
       "id": "conv_conv2d_get_gradients",
-      "community": 0
+      "community": 9
     },
     {
       "label": "conversion.py",
@@ -1818,7 +1697,7 @@
       "source_file": "chapter-16/code/autograd_manual/utils/conversion.py",
       "source_location": "L1",
       "id": "conversion",
-      "community": 2
+      "community": 22
     },
     {
       "label": "np_to_c_float_p()",
@@ -1826,7 +1705,7 @@
       "source_file": "chapter-16/code/autograd_manual/utils/conversion.py",
       "source_location": "L7",
       "id": "conversion_np_to_c_float_p",
-      "community": 2
+      "community": 22
     },
     {
       "label": "np_to_c_int_p()",
@@ -1834,7 +1713,7 @@
       "source_file": "chapter-16/code/autograd_manual/utils/conversion.py",
       "source_location": "L14",
       "id": "conversion_np_to_c_int_p",
-      "community": 2
+      "community": 22
     },
     {
       "label": "init_cublas()",
@@ -1842,7 +1721,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L10",
       "id": "cublas_wrapper_init_cublas",
-      "community": 2
+      "community": 7
     },
     {
       "label": "sgemm_wrapper()",
@@ -1850,7 +1729,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L33",
       "id": "cublas_wrapper_sgemm_wrapper",
-      "community": 2
+      "community": 7
     },
     {
       "label": "gpu_alloc()",
@@ -1858,7 +1737,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L89",
       "id": "cublas_wrapper_gpu_alloc",
-      "community": 2
+      "community": 7
     },
     {
       "label": "gpu_to_host()",
@@ -1866,7 +1745,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L99",
       "id": "cublas_wrapper_gpu_to_host",
-      "community": 2
+      "community": 7
     },
     {
       "label": "gpu_free()",
@@ -1874,7 +1753,7 @@
       "source_file": "chapter-16/code/autograd_manual/src/cublas/cublas_wrapper.c",
       "source_location": "L104",
       "id": "cublas_wrapper_gpu_free",
-      "community": 2
+      "community": 7
     },
     {
       "label": "xor_example.py",
@@ -1882,7 +1761,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
       "source_location": "L1",
       "id": "xor_example",
-      "community": 4
+      "community": 6
     },
     {
       "label": "train_model()",
@@ -1890,7 +1769,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
       "source_location": "L9",
       "id": "xor_example_train_model",
-      "community": 4
+      "community": 6
     },
     {
       "label": "xor_example()",
@@ -1898,7 +1777,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
       "source_location": "L75",
       "id": "xor_example_xor_example",
-      "community": 4
+      "community": 6
     },
     {
       "label": "Train a neural network model on the provided data.      Args:         model: The",
@@ -1906,7 +1785,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
       "source_location": "L12",
       "id": "xor_example_rationale_12",
-      "community": 4
+      "community": 6
     },
     {
       "label": "mnist_example.py",
@@ -1914,7 +1793,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
       "source_location": "L1",
       "id": "mnist_example",
-      "community": 2
+      "community": 24
     },
     {
       "label": "mnist_cnn_example()",
@@ -1922,7 +1801,7 @@
       "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
       "source_location": "L16",
       "id": "mnist_example_mnist_cnn_example",
-      "community": 2
+      "community": 24
     },
     {
       "label": "poolingLayer_forward()",
@@ -1938,7 +1817,7 @@
       "source_file": "chapter-16/code/pooling/main.py",
       "source_location": "L8",
       "id": "main_test_pooling_accuracy",
-      "community": 14
+      "community": 11
     },
     {
       "label": "benchmark_pooling()",
@@ -1946,7 +1825,7 @@
       "source_file": "chapter-16/code/pooling/main.py",
       "source_location": "L32",
       "id": "main_benchmark_pooling",
-      "community": 14
+      "community": 11
     },
     {
       "label": "setup.py",
@@ -1954,7 +1833,7 @@
       "source_file": "chapter-16/code/conv2d_backward/setup.py",
       "source_location": "L1",
       "id": "setup",
-      "community": 50
+      "community": 32
     },
     {
       "label": "conv_ops.c",
@@ -1962,7 +1841,7 @@
       "source_file": "chapter-16/code/conv2d_backward/conv_ops.c",
       "source_location": "L1",
       "id": "conv_ops",
-      "community": 36
+      "community": 25
     },
     {
       "label": "convLayer_backward_x_grad()",
@@ -1970,7 +1849,7 @@
       "source_file": "chapter-16/code/conv2d_backward/conv_ops.c",
       "source_location": "L3",
       "id": "conv_ops_convlayer_backward_x_grad",
-      "community": 36
+      "community": 25
     },
     {
       "label": "compare_with_pytorch()",
@@ -1978,7 +1857,7 @@
       "source_file": "chapter-16/code/conv2d_backward/main.py",
       "source_location": "L11",
       "id": "main_compare_with_pytorch",
-      "community": 14
+      "community": 11
     },
     {
       "label": "run_multiple_tests()",
@@ -1986,1567 +1865,47 @@
       "source_file": "chapter-16/code/conv2d_backward/main.py",
       "source_location": "L71",
       "id": "main_run_multiple_tests",
-      "community": 14
+      "community": 11
     },
     {
-      "label": "Julia @profview profiling of profile_test",
+      "label": "_step5.py",
       "file_type": "code",
-      "source_file": "chapter-02/code/vecAdd.jl",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "vecAdd_jl_profiling_harness",
-      "community": 51
-    },
-    {
-      "label": "vecAdd.py main benchmark harness",
-      "file_type": "code",
-      "source_file": "chapter-02/code/vecAdd.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "vecAdd_python_benchmark_main",
+      "source_file": "graphify-out/_step5.py",
+      "source_location": "L1",
+      "id": "step5",
       "community": 33
     },
     {
-      "label": "vector_multipication_loop CPU loop add",
+      "label": "_step4.py",
       "file_type": "code",
-      "source_file": "chapter-02/code/vecAdd.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "vecAdd_python_elementwise_loop",
-      "community": 33
+      "source_file": "graphify-out/_step4.py",
+      "source_location": "L1",
+      "id": "step4",
+      "community": 34
     },
     {
-      "label": "load_inline extension vector_add call path",
+      "label": "_step9.py",
       "file_type": "code",
-      "source_file": "chapter-02/code/vecAdd.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "vecAdd_python_cuda_vector_add",
-      "community": 33
+      "source_file": "graphify-out/_step9.py",
+      "source_location": "L1",
+      "id": "step9",
+      "community": 35
     },
     {
-      "label": "conv_2d load extension and do_bench benchmark",
+      "label": "_step6.py",
       "file_type": "code",
-      "source_file": "chapter-07/code/conv_2d.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv2d_load_and_bench",
-      "community": 52
+      "source_file": "graphify-out/_step6.py",
+      "source_location": "L1",
+      "id": "step6",
+      "community": 36
     },
     {
-      "label": "get_filter_radius_from_header parsing conv2d_kernels.cuh",
+      "label": "_merge.py",
       "file_type": "code",
-      "source_file": "chapter-07/code/conv_2d.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv2d_filter_radius_from_header",
-      "community": 53
-    },
-    {
-      "label": "stencil.h 3D stencil kernels and tile macros",
-      "file_type": "code",
-      "source_file": "chapter-08/code/stencil.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "stencil_h_api",
-      "community": 54
-    },
-    {
-      "label": "Comment: cubic vs squared shared memory needs two block sizes",
-      "file_type": "code",
-      "source_file": "chapter-08/code/stencil.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "stencil_h_dual_tile_comment_rationale",
-      "community": 55
-    },
-    {
-      "label": "HeatEquationCUDA ctypes libheat_cuda.so wrapper",
-      "file_type": "code",
-      "source_file": "chapter-08/code/heat_simulation.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "heat_simulation_cuda_wrapper",
-      "community": 56
-    },
-    {
-      "label": "HeatSimulation class CFL dt and stepping",
-      "file_type": "code",
-      "source_file": "chapter-08/code/heat_simulation.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "heat_simulation_manager",
-      "community": 57
-    },
-    {
-      "label": "HeatAnimator matplotlib animation",
-      "file_type": "code",
-      "source_file": "chapter-08/code/heat_simulation.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "heat_simulation_animator",
-      "community": 58
-    },
-    {
-      "label": "gpu_radix_sort.h radix sort API and config",
-      "file_type": "code",
-      "source_file": "chapter-13/code/gpu_radix_sort.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "gpu_radix_sort_header",
-      "community": 59
-    },
-    {
-      "label": "gpu_merge_sort.h merge sort declaration",
-      "file_type": "code",
-      "source_file": "chapter-13/code/gpu_merge_sort.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "gpu_merge_sort_header",
-      "community": 60
-    },
-    {
-      "label": "bsf.py dfs() queue-based level order on CRS",
-      "file_type": "code",
-      "source_file": "chapter-15/code/bsf.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "bsf_py_queue_traversal",
-      "community": 61
-    },
-    {
-      "label": "device_memory.h CSR CSC COO and BFS levels GPU alloc",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/device_memory.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "device_memory_h",
-      "community": 62
-    },
-    {
-      "label": "graph_generators.h scale-free and small-world COO",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/graph_generators.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "graph_generators_h",
-      "community": 63
-    },
-    {
-      "label": "utils.h compareBFSResults sequential vs parallel",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/utils.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "utils_h_bfs_compare",
-      "community": 64
-    },
-    {
-      "label": "CSR, CSC, and COO graph structures",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/graph_structures.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "graph_structures_h_csr_csc_coo",
-      "community": 21
-    },
-    {
-      "label": "Parallel BFS declarations (push/pull/edge/frontier/direction)",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/bfs_parallel.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "bfs_parallel_h_parallel_bfs",
-      "community": 21
-    },
-    {
-      "label": "Sequential BFS API",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/bfs_sequential.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "bfs_sequential_h_bfs",
-      "community": 21
-    },
-    {
-      "label": "Graph format conversion functions",
-      "file_type": "code",
-      "source_file": "chapter-15/code/include/graph_conversions.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "graph_conversions_h_format_converters",
-      "community": 21
-    },
-    {
-      "label": "Conjugate gradient linear solver",
-      "file_type": "code",
-      "source_file": "chapter-17/code/cg_algo.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "cg_algo_py_conjugate_gradient",
-      "community": 65
-    },
-    {
-      "label": "CUDA energy benchmark harness and helpers",
-      "file_type": "code",
-      "source_file": "chapter-18/code/benchmark.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "benchmark_h_energy_benchmark",
+      "source_file": "graphify-out/_merge.py",
+      "source_location": "L1",
+      "id": "merge",
       "community": 37
-    },
-    {
-      "label": "Sequential and parallel Coulomb energy kernels",
-      "file_type": "code",
-      "source_file": "chapter-18/code/cenergy.h",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "cenergy_h_coulomb_kernels",
-      "community": 37
-    },
-    {
-      "label": "Bezier curve CUDA tessellation (static vs dynamic)",
-      "file_type": "code",
-      "source_file": "chapter-21/code/bezier.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "bezier_py_cuda_tessellation",
-      "community": 22
-    },
-    {
-      "label": "libbezier.so tessellation exports (ctypes)",
-      "file_type": "code",
-      "source_file": "chapter-21/code/bezier.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "libbezier_so_native_api",
-      "community": 22
-    },
-    {
-      "label": "Quadtree build and visualization via CUDA",
-      "file_type": "code",
-      "source_file": "chapter-21/code/quadtree_visualizer.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "quadtree_visualizer_py_quadtree_cuda",
-      "community": 22
-    },
-    {
-      "label": "quadtree.so build_quadtree (ctypes)",
-      "file_type": "code",
-      "source_file": "chapter-21/code/quadtree_visualizer.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "quadtree_so_build_quadtree",
-      "community": 22
-    },
-    {
-      "label": "PyTorch custom autograd Functions and toy network",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "autograd_py_custom_functions",
-      "community": 11
-    },
-    {
-      "label": "autograd_manual CLI entry (XOR / MNIST)",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/main.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "autograd_manual_main_py_entry",
-      "community": 11
-    },
-    {
-      "label": "autograd_manual package initializer",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/__init__.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "autograd_manual_init_py",
-      "community": 11
-    },
-    {
-      "label": "cuBLAS SGEMM ctypes wrapper",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "cublas_wrapper_py_sgemm",
-      "community": 11
-    },
-    {
-      "label": "libcublas_wrapper.so native exports (ctypes)",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "libcublas_wrapper_so_native",
-      "community": 11
-    },
-    {
-      "label": "cuDNN conv2d/maxpool ctypes wrapper",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "cudnn_wrapper_py_conv_pool",
-      "community": 11
-    },
-    {
-      "label": "conv2dcuda_wrapper.so native exports (ctypes)",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv2dcuda_wrapper_so_native",
-      "community": 11
-    },
-    {
-      "label": "CrossEntropyLoss",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "loss_cross_entropy_loss",
-      "community": 6
-    },
-    {
-      "label": "MSELoss",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "loss_mse_loss",
-      "community": 4
-    },
-    {
-      "label": "Layer",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/base.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_layer",
-      "community": 2
-    },
-    {
-      "label": "MaxPooling2D",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_max_pooling_2d",
-      "community": 2
-    },
-    {
-      "label": "Linear",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/linear.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_linear",
-      "community": 2
-    },
-    {
-      "label": "Flatten",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/activations.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_flatten",
-      "community": 66
-    },
-    {
-      "label": "Sigmoid",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/activations.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_sigmoid",
-      "community": 67
-    },
-    {
-      "label": "ReLU",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/activations.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_relu",
-      "community": 68
-    },
-    {
-      "label": "Conv2D",
-      "file_type": "code",
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "layers_conv_2d",
-      "community": 2
-    },
-    {
-      "label": "poolingLayer_forward",
-      "file_type": "code",
-      "source_file": "chapter-16/code/pooling/pooling.c",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "pooling_pooling_layer_forward",
-      "community": 2
-    },
-    {
-      "label": "test_pooling_accuracy",
-      "file_type": "code",
-      "source_file": "chapter-16/code/pooling/main.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "pooling_main_test_pooling_accuracy",
-      "community": 2
-    },
-    {
-      "label": "benchmark_pooling",
-      "file_type": "code",
-      "source_file": "chapter-16/code/pooling/main.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "pooling_main_benchmark_pooling",
-      "community": 2
-    },
-    {
-      "label": "pooling_module Extension",
-      "file_type": "code",
-      "source_file": "chapter-16/code/pooling/setup.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "pooling_setup_extension",
-      "community": 69
-    },
-    {
-      "label": "convLayer_backward_x_grad",
-      "file_type": "code",
-      "source_file": "chapter-16/code/conv2d_backward/conv_ops.c",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv_ops_conv_layer_backward_x_grad",
-      "community": 2
-    },
-    {
-      "label": "compare_with_pytorch",
-      "file_type": "code",
-      "source_file": "chapter-16/code/conv2d_backward/main.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv2d_backward_main_compare_with_pytorch",
-      "community": 2
-    },
-    {
-      "label": "conv_wrapper Extension",
-      "file_type": "code",
-      "source_file": "chapter-16/code/conv2d_backward/setup.py",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "conv2d_backward_setup_extension",
-      "community": 2
-    },
-    {
-      "label": "Programming Massively Parallel Processors Complete Solutions (repo)",
-      "file_type": "document",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "readme_pmpp_repository",
-      "community": 8
-    },
-    {
-      "label": "Kirk & Hwu Programming Massively Parallel Processors 4th Edition",
-      "file_type": "document",
-      "source_file": "README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "readme_book_kirk_hwu_pmpp_4e",
-      "community": 8
-    },
-    {
-      "label": "Heterogeneous Data Parallel Computing",
-      "file_type": "document",
-      "source_file": "chapter-02/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch02_heterogeneous_data_parallel",
-      "community": 8
-    },
-    {
-      "label": "Multidimensional Grids and Data",
-      "file_type": "document",
-      "source_file": "chapter-03/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch03_multidimensional_grids",
-      "community": 70
-    },
-    {
-      "label": "Compute Architecture and Scheduling",
-      "file_type": "document",
-      "source_file": "chapter-04/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch04_compute_architecture_scheduling",
-      "community": 38
-    },
-    {
-      "label": "Memory Architecture and Data Locality",
-      "file_type": "document",
-      "source_file": "chapter-05/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch05_memory_locality_tiling",
-      "community": 23
-    },
-    {
-      "label": "Performance Considerations (coalescing, OP/B)",
-      "file_type": "document",
-      "source_file": "chapter-06/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch06_performance_coalescing",
-      "community": 23
-    },
-    {
-      "label": "Convolution (2D/3D, tiling, constant memory)",
-      "file_type": "document",
-      "source_file": "chapter-07/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch07_convolution",
-      "community": 39
-    },
-    {
-      "label": "Stencil (3D, shared memory, register tiling)",
-      "file_type": "document",
-      "source_file": "chapter-08/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch08_stencil",
-      "community": 8
-    },
-    {
-      "label": "Parallel Histogram (atomics, privatization)",
-      "file_type": "document",
-      "source_file": "chapter-09/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch09_histogram_atomics",
-      "community": 9
-    },
-    {
-      "label": "Reduction (tree, divergence, coarsening)",
-      "file_type": "document",
-      "source_file": "chapter-10/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch10_reduction",
-      "community": 38
-    },
-    {
-      "label": "Prefix Sum / Scan (Kogge-Stone, Brent-Kung, hierarchical)",
-      "file_type": "document",
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch11_prefix_sum_scan",
-      "community": 9
-    },
-    {
-      "label": "Parallel Merge (co-rank, tiled merge)",
-      "file_type": "document",
-      "source_file": "chapter-12/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch12_merge_corank",
-      "community": 24
-    },
-    {
-      "label": "GPU Sorting (radix, merge sort)",
-      "file_type": "document",
-      "source_file": "chapter-13/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch13_sorting",
-      "community": 24
-    },
-    {
-      "label": "Sparse Matrix Computation (SpMV formats)",
-      "file_type": "document",
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch14_sparse_spmv",
-      "community": 9
-    },
-    {
-      "label": "Graph Traversal (BFS variants)",
-      "file_type": "document",
-      "source_file": "chapter-15/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch15_graph_bfs",
-      "community": 41
-    },
-    {
-      "label": "Deep Learning (CNN, autograd, pooling)",
-      "file_type": "document",
-      "source_file": "chapter-16/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch16_deep_learning_cnn",
-      "community": 39
-    },
-    {
-      "label": "Iterative MRI Reconstruction (FFT, CG)",
-      "file_type": "document",
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch17_mri_iterative_reconstruction",
-      "community": 17
-    },
-    {
-      "label": "Electrostatic Potential Map (scatter/gather, coarsening)",
-      "file_type": "document",
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch18_electrostatic_potential",
-      "community": 8
-    },
-    {
-      "label": "Parallel Programming and Computational Thinking",
-      "file_type": "document",
-      "source_file": "chapter-19/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch19_computational_thinking",
-      "community": 8
-    },
-    {
-      "label": "Heterogeneous Computing Cluster (MPI + CUDA)",
-      "file_type": "document",
-      "source_file": "chapter-20/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch20_heterogeneous_cluster_mpi_cuda",
-      "community": 8
-    },
-    {
-      "label": "CUDA Dynamic Parallelism (Bezier, quadtree)",
-      "file_type": "document",
-      "source_file": "chapter-21/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "ch21_cuda_dynamic_parallelism",
-      "community": 40
-    },
-    {
-      "label": "Sparse formats COO CSR ELL JDS Hybrid",
-      "file_type": "document",
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_coo_csr_ell_jds",
-      "community": 9
-    },
-    {
-      "label": "COO to CSR via histogram and exclusive scan",
-      "file_type": "document",
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_coo_to_csr_histogram_scan",
-      "community": 9
-    },
-    {
-      "label": "CUDA-aware MPI (GPU pointers in MPI_Sendrecv)",
-      "file_type": "document",
-      "source_file": "chapter-20/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_cuda_aware_mpi",
-      "community": 8
-    },
-    {
-      "label": "MPI halo exchange (Sendrecv, boundary vs internal stages)",
-      "file_type": "document",
-      "source_file": "chapter-20/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_mpi_halo_exchange",
-      "community": 8
-    },
-    {
-      "label": "Kogge-Stone inclusive scan",
-      "file_type": "document",
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_kogge_stone_scan",
-      "community": 9
-    },
-    {
-      "label": "Brent-Kung scan (reduction + reverse tree)",
-      "file_type": "document",
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_brent_kung_scan",
-      "community": 9
-    },
-    {
-      "label": "Double-buffering to avoid WAR in scan",
-      "file_type": "document",
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_double_buffering_scan",
-      "community": 9
-    },
-    {
-      "label": "Domino / hierarchical inter-block scan with atomics",
-      "file_type": "document",
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_domino_interblock_scan",
-      "community": 9
-    },
-    {
-      "label": "Thread coarsening for electrostatic energy grid",
-      "file_type": "document",
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_thread_coarsening_energy",
-      "community": 8
-    },
-    {
-      "label": "Gather vs scatter kernels for potential map",
-      "file_type": "document",
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_gather_vs_scatter_potential",
-      "community": 8
-    },
-    {
-      "label": "Loop fission on FHD computation",
-      "file_type": "document",
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_loop_fission_fhd",
-      "community": 17
-    },
-    {
-      "label": "Loop interchange preserving += accumulation",
-      "file_type": "document",
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_loop_interchange_fhd",
-      "community": 17
-    },
-    {
-      "label": "BFS push, pull, edge-centric, frontier, direction-optimized",
-      "file_type": "document",
-      "source_file": "chapter-15/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_bfs_push_pull_frontier",
-      "community": 41
-    },
-    {
-      "label": "Co-rank function for parallel merge partitioning",
-      "file_type": "document",
-      "source_file": "chapter-12/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_corank_merge",
-      "community": 24
-    },
-    {
-      "label": "Rationale: no inter-thread reuse in matrix add so tiling SMEM does not cut bandwidth",
-      "file_type": "document",
-      "source_file": "chapter-05/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rationale_shared_mem_not_matadd",
-      "community": 23
-    },
-    {
-      "label": "Rationale: syncthreads prevent stale shared tile reads/writes in tiled matmul",
-      "file_type": "document",
-      "source_file": "chapter-05/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rationale_syncthreads_tile_mm",
-      "community": 23
-    },
-    {
-      "label": "Rationale: more work per thread raises registers and can underutilize parallelism",
-      "file_type": "document",
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rationale_thread_coarsening_tradeoffs",
-      "community": 8
-    },
-    {
-      "label": "Rationale: reorder safe for += because addition is commutative and associative",
-      "file_type": "document",
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rationale_loop_interchange_associativity",
-      "community": 17
-    },
-    {
-      "label": "Rationale: kx indexed by m not n so loading kx[n] into register is wrong pattern",
-      "file_type": "document",
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "rationale_kx_indexing_fhd_kernel",
-      "community": 17
-    },
-    {
-      "label": "Single-kernel grid-wide radix sort deadlock risk",
-      "file_type": "document",
-      "source_file": "chapter-13/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_single_kernel_radix_deadlock",
-      "community": 24
-    },
-    {
-      "label": "Dynamic parallelism: child sees global/constant/texture not parent local/shared",
-      "file_type": "document",
-      "source_file": "chapter-21/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "concept_dp_child_parent_memory",
-      "community": 40
-    },
-    {
-      "label": "Programming Massively Parallel Processors (4th ed.) book cover",
-      "file_type": "image",
-      "source_file": "image.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "image_pmpp_textbook_cover_4th_edition",
-      "community": 18
-    },
-    {
-      "label": "Figure 11.4: Parallel exclusive scan based on Kogge-Stone adder design",
-      "file_type": "image",
-      "source_file": "chapter-11/exercise7.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "community": 18
-    },
-    {
-      "label": "Kogge-Stone adder design",
-      "file_type": "image",
-      "source_file": "chapter-11/exercise7.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise7_kogge_stone_adder_design",
-      "community": 18
-    },
-    {
-      "label": "Inclusive prefix sum via reduction tree and reversed tree (worked example)",
-      "file_type": "image",
-      "source_file": "chapter-11/exercise5.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise5_inclusive_prefix_sum_reduction_reversed_tree",
-      "community": 18
-    },
-    {
-      "label": "Hillis-Steele parallel inclusive prefix sum (scan) steps",
-      "file_type": "image",
-      "source_file": "chapter-11/exercise1.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise1_hillis_steele_inclusive_prefix_scan",
-      "community": 18
-    },
-    {
-      "label": "Handwritten 4x4 Sparse Matrix (Exercise 2)",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_sparse_4x4_matrix",
-      "community": 10
-    },
-    {
-      "label": "ELL (Ellpack-Itpack) Sparse Storage Diagram",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_ell.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_ell_ellpack_storage",
-      "community": 10
-    },
-    {
-      "label": "ELL Column Index Grid (COLIDX)",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_ell.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_ell_colidx_grid",
-      "community": 42
-    },
-    {
-      "label": "ELL Value Grid",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_ell.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_ell_value_grid",
-      "community": 42
-    },
-    {
-      "label": "COO (Coordinate) Row/Col/Value Arrays",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_coo.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_coo_coordinate_format",
-      "community": 10
-    },
-    {
-      "label": "JDS (Jagged Diagonal Storage) with ITER PTR",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_jds.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_jds_jagged_diagonal_storage",
-      "community": 10
-    },
-    {
-      "label": "CSR (Compressed Sparse Row) Diagram",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_csr_compressed_sparse_row",
-      "community": 10
-    },
-    {
-      "label": "CSR ROW PTRS Array",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_csr_row_pointers",
-      "community": 10
-    },
-    {
-      "label": "CSR COL IDX Array",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_csr_column_indices",
-      "community": 10
-    },
-    {
-      "label": "CSR VALUE Array",
-      "file_type": "image",
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_csr_values",
-      "community": 10
-    },
-    {
-      "label": "FFT magnitude, high-frequency removal, and blurred reconstruction (cameraman)",
-      "file_type": "image",
-      "source_file": "chapter-17/code/fft_representation_blurry.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "fft_representation_blurry_lowpass_fft_pipeline",
-      "community": 19
-    },
-    {
-      "label": "FFT magnitude, low-frequency mask, and high-frequency edge map (cameraman)",
-      "file_type": "image",
-      "source_file": "chapter-17/code/fft_representation.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "fft_representation_highpass_fft_edge_map",
-      "community": 19
-    },
-    {
-      "label": "Lenna color portrait benchmark image",
-      "file_type": "image",
-      "source_file": "chapter-17/code/lenna.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "lenna_color_test_image",
-      "community": 19
-    },
-    {
-      "label": "2D convolution sliding 5x5 kernel (R=2) on 10x10 grid with boundary padding",
-      "file_type": "image",
-      "source_file": "chapter-07/2d_conv_NN.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "2d_conv_NN_kernel_sliding_padding",
-      "community": 19
-    },
-    {
-      "label": "Rectangular 3x2 kernel sliding on input grid mapped to output feature map",
-      "file_type": "image",
-      "source_file": "chapter-07/2d_conv_N1_N2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "2d_conv_N1_N2_kernel_to_output",
-      "community": 19
-    },
-    {
-      "label": "Exercise 1 question: eight-node directed graph (nodes 0-7)",
-      "file_type": "image",
-      "source_file": "chapter-15/exercise_1_question.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_1_question_eight_node_directed_graph",
-      "community": 12
-    },
-    {
-      "label": "Exercise 1a: 8x8 directed adjacency matrix (rows/cols 0-7)",
-      "file_type": "image",
-      "source_file": "chapter-15/exercise_1a.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_1a_adjacency_matrix_8x8",
-      "community": 12
-    },
-    {
-      "label": "Exercise 1b: three-row array diagram (CSR-style offsets, indices, unit weights)",
-      "file_type": "image",
-      "source_file": "chapter-15/exercise_1b.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_1b_csr_style_three_rows",
-      "community": 12
-    },
-    {
-      "label": "Exercise 6a: hand-drawn binary-tree parallel sum reduction (four threads, eight elements)",
-      "file_type": "image",
-      "source_file": "chapter-10/exercise_6a_visualization.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_6a_handdrawn_parallel_sum_reduction",
-      "community": 12
-    },
-    {
-      "label": "Exercise 6b: hand-drawn strided parallel reduction (four threads halving per stage)",
-      "file_type": "image",
-      "source_file": "chapter-10/exercise_6b_visualization.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_6b_handdrawn_parallel_reduction",
-      "community": 12
-    },
-    {
-      "label": "Exercise 3: sixteen-element parallel reduction across five stages (blue active cells)",
-      "file_type": "image",
-      "source_file": "chapter-10/exercise_3_visualization.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_3_sixteen_element_reduction_stages",
-      "community": 12
-    },
-    {
-      "label": "Figure 10.8: thread-to-index assignment for reduced control divergence (16-element reduction)",
-      "file_type": "image",
-      "source_file": "chapter-10/exercise_2_visualization.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_2_figure_10_8_thread_assignment",
-      "community": 12
-    },
-    {
-      "label": "Shared-memory tiled GEMM (2x2 tiles, thread-block reuse)",
-      "file_type": "image",
-      "source_file": "chapter-05/exercise_2a.jpeg",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_2a_shared_memory_tiling",
-      "community": 43
-    },
-    {
-      "label": "Tiled GEMM with row load reduction (4x4 tile, 4->1 loads)",
-      "file_type": "image",
-      "source_file": "chapter-05/exercise_2b.jpeg",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise_2b_vectorized_row_loads",
-      "community": 43
-    },
-    {
-      "label": "Parallel merge Iteration 0 (sorted A,B into C)",
-      "file_type": "image",
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_parallel_merge_iteration0",
-      "community": 25
-    },
-    {
-      "label": "Sorted input array A",
-      "file_type": "image",
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_sorted_array_a",
-      "community": 25
-    },
-    {
-      "label": "Sorted input array B",
-      "file_type": "image",
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_sorted_array_b",
-      "community": 25
-    },
-    {
-      "label": "Merged sorted output array C",
-      "file_type": "image",
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "exercise2_merged_output_c",
-      "community": 25
-    },
-    {
-      "label": "MNIST classifier Pred vs True labels (10-sample grid)",
-      "file_type": "image",
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "mnist_predictions_digit_grid",
-      "community": 34
-    },
-    {
-      "label": "MNIST 28x28 handwritten digit image",
-      "file_type": "image",
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "mnist_handwritten_digit_image",
-      "community": 34
-    },
-    {
-      "label": "Predicted and true class labels",
-      "file_type": "image",
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "mnist_pred_and_true_labels",
-      "community": 34
     }
   ],
   "links": [
@@ -3731,18 +2090,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-03/code/gaussian_blur/gradio_visualization.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "gradio_visualization_blur",
-      "_tgt": "gaussian_blur_compile_extension",
-      "source": "gradio_visualization_blur",
-      "target": "gaussian_blur_compile_extension"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-03/code/gaussian_blur/gaussian_blur.py",
@@ -3770,13 +2117,13 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "chapter-03/code/gaussian_blur/gaussian_blur.py",
-      "source_location": null,
+      "source_location": "L29",
       "weight": 1.0,
       "_src": "gaussian_blur_main",
       "_tgt": "gaussian_blur_compile_extension",
-      "confidence_score": 1.0,
       "source": "gaussian_blur_compile_extension",
-      "target": "gaussian_blur_main"
+      "target": "gaussian_blur_main",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -3851,18 +2198,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-03/code/exercise_1/matrix_multiplication_row_and_col.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "matrix_multiplication_row_and_col_main",
-      "_tgt": "matrix_multiplication_row_and_col_main",
-      "source": "matrix_multiplication_row_and_col_main",
-      "target": "matrix_multiplication_row_and_col_main"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-03/code/matrix_multiplication/matrix_multiplication.py",
@@ -3897,18 +2232,6 @@
       "source": "matrix_multiplication_compile_extension",
       "target": "matrix_multiplication_main",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-03/code/matrix_multiplication/matrix_multiplication.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "matrix_multiplication_main",
-      "_tgt": "matrix_multiplication_main",
-      "source": "matrix_multiplication_main",
-      "target": "matrix_multiplication_main"
     },
     {
       "relation": "contains",
@@ -5629,78 +3952,6 @@
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/model.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "model_sequential",
-      "_tgt": "layers_layer",
-      "source": "model_sequential",
-      "target": "layers_layer"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "xor_example_train_model",
-      "_tgt": "model_sequential",
-      "source": "model_sequential",
-      "target": "xor_example_train_model"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "xor_example_xor_example",
-      "_tgt": "model_sequential",
-      "source": "model_sequential",
-      "target": "xor_example_xor_example"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_example_mnist_cnn_example",
-      "_tgt": "model_sequential",
-      "source": "model_sequential",
-      "target": "mnist_example_mnist_cnn_example"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "optim_adam",
-      "_tgt": "model_sequential",
-      "source": "model_sequential",
-      "target": "optim_adam"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "optim_sgd",
-      "_tgt": "model_sequential",
-      "source": "model_sequential",
-      "target": "optim_sgd"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/nn/model.py",
       "source_location": "L20",
       "weight": 1.0,
@@ -5759,30 +4010,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_example_mnist_cnn_example",
-      "_tgt": "optim_adam",
-      "source": "optim_adam",
-      "target": "mnist_example_mnist_cnn_example"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "optim_adam",
-      "_tgt": "optim_sgd",
-      "source": "optim_adam",
-      "target": "optim_sgd"
-    },
-    {
       "relation": "method",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/nn/optim.py",
@@ -5819,18 +4046,6 @@
       "confidence_score": 0.5
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "xor_example_train_model",
-      "_tgt": "optim_sgd",
-      "source": "optim_sgd",
-      "target": "xor_example_train_model"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
@@ -5865,18 +4080,6 @@
       "source": "loss",
       "target": "loss_mseloss",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-16/code/autograd_manual/nn/loss.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "loss_cross_entropy_loss",
-      "_tgt": "loss_softmax",
-      "source": "loss_softmax",
-      "target": "loss_cross_entropy_loss"
     },
     {
       "relation": "method",
@@ -6731,54 +4934,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_max_pooling_2d",
-      "_tgt": "conversion_np_to_c_float_p",
-      "source": "conversion_np_to_c_float_p",
-      "target": "layers_max_pooling_2d"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_conv_2d",
-      "_tgt": "conversion_np_to_c_float_p",
-      "source": "conversion_np_to_c_float_p",
-      "target": "layers_conv_2d"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_max_pooling_2d",
-      "_tgt": "conversion_np_to_c_int_p",
-      "source": "conversion_np_to_c_int_p",
-      "target": "layers_max_pooling_2d"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/linear.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_linear",
-      "_tgt": "cublas_wrapper_sgemm_wrapper",
-      "source": "cublas_wrapper_sgemm_wrapper",
-      "target": "layers_linear"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
@@ -6806,13 +4961,13 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
-      "source_location": null,
+      "source_location": "L112",
       "weight": 1.0,
       "_src": "xor_example_xor_example",
       "_tgt": "xor_example_train_model",
-      "confidence_score": 1.0,
       "source": "xor_example_train_model",
-      "target": "xor_example_xor_example"
+      "target": "xor_example_xor_example",
+      "confidence_score": 1.0
     },
     {
       "relation": "rationale_for",
@@ -6827,18 +4982,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "xor_example_train_model",
-      "_tgt": "loss_mse_loss",
-      "source": "xor_example_train_model",
-      "target": "loss_mse_loss"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
@@ -6851,42 +4994,6 @@
       "confidence_score": 1.0
     },
     {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_example_mnist_cnn_example",
-      "_tgt": "loss_cross_entropy_loss",
-      "source": "mnist_example_mnist_cnn_example",
-      "target": "loss_cross_entropy_loss"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_example_mnist_cnn_example",
-      "_tgt": "layers_conv_2d",
-      "source": "mnist_example_mnist_cnn_example",
-      "target": "layers_conv_2d"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/examples/mnist_example.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_example_mnist_cnn_example",
-      "_tgt": "layers_max_pooling_2d",
-      "source": "mnist_example_mnist_cnn_example",
-      "target": "layers_max_pooling_2d"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "chapter-16/code/conv2d_backward/conv_ops.c",
@@ -6897,1338 +5004,7 @@
       "source": "conv_ops",
       "target": "conv_ops_convlayer_backward_x_grad",
       "confidence_score": 1.0
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-02/code/vecAdd.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "vecAdd_python_benchmark_main",
-      "_tgt": "vecAdd_python_elementwise_loop",
-      "source": "vecAdd_python_benchmark_main",
-      "target": "vecAdd_python_elementwise_loop"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-02/code/vecAdd.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "vecAdd_python_benchmark_main",
-      "_tgt": "vecAdd_python_cuda_vector_add",
-      "source": "vecAdd_python_benchmark_main",
-      "target": "vecAdd_python_cuda_vector_add"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-15/code/include/bfs_parallel.h",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "bfs_parallel_h_parallel_bfs",
-      "_tgt": "graph_structures_h_csr_csc_coo",
-      "source": "graph_structures_h_csr_csc_coo",
-      "target": "bfs_parallel_h_parallel_bfs"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-15/code/include/bfs_sequential.h",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "bfs_sequential_h_bfs",
-      "_tgt": "graph_structures_h_csr_csc_coo",
-      "source": "graph_structures_h_csr_csc_coo",
-      "target": "bfs_sequential_h_bfs"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-15/code/include/graph_conversions.h",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "graph_conversions_h_format_converters",
-      "_tgt": "graph_structures_h_csr_csc_coo",
-      "source": "graph_structures_h_csr_csc_coo",
-      "target": "graph_conversions_h_format_converters"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-15/code/include/graph_conversions.h",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "graph_conversions_h_format_converters",
-      "_tgt": "bfs_parallel_h_parallel_bfs",
-      "source": "bfs_parallel_h_parallel_bfs",
-      "target": "graph_conversions_h_format_converters"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-18/code/benchmark.h",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "benchmark_h_energy_benchmark",
-      "_tgt": "cenergy_h_coulomb_kernels",
-      "source": "benchmark_h_energy_benchmark",
-      "target": "cenergy_h_coulomb_kernels"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-21/code/bezier.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "bezier_py_cuda_tessellation",
-      "_tgt": "libbezier_so_native_api",
-      "source": "bezier_py_cuda_tessellation",
-      "target": "libbezier_so_native_api"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.82,
-      "source_file": "chapter-21/code/bezier.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "bezier_py_cuda_tessellation",
-      "_tgt": "quadtree_visualizer_py_quadtree_cuda",
-      "source": "bezier_py_cuda_tessellation",
-      "target": "quadtree_visualizer_py_quadtree_cuda"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-21/code/quadtree_visualizer.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "quadtree_visualizer_py_quadtree_cuda",
-      "_tgt": "quadtree_so_build_quadtree",
-      "source": "quadtree_visualizer_py_quadtree_cuda",
-      "target": "quadtree_so_build_quadtree"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.68,
-      "source_file": "chapter-16/code/autograd.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "autograd_py_custom_functions",
-      "_tgt": "autograd_manual_main_py_entry",
-      "source": "autograd_py_custom_functions",
-      "target": "autograd_manual_main_py_entry"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/main.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "autograd_manual_main_py_entry",
-      "_tgt": "cublas_wrapper_py_sgemm",
-      "source": "autograd_manual_main_py_entry",
-      "target": "cublas_wrapper_py_sgemm"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/main.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "autograd_manual_main_py_entry",
-      "_tgt": "cudnn_wrapper_py_conv_pool",
-      "source": "autograd_manual_main_py_entry",
-      "target": "cudnn_wrapper_py_conv_pool"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "AMBIGUOUS",
-      "confidence_score": 0.25,
-      "source_file": "chapter-16/code/autograd_manual/__init__.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "autograd_manual_init_py",
-      "_tgt": "autograd_manual_main_py_entry",
-      "source": "autograd_manual_main_py_entry",
-      "target": "autograd_manual_init_py"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "cublas_wrapper_py_sgemm",
-      "_tgt": "libcublas_wrapper_so_native",
-      "source": "cublas_wrapper_py_sgemm",
-      "target": "libcublas_wrapper_so_native"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cublas_wrapper.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "cublas_wrapper_py_sgemm",
-      "_tgt": "cudnn_wrapper_py_conv_pool",
-      "source": "cublas_wrapper_py_sgemm",
-      "target": "cudnn_wrapper_py_conv_pool"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/cuda_wrappers/cudnn_wrapper.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "cudnn_wrapper_py_conv_pool",
-      "_tgt": "conv2dcuda_wrapper_so_native",
-      "source": "cudnn_wrapper_py_conv_pool",
-      "target": "conv2dcuda_wrapper_so_native"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/linear.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_linear",
-      "_tgt": "layers_layer",
-      "source": "layers_layer",
-      "target": "layers_linear"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/conv.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_conv_2d",
-      "_tgt": "layers_layer",
-      "source": "layers_layer",
-      "target": "layers_conv_2d"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "layers_max_pooling_2d",
-      "_tgt": "layers_layer",
-      "source": "layers_layer",
-      "target": "layers_max_pooling_2d"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.78,
-      "source_file": "chapter-16/code/pooling/pooling.c",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "pooling_pooling_layer_forward",
-      "_tgt": "layers_max_pooling_2d",
-      "source": "layers_max_pooling_2d",
-      "target": "pooling_pooling_layer_forward"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.84,
-      "source_file": "chapter-16/code/conv2d_backward/conv_ops.c",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "conv_ops_conv_layer_backward_x_grad",
-      "_tgt": "layers_conv_2d",
-      "source": "layers_conv_2d",
-      "target": "conv_ops_conv_layer_backward_x_grad"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-16/code/pooling/main.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "pooling_main_test_pooling_accuracy",
-      "_tgt": "pooling_pooling_layer_forward",
-      "source": "pooling_pooling_layer_forward",
-      "target": "pooling_main_test_pooling_accuracy"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-16/code/pooling/main.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "pooling_main_benchmark_pooling",
-      "_tgt": "pooling_pooling_layer_forward",
-      "source": "pooling_pooling_layer_forward",
-      "target": "pooling_main_benchmark_pooling"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/conv2d_backward/setup.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "conv2d_backward_setup_extension",
-      "_tgt": "conv_ops_conv_layer_backward_x_grad",
-      "source": "conv_ops_conv_layer_backward_x_grad",
-      "target": "conv2d_backward_setup_extension"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.9,
-      "source_file": "chapter-16/code/conv2d_backward/main.py",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "conv2d_backward_main_compare_with_pytorch",
-      "_tgt": "conv_ops_conv_layer_backward_x_grad",
-      "source": "conv_ops_conv_layer_backward_x_grad",
-      "target": "conv2d_backward_main_compare_with_pytorch"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "readme_pmpp_repository",
-      "_tgt": "readme_book_kirk_hwu_pmpp_4e",
-      "source": "readme_pmpp_repository",
-      "target": "readme_book_kirk_hwu_pmpp_4e"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "readme_pmpp_repository",
-      "_tgt": "ch02_heterogeneous_data_parallel",
-      "source": "readme_pmpp_repository",
-      "target": "ch02_heterogeneous_data_parallel"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "readme_pmpp_repository",
-      "_tgt": "ch20_heterogeneous_cluster_mpi_cuda",
-      "source": "readme_pmpp_repository",
-      "target": "ch20_heterogeneous_cluster_mpi_cuda"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "readme_pmpp_repository",
-      "_tgt": "ch18_electrostatic_potential",
-      "source": "readme_pmpp_repository",
-      "target": "ch18_electrostatic_potential"
-    },
-    {
-      "relation": "references",
-      "confidence": "AMBIGUOUS",
-      "confidence_score": 0.2,
-      "source_file": "chapter-19/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch19_computational_thinking",
-      "_tgt": "readme_book_kirk_hwu_pmpp_4e",
-      "source": "readme_book_kirk_hwu_pmpp_4e",
-      "target": "ch19_computational_thinking"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.78,
-      "source_file": "chapter-04/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch04_compute_architecture_scheduling",
-      "_tgt": "ch10_reduction",
-      "source": "ch04_compute_architecture_scheduling",
-      "target": "ch10_reduction"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-05/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "rationale_shared_mem_not_matadd",
-      "_tgt": "ch05_memory_locality_tiling",
-      "source": "ch05_memory_locality_tiling",
-      "target": "rationale_shared_mem_not_matadd"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-05/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "rationale_syncthreads_tile_mm",
-      "_tgt": "ch05_memory_locality_tiling",
-      "source": "ch05_memory_locality_tiling",
-      "target": "rationale_syncthreads_tile_mm"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-06/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch06_performance_coalescing",
-      "_tgt": "ch05_memory_locality_tiling",
-      "source": "ch05_memory_locality_tiling",
-      "target": "ch06_performance_coalescing"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.82,
-      "source_file": "chapter-16/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch16_deep_learning_cnn",
-      "_tgt": "ch07_convolution",
-      "source": "ch07_convolution",
-      "target": "ch16_deep_learning_cnn"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-08/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch08_stencil",
-      "_tgt": "ch20_heterogeneous_cluster_mpi_cuda",
-      "source": "ch08_stencil",
-      "target": "ch20_heterogeneous_cluster_mpi_cuda"
-    },
-    {
-      "relation": "semantically_similar_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.7,
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "concept_thread_coarsening_energy",
-      "_tgt": "ch08_stencil",
-      "source": "ch08_stencil",
-      "target": "concept_thread_coarsening_energy"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "concept_coo_to_csr_histogram_scan",
-      "_tgt": "ch09_histogram_atomics",
-      "source": "ch09_histogram_atomics",
-      "target": "concept_coo_to_csr_histogram_scan"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "concept_coo_to_csr_histogram_scan",
-      "_tgt": "ch11_prefix_sum_scan",
-      "source": "ch11_prefix_sum_scan",
-      "target": "concept_coo_to_csr_histogram_scan"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch11_prefix_sum_scan",
-      "_tgt": "concept_kogge_stone_scan",
-      "source": "ch11_prefix_sum_scan",
-      "target": "concept_kogge_stone_scan"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch11_prefix_sum_scan",
-      "_tgt": "concept_brent_kung_scan",
-      "source": "ch11_prefix_sum_scan",
-      "target": "concept_brent_kung_scan"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch11_prefix_sum_scan",
-      "_tgt": "concept_double_buffering_scan",
-      "source": "ch11_prefix_sum_scan",
-      "target": "concept_double_buffering_scan"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch11_prefix_sum_scan",
-      "_tgt": "concept_domino_interblock_scan",
-      "source": "ch11_prefix_sum_scan",
-      "target": "concept_domino_interblock_scan"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-13/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch13_sorting",
-      "_tgt": "ch12_merge_corank",
-      "source": "ch12_merge_corank",
-      "target": "ch13_sorting"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch12_merge_corank",
-      "_tgt": "concept_corank_merge",
-      "source": "ch12_merge_corank",
-      "target": "concept_corank_merge"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-13/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch13_sorting",
-      "_tgt": "concept_single_kernel_radix_deadlock",
-      "source": "ch13_sorting",
-      "target": "concept_single_kernel_radix_deadlock"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch14_sparse_spmv",
-      "_tgt": "concept_coo_csr_ell_jds",
-      "source": "ch14_sparse_spmv",
-      "target": "concept_coo_csr_ell_jds"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch14_sparse_spmv",
-      "_tgt": "concept_coo_to_csr_histogram_scan",
-      "source": "ch14_sparse_spmv",
-      "target": "concept_coo_to_csr_histogram_scan"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "chapter-15/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "concept_bfs_push_pull_frontier",
-      "_tgt": "ch15_graph_bfs",
-      "source": "ch15_graph_bfs",
-      "target": "concept_bfs_push_pull_frontier"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch17_mri_iterative_reconstruction",
-      "_tgt": "concept_loop_fission_fhd",
-      "source": "ch17_mri_iterative_reconstruction",
-      "target": "concept_loop_fission_fhd"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch17_mri_iterative_reconstruction",
-      "_tgt": "concept_loop_interchange_fhd",
-      "source": "ch17_mri_iterative_reconstruction",
-      "target": "concept_loop_interchange_fhd"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "rationale_kx_indexing_fhd_kernel",
-      "_tgt": "ch17_mri_iterative_reconstruction",
-      "source": "ch17_mri_iterative_reconstruction",
-      "target": "rationale_kx_indexing_fhd_kernel"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch18_electrostatic_potential",
-      "_tgt": "concept_gather_vs_scatter_potential",
-      "source": "ch18_electrostatic_potential",
-      "target": "concept_gather_vs_scatter_potential"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch18_electrostatic_potential",
-      "_tgt": "concept_thread_coarsening_energy",
-      "source": "ch18_electrostatic_potential",
-      "target": "concept_thread_coarsening_energy"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-20/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch20_heterogeneous_cluster_mpi_cuda",
-      "_tgt": "concept_mpi_halo_exchange",
-      "source": "ch20_heterogeneous_cluster_mpi_cuda",
-      "target": "concept_mpi_halo_exchange"
-    },
-    {
-      "relation": "implements",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-20/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch20_heterogeneous_cluster_mpi_cuda",
-      "_tgt": "concept_cuda_aware_mpi",
-      "source": "ch20_heterogeneous_cluster_mpi_cuda",
-      "target": "concept_cuda_aware_mpi"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-21/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "ch21_cuda_dynamic_parallelism",
-      "_tgt": "concept_dp_child_parent_memory",
-      "source": "ch21_cuda_dynamic_parallelism",
-      "target": "concept_dp_child_parent_memory"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-18/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "rationale_thread_coarsening_tradeoffs",
-      "_tgt": "concept_thread_coarsening_energy",
-      "source": "concept_thread_coarsening_energy",
-      "target": "rationale_thread_coarsening_tradeoffs"
-    },
-    {
-      "relation": "rationale_for",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-17/README.md",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "rationale_loop_interchange_associativity",
-      "_tgt": "concept_loop_interchange_fhd",
-      "source": "concept_loop_interchange_fhd",
-      "target": "rationale_loop_interchange_associativity"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "image.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "image_pmpp_textbook_cover_4th_edition",
-      "_tgt": "exercise1_hillis_steele_inclusive_prefix_scan",
-      "source": "image_pmpp_textbook_cover_4th_edition",
-      "target": "exercise1_hillis_steele_inclusive_prefix_scan"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "image.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "image_pmpp_textbook_cover_4th_edition",
-      "_tgt": "exercise5_inclusive_prefix_sum_reduction_reversed_tree",
-      "source": "image_pmpp_textbook_cover_4th_edition",
-      "target": "exercise5_inclusive_prefix_sum_reduction_reversed_tree"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "image.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "image_pmpp_textbook_cover_4th_edition",
-      "_tgt": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "source": "image_pmpp_textbook_cover_4th_edition",
-      "target": "exercise7_figure_11_4_exclusive_scan_kogge_stone"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/exercise7.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "_tgt": "exercise7_kogge_stone_adder_design",
-      "source": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "target": "exercise7_kogge_stone_adder_design"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "chapter-11/exercise7.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "_tgt": "exercise1_hillis_steele_inclusive_prefix_scan",
-      "source": "exercise7_figure_11_4_exclusive_scan_kogge_stone",
-      "target": "exercise1_hillis_steele_inclusive_prefix_scan"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-11/exercise1.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise1_hillis_steele_inclusive_prefix_scan",
-      "_tgt": "exercise5_inclusive_prefix_sum_reduction_reversed_tree",
-      "source": "exercise5_inclusive_prefix_sum_reduction_reversed_tree",
-      "target": "exercise1_hillis_steele_inclusive_prefix_scan"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.9,
-      "source_file": "chapter-14/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sparse_4x4_matrix",
-      "_tgt": "exercise2_ell_ellpack_storage",
-      "source": "exercise2_sparse_4x4_matrix",
-      "target": "exercise2_ell_ellpack_storage"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "chapter-14/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sparse_4x4_matrix",
-      "_tgt": "exercise2_coo_coordinate_format",
-      "source": "exercise2_sparse_4x4_matrix",
-      "target": "exercise2_coo_coordinate_format"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.9,
-      "source_file": "chapter-14/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sparse_4x4_matrix",
-      "_tgt": "exercise2_jds_jagged_diagonal_storage",
-      "source": "exercise2_sparse_4x4_matrix",
-      "target": "exercise2_jds_jagged_diagonal_storage"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.95,
-      "source_file": "chapter-14/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sparse_4x4_matrix",
-      "_tgt": "exercise2_csr_compressed_sparse_row",
-      "source": "exercise2_sparse_4x4_matrix",
-      "target": "exercise2_csr_compressed_sparse_row"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "chapter-14/exercise2_ell.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_ell_ellpack_storage",
-      "_tgt": "exercise2_coo_coordinate_format",
-      "source": "exercise2_ell_ellpack_storage",
-      "target": "exercise2_coo_coordinate_format"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.75,
-      "source_file": "chapter-14/exercise2_jds.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_jds_jagged_diagonal_storage",
-      "_tgt": "exercise2_ell_ellpack_storage",
-      "source": "exercise2_ell_ellpack_storage",
-      "target": "exercise2_jds_jagged_diagonal_storage"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/exercise2_ell.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_ell_colidx_grid",
-      "_tgt": "exercise2_ell_value_grid",
-      "source": "exercise2_ell_colidx_grid",
-      "target": "exercise2_ell_value_grid"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-14/exercise2_coo.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_coo_coordinate_format",
-      "_tgt": "exercise2_csr_compressed_sparse_row",
-      "source": "exercise2_coo_coordinate_format",
-      "target": "exercise2_csr_compressed_sparse_row"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_csr_compressed_sparse_row",
-      "_tgt": "exercise2_jds_jagged_diagonal_storage",
-      "source": "exercise2_jds_jagged_diagonal_storage",
-      "target": "exercise2_csr_compressed_sparse_row"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_csr_compressed_sparse_row",
-      "_tgt": "exercise2_csr_row_pointers",
-      "source": "exercise2_csr_compressed_sparse_row",
-      "target": "exercise2_csr_row_pointers"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_csr_row_pointers",
-      "_tgt": "exercise2_csr_column_indices",
-      "source": "exercise2_csr_row_pointers",
-      "target": "exercise2_csr_column_indices"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/exercise2_csr.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_csr_column_indices",
-      "_tgt": "exercise2_csr_values",
-      "source": "exercise2_csr_column_indices",
-      "target": "exercise2_csr_values"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "chapter-17/code/fft_representation_blurry.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "fft_representation_blurry_lowpass_fft_pipeline",
-      "_tgt": "fft_representation_highpass_fft_edge_map",
-      "source": "fft_representation_blurry_lowpass_fft_pipeline",
-      "target": "fft_representation_highpass_fft_edge_map"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-17/code/fft_representation_blurry.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "fft_representation_blurry_lowpass_fft_pipeline",
-      "_tgt": "lenna_color_test_image",
-      "source": "fft_representation_blurry_lowpass_fft_pipeline",
-      "target": "lenna_color_test_image"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.65,
-      "source_file": "chapter-17/code/fft_representation_blurry.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "fft_representation_blurry_lowpass_fft_pipeline",
-      "_tgt": "2d_conv_NN_kernel_sliding_padding",
-      "source": "fft_representation_blurry_lowpass_fft_pipeline",
-      "target": "2d_conv_NN_kernel_sliding_padding"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-17/code/fft_representation.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "fft_representation_highpass_fft_edge_map",
-      "_tgt": "lenna_color_test_image",
-      "source": "fft_representation_highpass_fft_edge_map",
-      "target": "lenna_color_test_image"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.65,
-      "source_file": "chapter-17/code/fft_representation.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "fft_representation_highpass_fft_edge_map",
-      "_tgt": "2d_conv_N1_N2_kernel_to_output",
-      "source": "fft_representation_highpass_fft_edge_map",
-      "target": "2d_conv_N1_N2_kernel_to_output"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-07/2d_conv_NN.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "2d_conv_NN_kernel_sliding_padding",
-      "_tgt": "2d_conv_N1_N2_kernel_to_output",
-      "source": "2d_conv_NN_kernel_sliding_padding",
-      "target": "2d_conv_N1_N2_kernel_to_output"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-15/exercise_1a.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_1a_adjacency_matrix_8x8",
-      "_tgt": "exercise_1_question_eight_node_directed_graph",
-      "source": "exercise_1_question_eight_node_directed_graph",
-      "target": "exercise_1a_adjacency_matrix_8x8"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.78,
-      "source_file": "chapter-15/exercise_1_question.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_1_question_eight_node_directed_graph",
-      "_tgt": "exercise_1b_csr_style_three_rows",
-      "source": "exercise_1_question_eight_node_directed_graph",
-      "target": "exercise_1b_csr_style_three_rows"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.82,
-      "source_file": "chapter-15/exercise_1a.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_1a_adjacency_matrix_8x8",
-      "_tgt": "exercise_1b_csr_style_three_rows",
-      "source": "exercise_1a_adjacency_matrix_8x8",
-      "target": "exercise_1b_csr_style_three_rows"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "AMBIGUOUS",
-      "confidence_score": 0.2,
-      "source_file": "chapter-15/exercise_1b.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_1b_csr_style_three_rows",
-      "_tgt": "exercise_2_figure_10_8_thread_assignment",
-      "source": "exercise_1b_csr_style_three_rows",
-      "target": "exercise_2_figure_10_8_thread_assignment"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-10/exercise_6a_visualization.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_6a_handdrawn_parallel_sum_reduction",
-      "_tgt": "exercise_6b_handdrawn_parallel_reduction",
-      "source": "exercise_6a_handdrawn_parallel_sum_reduction",
-      "target": "exercise_6b_handdrawn_parallel_reduction"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.72,
-      "source_file": "chapter-10/exercise_6a_visualization.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_6a_handdrawn_parallel_sum_reduction",
-      "_tgt": "exercise_3_sixteen_element_reduction_stages",
-      "source": "exercise_6a_handdrawn_parallel_sum_reduction",
-      "target": "exercise_3_sixteen_element_reduction_stages"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.7,
-      "source_file": "chapter-10/exercise_6b_visualization.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_6b_handdrawn_parallel_reduction",
-      "_tgt": "exercise_2_figure_10_8_thread_assignment",
-      "source": "exercise_6b_handdrawn_parallel_reduction",
-      "target": "exercise_2_figure_10_8_thread_assignment"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-10/exercise_3_visualization.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_3_sixteen_element_reduction_stages",
-      "_tgt": "exercise_2_figure_10_8_thread_assignment",
-      "source": "exercise_3_sixteen_element_reduction_stages",
-      "target": "exercise_2_figure_10_8_thread_assignment"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-05/exercise_2a.jpeg",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise_2a_shared_memory_tiling",
-      "_tgt": "exercise_2b_vectorized_row_loads",
-      "source": "exercise_2a_shared_memory_tiling",
-      "target": "exercise_2b_vectorized_row_loads"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_parallel_merge_iteration0",
-      "_tgt": "exercise2_sorted_array_a",
-      "source": "exercise2_parallel_merge_iteration0",
-      "target": "exercise2_sorted_array_a"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_parallel_merge_iteration0",
-      "_tgt": "exercise2_sorted_array_b",
-      "source": "exercise2_parallel_merge_iteration0",
-      "target": "exercise2_sorted_array_b"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_parallel_merge_iteration0",
-      "_tgt": "exercise2_merged_output_c",
-      "source": "exercise2_parallel_merge_iteration0",
-      "target": "exercise2_merged_output_c"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sorted_array_a",
-      "_tgt": "exercise2_merged_output_c",
-      "source": "exercise2_sorted_array_a",
-      "target": "exercise2_merged_output_c"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-12/exercise2.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "exercise2_sorted_array_b",
-      "_tgt": "exercise2_merged_output_c",
-      "source": "exercise2_sorted_array_b",
-      "target": "exercise2_merged_output_c"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_predictions_digit_grid",
-      "_tgt": "mnist_handwritten_digit_image",
-      "source": "mnist_predictions_digit_grid",
-      "target": "mnist_handwritten_digit_image"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_predictions_digit_grid",
-      "_tgt": "mnist_pred_and_true_labels",
-      "source": "mnist_predictions_digit_grid",
-      "target": "mnist_pred_and_true_labels"
-    },
-    {
-      "relation": "conceptually_related_to",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-16/code/mnist_predictions.png",
-      "source_location": null,
-      "weight": 1.0,
-      "_src": "mnist_handwritten_digit_image",
-      "_tgt": "mnist_pred_and_true_labels",
-      "source": "mnist_handwritten_digit_image",
-      "target": "mnist_pred_and_true_labels"
     }
   ],
-  "hyperedges": [
-    {
-      "id": "graph_formats_and_bfs_variants",
-      "label": "Shared graph layouts feeding BFS and conversion APIs",
-      "nodes": [
-        "graph_structures_h_csr_csc_coo",
-        "graph_conversions_h_format_converters",
-        "bfs_parallel_h_parallel_bfs",
-        "bfs_sequential_h_bfs"
-      ],
-      "relation": "participate_in",
-      "confidence": "INFERRED",
-      "confidence_score": 0.78,
-      "source_file": "chapter-15/code/include/graph_structures.h"
-    },
-    {
-      "id": "cuda_energy_kernel_benchmarking",
-      "label": "Benchmark harness typed for Coulomb energy grid kernels",
-      "nodes": [
-        "benchmark_h_energy_benchmark",
-        "cenergy_h_coulomb_kernels"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.86,
-      "source_file": "chapter-18/code/benchmark.h"
-    },
-    {
-      "id": "python_ctypes_cuda_interop",
-      "label": "Python loads CUDA via ctypes shared libraries",
-      "nodes": [
-        "bezier_py_cuda_tessellation",
-        "quadtree_visualizer_py_quadtree_cuda",
-        "cublas_wrapper_py_sgemm",
-        "cudnn_wrapper_py_conv_pool"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.79,
-      "source_file": "chapter-21/code/bezier.py"
-    },
-    {
-      "id": "numpy_to_c_gpu_bridge",
-      "label": "NumPy to C pointer bridge for cuDNN layers",
-      "nodes": [
-        "layers_max_pooling_2d",
-        "layers_conv_2d",
-        "conversion_np_to_c_float_p"
-      ],
-      "relation": "participate_in",
-      "confidence": "INFERRED",
-      "confidence_score": 0.88,
-      "source_file": "chapter-16/code/autograd_manual/nn/layers/pooling.py"
-    },
-    {
-      "id": "sequential_training_examples",
-      "label": "Sequential model training driver examples",
-      "nodes": [
-        "xor_example_train_model",
-        "mnist_example_mnist_cnn_example",
-        "model_sequential"
-      ],
-      "relation": "form",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "chapter-16/code/autograd_manual/examples/xor_example.py"
-    },
-    {
-      "id": "c_extension_kernels",
-      "label": "C/CUDA reference and extension kernels",
-      "nodes": [
-        "pooling_pooling_layer_forward",
-        "conv_ops_conv_layer_backward_x_grad",
-        "cublas_wrapper_sgemm_wrapper"
-      ],
-      "relation": "implement",
-      "confidence": "INFERRED",
-      "confidence_score": 0.82,
-      "source_file": "chapter-16/code/pooling/pooling.c"
-    },
-    {
-      "id": "coo_to_csr_parallel_primitives",
-      "label": "COO to CSR conversion using histogram then exclusive scan",
-      "nodes": [
-        "concept_coo_to_csr_histogram_scan",
-        "ch09_histogram_atomics",
-        "ch11_prefix_sum_scan"
-      ],
-      "relation": "implement",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-14/README.md"
-    },
-    {
-      "id": "mpi_cuda_stencil_pipeline",
-      "label": "Multi-stage stencil with CUDA streams and MPI halo exchange",
-      "nodes": [
-        "ch20_heterogeneous_cluster_mpi_cuda",
-        "concept_mpi_halo_exchange",
-        "concept_cuda_aware_mpi"
-      ],
-      "relation": "participate_in",
-      "confidence": "INFERRED",
-      "confidence_score": 0.78,
-      "source_file": "chapter-20/README.md"
-    },
-    {
-      "id": "gpu_sort_merge_radix_ecosystem",
-      "label": "Chapter 13 sort benchmarks tie radix variants to merge sort and CPU quicksort",
-      "nodes": [
-        "ch13_sorting",
-        "ch12_merge_corank",
-        "concept_single_kernel_radix_deadlock"
-      ],
-      "relation": "participate_in",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "chapter-13/README.md"
-    }
-  ]
+  "hyperedges": []
 }

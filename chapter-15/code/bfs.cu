@@ -1,8 +1,6 @@
 #include <stdio.h>
 #include <stdlib.h>
-
-#include <queue>
-#include <vector>
+#include <time.h>
 
 struct CSRGraph {
     int* srcPtrs;
@@ -238,18 +236,21 @@ COOGraph generateScaleFreeGraphCOO(int numVertices, int edgesPerNewVertex) {
             // If no target found using probability, pick randomly from unconnected
             if (target == -1) {
                 // Find unconnected vertices
-                std::vector<int> unconnected;
+                int* unconnected = (int*)malloc(sizeof(int) * newVertex);
+                int unconnectedCount = 0;
                 for (int i = 0; i < newVertex; i++) {
                     if (!connected[i]) {
-                        unconnected.push_back(i);
+                        unconnected[unconnectedCount++] = i;
                     }
                 }
 
-                if (!unconnected.empty()) {
-                    target = unconnected[rand() % unconnected.size()];
+                if (unconnectedCount > 0) {
+                    target = unconnected[rand() % unconnectedCount];
                 } else {
+                    free(unconnected);
                     break;  // No more vertices to connect to
                 }
+                free(unconnected);
             }
 
             // Add edge if valid target found
@@ -357,7 +358,7 @@ COOGraph generateSmallWorldGraphCOO(int numVertices, int k, float rewireProbabil
 
     // Rewire edges with probability p (only forward edges to avoid inconsistency)
     for (int i = 0; i < edgeIdx; i += 2) {
-        float random = static_cast<float>(rand()) / RAND_MAX;
+        float random = (float)rand() / RAND_MAX;
 
         if (random < rewireProbability) {
             int src = graph.scr[i];
@@ -415,32 +416,34 @@ COOGraph generateSmallWorldGraphCOO(int numVertices, int k, float rewireProbabil
 // BFS returning a pointer to the list of levels for all vertices
 int* bfs(const CSRGraph& graph, int startingNode) {
     int* levels = (int*)malloc(sizeof(int) * graph.numVertices);
-    std::vector<bool> visited(graph.numVertices, false);
+    unsigned char* visited = (unsigned char*)calloc(graph.numVertices, sizeof(unsigned char));
+    int* queue = (int*)malloc(sizeof(int) * graph.numVertices);
+    int queueHead = 0;
+    int queueTail = 0;
 
     // set the default level to -1 meaning it is not yet visited
     for (int i = 0; i < graph.numVertices; i++) {
         levels[i] = -1;
     }
 
-    std::queue<int> queue;
-
     levels[startingNode] = 0;
-    visited[startingNode] = true;
-    queue.push(startingNode);
+    visited[startingNode] = 1;
+    queue[queueTail++] = startingNode;
 
-    while (!queue.empty()) {
-        int vertex = queue.front();
-        queue.pop();
+    while (queueHead < queueTail) {
+        int vertex = queue[queueHead++];
 
         for (int edge = graph.srcPtrs[vertex]; edge < graph.srcPtrs[vertex + 1]; edge++) {
             int neighbour = graph.dst[edge];
             if (!visited[neighbour]) {
                 levels[neighbour] = levels[vertex] + 1;
-                visited[neighbour] = true;
-                queue.push(neighbour);
+                visited[neighbour] = 1;
+                queue[queueTail++] = neighbour;
             }
         }
     }
+    free(visited);
+    free(queue);
     return levels;
 }
 

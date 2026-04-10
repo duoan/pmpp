@@ -1,7 +1,6 @@
 #include <cuda_runtime.h>
 
-#include <iostream>
-#include <vector>
+#include <cstdio>
 
 struct JDSMatrix {
     int numRows;
@@ -31,7 +30,7 @@ __global__ void spmv_jds_kernel(JDSMatrix jdsMatrix, float* x, float* y) {
     y[jdsMatrix.rowPerm[tid]] = sum;
 }
 
-void spmv_jds(const JDSMatrix& jdsMatrix, float* d_x, float* d_y) {
+void spmv_jds(JDSMatrix jdsMatrix, float* d_x, float* d_y) {
     int blockSize = 256;
     int gridSize = (jdsMatrix.numRows + blockSize - 1) / blockSize;
     spmv_jds_kernel<<<gridSize, blockSize>>>(jdsMatrix, d_x, d_y);
@@ -41,12 +40,12 @@ int main() {
     const int numRows = 6;
     const int numCols = 6;
 
-    std::vector<int> h_colIdx = {0, 0, 2, 0, 1, 3, 2, 4, 3, 4, 5};
-    std::vector<float> h_values = {1, 5, 3, 7, 2, 8, 6, 4, 9, 10, 11};
-    std::vector<int> h_rowPerm = {1, 3, 5, 2, 4, 0};
-    std::vector<int> h_iterPtr = {0, 6, 11, 14, 15};
-    std::vector<float> h_x = {1, 2, 3, 4, 5, 6};
-    std::vector<float> h_y(numRows, 0);
+    int h_colIdx[] = {0, 0, 2, 0, 1, 3, 2, 4, 3, 4, 5};
+    float h_values[] = {1, 5, 3, 7, 2, 8, 6, 4, 9, 10, 11};
+    int h_rowPerm[] = {1, 3, 5, 2, 4, 0};
+    int h_iterPtr[] = {0, 6, 11, 14, 15};
+    float h_x[] = {1, 2, 3, 4, 5, 6};
+    float h_y[numRows] = {0};
 
     int* d_colIdx;
     float* d_values;
@@ -55,32 +54,32 @@ int main() {
     float* d_x;
     float* d_y;
 
-    cudaMalloc(&d_colIdx, h_colIdx.size() * sizeof(int));
-    cudaMalloc(&d_values, h_values.size() * sizeof(float));
-    cudaMalloc(&d_rowPerm, h_rowPerm.size() * sizeof(int));
-    cudaMalloc(&d_iterPtr, h_iterPtr.size() * sizeof(int));
-    cudaMalloc(&d_x, h_x.size() * sizeof(float));
-    cudaMalloc(&d_y, h_y.size() * sizeof(float));
+    cudaMalloc(&d_colIdx, sizeof(h_colIdx));
+    cudaMalloc(&d_values, sizeof(h_values));
+    cudaMalloc(&d_rowPerm, sizeof(h_rowPerm));
+    cudaMalloc(&d_iterPtr, sizeof(h_iterPtr));
+    cudaMalloc(&d_x, sizeof(h_x));
+    cudaMalloc(&d_y, sizeof(h_y));
 
-    cudaMemcpy(d_colIdx, h_colIdx.data(), h_colIdx.size() * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_values, h_values.data(), h_values.size() * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_rowPerm, h_rowPerm.data(), h_rowPerm.size() * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_iterPtr, h_iterPtr.data(), h_iterPtr.size() * sizeof(int), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_x, h_x.data(), h_x.size() * sizeof(float), cudaMemcpyHostToDevice);
-    cudaMemcpy(d_y, h_y.data(), h_y.size() * sizeof(float), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_colIdx, h_colIdx, sizeof(h_colIdx), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_values, h_values, sizeof(h_values), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_rowPerm, h_rowPerm, sizeof(h_rowPerm), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_iterPtr, h_iterPtr, sizeof(h_iterPtr), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_x, h_x, sizeof(h_x), cudaMemcpyHostToDevice);
+    cudaMemcpy(d_y, h_y, sizeof(h_y), cudaMemcpyHostToDevice);
 
-    int numTiles = h_iterPtr.size() - 1;
+    int numTiles = (int)(sizeof(h_iterPtr) / sizeof(h_iterPtr[0])) - 1;
     JDSMatrix d_jdsMatrix = {numRows, numCols, numTiles, d_colIdx, d_values, d_rowPerm, d_iterPtr};
 
     spmv_jds(d_jdsMatrix, d_x, d_y);
 
-    cudaMemcpy(h_y.data(), d_y, h_y.size() * sizeof(float), cudaMemcpyDeviceToHost);
+    cudaMemcpy(h_y, d_y, sizeof(h_y), cudaMemcpyDeviceToHost);
 
-    std::cout << "Result y: ";
-    for (float val : h_y) {
-        std::cout << val << " ";
+    printf("Result y: ");
+    for (int i = 0; i < numRows; ++i) {
+        printf("%f ", h_y[i]);
     }
-    std::cout << std::endl;
+    printf("\n");
 
     cudaFree(d_colIdx);
     cudaFree(d_values);

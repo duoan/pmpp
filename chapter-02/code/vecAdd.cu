@@ -1,5 +1,6 @@
 #include <cuda_runtime.h>
-#include <stdio.h>
+#include <ctime>
+#include <cstdio>
 
 void vecAddHost(float* A_h, float* B_h, float* C_h, int n) {
     for (int i = 0; i < n; i++) {

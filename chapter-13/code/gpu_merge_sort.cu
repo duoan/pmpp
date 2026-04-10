@@ -1,8 +1,6 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
 
-#include <algorithm>
-
 #include "gpu_merge_sort.h"
 
 // Define min and max if not already defined.

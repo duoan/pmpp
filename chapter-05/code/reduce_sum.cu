@@ -1,5 +1,5 @@
 #include <cuda_runtime.h>
-#include <iostream>
+#include <cstdio>
 
 __global__ void reduce_sum(int* input, int* output, int N) {
     extern __shared__ int blockSum[];
@@ -55,7 +55,7 @@ int main() {
     cudaDeviceSynchronize();
 
     cudaMemcpy(h_output, d_output, sizeof(int), cudaMemcpyDeviceToHost);
-    std::cout << "Reduced Sum: " << h_output[0] << std::endl;
+    printf("Reduced Sum: %d\n", h_output[0]);
     
     cudaFree(d_input);
     cudaFree(d_output);

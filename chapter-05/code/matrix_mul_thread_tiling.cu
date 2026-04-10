@@ -16,7 +16,7 @@
 //   gridDim  = (ceil(N / (BK*V)), ceil(N / (BK*V)))
 //   每个 block 覆盖 C 中 (BK*V) × (BK*V) 的输出区域
 
-#include <iostream>
+#include <cstdio>
 #include <cuda_runtime.h>
 #include <assert.h>
 
@@ -112,8 +112,8 @@ int main() {
     float* h_C = (float*)malloc(size);
 
     for (int i = 0; i < N * N; ++i) {
-        h_A[i] = static_cast<float>(rand() % 100);
-        h_B[i] = static_cast<float>(rand() % 100);
+        h_A[i] = (float)(rand() % 100);
+        h_B[i] = (float)(rand() % 100);
     }
 
     float *d_A, *d_B, *d_C;
@@ -141,11 +141,11 @@ int main() {
 
     float ms = 0.0f;
     cudaEventElapsedTime(&ms, start, stop);
-    std::cout << "Kernel execution time: " << ms << " ms" << std::endl;
+    printf("Kernel execution time: %f ms\n", ms);
 
     // 矩阵乘法浮点运算量: 2*N³ (N³ 次乘法 + N³ 次加法)
     double gflops = 2.0 * N * N * N / (ms * 1e6);
-    std::cout << "Performance: " << gflops << " GFLOPS" << std::endl;
+    printf("Performance: %f GFLOPS\n", gflops);
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
@@ -162,7 +162,7 @@ int main() {
             assert(fabs(h_C[i * N + j] - sum) < 1e-3);
         }
     }
-    std::cout << "Matrix multiplication completed successfully." << std::endl;
+    printf("Matrix multiplication completed successfully.\n");
 
     cudaFree(d_A);
     cudaFree(d_B);

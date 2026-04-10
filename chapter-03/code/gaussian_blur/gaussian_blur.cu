@@ -51,15 +51,15 @@ torch::Tensor gaussian_blur(torch::Tensor img, int blurSize) {
     assert(img.is_contiguous());
 
     // CHW image
-    const auto channels = img.size(0);
-    const auto height = img.size(1);
-    const auto width = img.size(2);
+    int channels = (int)img.size(0);
+    int height = (int)img.size(1);
+    int width = (int)img.size(2);
 
     dim3 dimBlock(16, 16, channels);
     dim3 dimGrid(cdiv(width, dimBlock.x), cdiv(height, dimBlock.y));
 
     // auto result = torch::empty_like(img, torch::TensorOptions().dtype(torch::kByte));
-    auto result = torch::empty_like(img);
+    torch::Tensor result = torch::empty_like(img);
 
     blur_kernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         img.data_ptr<unsigned char>(), result.data_ptr<unsigned char>(), width, height, blurSize);

@@ -4,10 +4,10 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include <algorithm>
-
 #define cdiv(x, y) (((x) + (y)-1) / (y))
 #define TILE_SIZE 256
+#define min(a, b) ((a) < (b) ? (a) : (b))
+#define max(a, b) ((a) > (b) ? (a) : (b))
 
 #define CUDA_CHECK(call)                                                                                 \
     do {                                                                                                 \
@@ -18,7 +18,7 @@
         }                                                                                                \
     } while (0)
 
-void gpuAssert(cudaError_t code, const char* file, int line, bool abort = true);
+void gpuAssert(cudaError_t code, const char* file, int line, int abort);
 void clear_l2() {
     static int l2_clear_size = 0;
     static unsigned char* gpu_scratch_l2_clear = NULL;
@@ -237,7 +237,7 @@ float* createSortedArray(int length, float start, float step) {
     return array;
 }
 
-bool allclose(float* a, float* b, int N, float rtol = 1e-5, float atol = 1e-8) {
+bool allclose(float* a, float* b, int N, float rtol, float atol) {
     for (int i = 0; i < N; i++) {
         float allowed_error = atol + rtol * fabs(b[i]);
         if (fabs(a[i] - b[i]) > allowed_error) {
@@ -285,7 +285,7 @@ int main() {
 
     float* h_C = (float*)malloc(total * sizeof(float));
     CUDA_CHECK(cudaMemcpy(h_C, d_C, total * sizeof(float), cudaMemcpyDeviceToHost));
-    if (allclose(h_C, h_C_ref, total)) {
+    if (allclose(h_C, h_C_ref, total, 1e-5f, 1e-8f)) {
         printf("Result is correct!\n");
     } else {
         printf("Result is incorrect!\n");

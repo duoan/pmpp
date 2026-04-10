@@ -33,15 +33,15 @@ torch::Tensor matrixMul(torch::Tensor M, torch::Tensor N) {
     assert(M.size(1) == N.size(0));
 
     // matrices are m x n and n x o
-    const auto m = M.size(0);
-    const auto n = M.size(1); // N is the reduction axis
-    const auto o = N.size(1);
+    int m = (int)M.size(0);
+    int n = (int)M.size(1); // N is the reduction axis
+    int o = (int)N.size(1);
 
     // data loaded: (MN + NO) x 4 bytes = 8 MNNO
     // operations: OM (output elements) * N * 2 (mul + add) = 2MNO
     // Potentional compute-to-memory ratio: 2MNO / 8MNNO = > 0.25N OP/B
 
-    auto P = torch::empty({m, o}, torch::TensorOptions().dtype(N.dtype()).device(N.device()));
+    torch::Tensor P = torch::empty({m, o}, torch::TensorOptions().dtype(N.dtype()).device(N.device()));
 
     dim3 dimBlock(16, 16);
     dim3 dimGrid(cdiv(o, dimBlock.x), cdiv(m, dimBlock.y));

@@ -1,8 +1,7 @@
 // nvcc run_conv2d.cu conv2d_functions.cu conv2d_kernels.cu -o conv2d_program
 #include <assert.h>
 
-#include <iomanip>
-#include <iostream>
+#include <cstdio>
 
 #include "conv2d_functions.cuh"
 #include "conv2d_kernels.cuh"
@@ -10,9 +9,9 @@
 void printMatrix(float* matrix, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            std::cout << std::setw(6) << matrix[i * cols + j] << " ";
+            printf("%6g ", matrix[i * cols + j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
 

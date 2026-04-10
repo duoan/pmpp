@@ -1,9 +1,11 @@
 #include <cuda_runtime.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main() {
     int deviceCount = 0;
     cudaError_t error_id = cudaGetDeviceCount(&deviceCount);
+    
 
     if (error_id != cudaSuccess) {
         printf("cudaGetDeviceCount returned %d\n-> %s\n", (int)error_id, cudaGetErrorString(error_id));
@@ -15,7 +17,11 @@ int main() {
 
     for (int dev = 0; dev < deviceCount; ++dev) {
         cudaDeviceProp deviceProp;
+        int clockRateKHz = 0;
+        int memoryClockRateKHz = 0;
         cudaGetDeviceProperties(&deviceProp, dev);
+        cudaDeviceGetAttribute(&clockRateKHz, cudaDevAttrClockRate, dev);
+        cudaDeviceGetAttribute(&memoryClockRateKHz, cudaDevAttrMemoryClockRate, dev);
 
         printf("\nDevice %d: \"%s\"\n", dev, deviceProp.name);
         printf("  Major revision number:         %d\n", deviceProp.major);
@@ -31,8 +37,8 @@ int main() {
                deviceProp.maxThreadsDim[1], deviceProp.maxThreadsDim[2]);
         printf("  Maximum sizes of each dimension of a grid: %d x %d x %d\n", deviceProp.maxGridSize[0],
                deviceProp.maxGridSize[1], deviceProp.maxGridSize[2]);
-        printf("  Clock rate:                    %.2f GHz\n", deviceProp.clockRate * 1e-6f);
-        printf("  Memory clock rate:             %d MHz\n", deviceProp.memoryClockRate / 1000);
+        printf("  Clock rate:                    %.2f GHz\n", clockRateKHz * 1e-6f);
+        printf("  Memory clock rate:             %d MHz\n", memoryClockRateKHz / 1000);
         printf("  Memory bus width:              %d-bit\n", deviceProp.memoryBusWidth);
         printf("  L2 cache size:                 %d bytes\n", deviceProp.l2CacheSize);
     }

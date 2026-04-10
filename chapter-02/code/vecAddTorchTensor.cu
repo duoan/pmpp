@@ -1,6 +1,9 @@
+#include <cuda_runtime.h>
 #include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
+#include <cassert>
+
 
 __global__ void vecAddKernel(float* A, float* B, float* C, int n) {
     int i = blockIdx.x * blockDim.x + threadIdx.x;
@@ -15,7 +18,7 @@ torch::Tensor vector_add(torch::Tensor A, torch::Tensor B) {
     assert(A.size(0) == B.size(0));
 
     int n = A.size(0);
-    auto C = torch::empty({n}, torch::TensorOptions().dtype(torch::kFloat32).device(A.device()));
+    torch::Tensor C = torch::empty({n}, torch::TensorOptions().dtype(torch::kFloat32).device(A.device()));
 
     // // Number of threads and blocks
     int threads_per_block = 256;

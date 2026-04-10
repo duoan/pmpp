@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 
 #include "stencil.h"
 
@@ -46,19 +46,19 @@ void stencil_3d_parallel_basic(float* in, float* out, unsigned int N, int c0, in
 
     error = cudaMalloc((void**)&d_in, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_in failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_in failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_out, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_out failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_out failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMemcpy(d_in, in, N * N * N * sizeof(float), cudaMemcpyHostToDevice);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to device failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to device failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
@@ -69,13 +69,13 @@ void stencil_3d_parallel_basic(float* in, float* out, unsigned int N, int c0, in
 
     error = cudaGetLastError();
     if (error != cudaSuccess) {
-        std::cout << "Kernel launch failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(error));
     }
     cudaDeviceSynchronize();
 
     error = cudaMemcpy(out, d_out, N * N * N * sizeof(float), cudaMemcpyDeviceToHost);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to host failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to host failed: %s\n", cudaGetErrorString(error));
     }
 
     cudaFree(d_in);
@@ -113,19 +113,19 @@ void stencil_3d_parallel_shared_memory(float* in, float* out, unsigned int N, in
 
     error = cudaMalloc((void**)&d_in, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_in failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_in failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_out, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_out failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_out failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMemcpy(d_in, in, N * N * N * sizeof(float), cudaMemcpyHostToDevice);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to device failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to device failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
@@ -136,13 +136,13 @@ void stencil_3d_parallel_shared_memory(float* in, float* out, unsigned int N, in
 
     error = cudaGetLastError();
     if (error != cudaSuccess) {
-        std::cout << "Kernel launch failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(error));
     }
     cudaDeviceSynchronize();
 
     error = cudaMemcpy(out, d_out, N * N * N * sizeof(float), cudaMemcpyDeviceToHost);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to host failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to host failed: %s\n", cudaGetErrorString(error));
     }
 
     cudaFree(d_in);
@@ -197,19 +197,19 @@ void stencil_3d_parallel_thread_coarsening(float* in, float* out, unsigned int N
 
     error = cudaMalloc((void**)&d_in, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_in failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_in failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_out, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_out failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_out failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMemcpy(d_in, in, N * N * N * sizeof(float), cudaMemcpyHostToDevice);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to device failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to device failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
@@ -220,13 +220,13 @@ void stencil_3d_parallel_thread_coarsening(float* in, float* out, unsigned int N
 
     error = cudaGetLastError();
     if (error != cudaSuccess) {
-        std::cout << "Kernel launch failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(error));
     }
     cudaDeviceSynchronize();
 
     error = cudaMemcpy(out, d_out, N * N * N * sizeof(float), cudaMemcpyDeviceToHost);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to host failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to host failed: %s\n", cudaGetErrorString(error));
     }
 
     cudaFree(d_in);
@@ -280,19 +280,19 @@ void stencil_3d_parallel_register_tiling(float* in, float* out, unsigned int N, 
 
     error = cudaMalloc((void**)&d_in, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_in failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_in failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_out, N * N * N * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_out failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_out failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMemcpy(d_in, in, N * N * N * sizeof(float), cudaMemcpyHostToDevice);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to device failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to device failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
@@ -303,13 +303,13 @@ void stencil_3d_parallel_register_tiling(float* in, float* out, unsigned int N, 
 
     error = cudaGetLastError();
     if (error != cudaSuccess) {
-        std::cout << "Kernel launch failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Kernel launch failed: %s\n", cudaGetErrorString(error));
     }
     cudaDeviceSynchronize();
 
     error = cudaMemcpy(out, d_out, N * N * N * sizeof(float), cudaMemcpyDeviceToHost);
     if (error != cudaSuccess) {
-        std::cout << "cudaMemcpy to host failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMemcpy to host failed: %s\n", cudaGetErrorString(error));
     }
 
     cudaFree(d_in);

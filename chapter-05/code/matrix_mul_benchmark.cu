@@ -3,8 +3,8 @@
 #include <cuda_runtime.h>
 
 #include <cmath>
-#include <iomanip>
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
 #define TILE_WIDTH 64
 
 #define gpuErrchk(ans) \
@@ -159,9 +159,9 @@ inline bool allclose(const float* M, const float* N, const int m, const int n, c
 void printMatrix(const float* matrix, const int rows, const int cols) {
     for (unsigned int i = 0; i < rows; ++i) {
         for (unsigned int j = 0; j < cols; ++j) {
-            std::cout << std::setw(6) << matrix[i * cols + j] << " ";
+            printf("%6g ", matrix[i * cols + j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
 
@@ -169,31 +169,31 @@ int main() {
     // change these to experiment with sizes, here I get a substantial boost just via using TILING
     int m = 8192, n = 8192, o = 8192;
 
-    float* M = new float[m * n];
-    float* N = new float[n * o];
-    float* P1 = new float[m * o];
-    float* P2 = new float[m * o];
+    float* M = (float*)malloc(m * n * sizeof(float));
+    float* N = (float*)malloc(n * o * sizeof(float));
+    float* P1 = (float*)malloc(m * o * sizeof(float));
+    float* P2 = (float*)malloc(m * o * sizeof(float));
 
     for (int i = 0; i < m * n; ++i) {
-        M[i] = static_cast<float>(1);
+        M[i] = (float)1;
     }
     for (int i = 0; i < n * o; ++i) {
-        N[i] = static_cast<float>(1.5);
+        N[i] = (float)1.5;
     }
 
     float avgTimeMatrixMulTiled = benchmarkKernel(launchTiledMatrixMul, M, N, P1, m, n, o);
-    std::cout << "Average kernel time (tiled): " << avgTimeMatrixMulTiled << " ms" << std::endl;
+    printf("Average kernel time (tiled): %f ms\n", avgTimeMatrixMulTiled);
 
     float avgTimeMatrixMulNaive = benchmarkKernel(launchNaiveMatrixMul, M, N, P2, m, n, o);
-    std::cout << "Average kernel time (naive): " << avgTimeMatrixMulNaive << " ms" << std::endl;
+    printf("Average kernel time (naive): %f ms\n", avgTimeMatrixMulNaive);
 
     bool same = allclose(P1, P2, m, o);
-    std::cout << "Outputs are " << (same ? "approximately the same" : "different") << std::endl;
+    printf("Outputs are %s\n", same ? "approximately the same" : "different");
 
-    delete[] M;
-    delete[] N;
-    delete[] P1;
-    delete[] P2;
+    free(M);
+    free(N);
+    free(P1);
+    free(P2);
 
     return 0;
 }

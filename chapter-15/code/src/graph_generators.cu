@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <time.h>
 
-#include <vector>
-
 #include "../include/graph_generators.h"
 #include "../include/graph_structures.h"
 
@@ -106,18 +104,21 @@ COOGraph generateScaleFreeGraphCOO(int numVertices, int edgesPerNewVertex) {
             // If no target found using probability, pick randomly from unconnected
             if (target == -1) {
                 // Find unconnected vertices
-                std::vector<int> unconnected;
+                int* unconnected = (int*)malloc(sizeof(int) * newVertex);
+                int unconnectedCount = 0;
                 for (int i = 0; i < newVertex; i++) {
                     if (!connected[i]) {
-                        unconnected.push_back(i);
+                        unconnected[unconnectedCount++] = i;
                     }
                 }
 
-                if (!unconnected.empty()) {
-                    target = unconnected[rand() % unconnected.size()];
+                if (unconnectedCount > 0) {
+                    target = unconnected[rand() % unconnectedCount];
                 } else {
+                    free(unconnected);
                     break;  // No more vertices to connect to
                 }
+                free(unconnected);
             }
 
             // Add edge if valid target found
@@ -225,7 +226,7 @@ COOGraph generateSmallWorldGraphCOO(int numVertices, int k, float rewireProbabil
 
     // Rewire edges with probability p (only forward edges to avoid inconsistency)
     for (int i = 0; i < edgeIdx; i += 2) {
-        float random = static_cast<float>(rand()) / RAND_MAX;
+        float random = (float)rand() / RAND_MAX;
 
         if (random < rewireProbability) {
             int src = graph.scr[i];

@@ -1,4 +1,8 @@
 {
   "julia.executablePath": "${userHome}/.juliaup/bin/julia",
-  "julia.environmentPath": "${workspaceFolder}"
+  "julia.environmentPath": "${workspaceFolder}",
+  "files.associations": {
+    "*.cu": "cuda-cpp",
+    "*.cuh": "cuda-cpp"
+  }
 }

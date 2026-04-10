@@ -1,4 +1,4 @@
-#include <iostream>
+#include <cstdio>
 #include <cuda_runtime.h>
 #include <assert.h>
 
@@ -213,8 +213,8 @@ int main() {
     float* h_C = (float*)malloc(size);
 
     for (int i = 0; i < width * width; ++i) {
-        h_A[i] = static_cast<float>(rand() % 100);
-        h_B[i] = static_cast<float>(rand() % 100);
+        h_A[i] = (float)(rand() % 100);
+        h_B[i] = (float)(rand() % 100);
     }
 
     // Allocate device memory
@@ -300,11 +300,11 @@ int main() {
 
     float ms = 0.0f;
     cudaEventElapsedTime(&ms, start, stop);
-    std::cout << "Kernel execution time: " << ms << " ms" << std::endl;
+    printf("Kernel execution time: %f ms\n", ms);
 
     // FLOPs for matrix multiply: 2*N^3 (N^3 multiplications + N^3 additions)
     double gflops = 2.0 * width * width * width / (ms * 1e6);
-    std::cout << "Performance: " << gflops << " GFLOPS" << std::endl;
+    printf("Performance: %f GFLOPS\n", gflops);
 
     cudaEventDestroy(start);
     cudaEventDestroy(stop);
@@ -319,11 +319,11 @@ int main() {
             for (int k = 0; k < width; ++k) {
                 sum += h_A[i * width + k] * h_B[k * width + j];
             }
-            // std::cout << i << " " << j <<  " " << h_C[i * width + j] << "  " << sum << std::endl;
+            // printf("%d %d %f %f\n", i, j, h_C[i * width + j], sum);
             assert(fabs(h_C[i * width + j] - sum) < 1e-3);
         }
     }
-    std::cout << "Matrix multiplication completed successfully." << std::endl;
+    printf("Matrix multiplication completed successfully.\n");
 
     // Free device memory
     cudaFree(d_A);

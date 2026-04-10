@@ -1,5 +1,4 @@
-#include <iomanip>
-#include <iostream>
+#include <cstdio>
 
 #include "conv2d_functions.cuh"
 #include "conv2d_kernels.cuh"
@@ -11,19 +10,19 @@ void conv2d_with_constant_memory(float* M, float* F, float* P, int r, int height
     // Initialize constant memory using the function from kernels.cu
     error = initConstFilter(F, r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_M, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_M failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_M failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_P, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_P failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_P failed: %s\n", cudaGetErrorString(error));
         cudaFree(d_M);
         return;
     }
@@ -47,19 +46,19 @@ void conv2d_with_tiled_convolution(float* M, float* F, float* P, int r, int heig
     // Initialize constant memory using the function from kernels.cu
     error = initConstFilter(F, r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_M, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_M failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_M failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_P, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_P failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_P failed: %s\n", cudaGetErrorString(error));
         cudaFree(d_M);
         return;
     }
@@ -84,19 +83,19 @@ void conv2d_with_tiled_convolution_with_l2_caching(float* M, float* F, float* P,
     // Initialize constant memory using the function from kernels.cu
     error = initConstFilter(F, r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_M, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_M failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_M failed: %s\n", cudaGetErrorString(error));
         return;
     }
 
     error = cudaMalloc((void**)&d_P, width * height * sizeof(float));
     if (error != cudaSuccess) {
-        std::cout << "cudaMalloc d_P failed: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "cudaMalloc d_P failed: %s\n", cudaGetErrorString(error));
         cudaFree(d_M);
         return;
     }

@@ -25,7 +25,7 @@ torch::Tensor matrix_vector_multiplication(torch::Tensor B, torch::Tensor c) {
     int n_cols = c.size(0);
     int n_rows = B.size(0);
 
-    auto a = torch::empty({n_rows}, torch::TensorOptions().dtype(torch::kFloat32).device(B.device()));
+    torch::Tensor a = torch::empty({n_rows}, torch::TensorOptions().dtype(torch::kFloat32).device(B.device()));
 
     // // Number of threads and blocks
     int threads_per_block = 16;

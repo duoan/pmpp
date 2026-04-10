@@ -2,16 +2,17 @@
 
 #include <cuda_runtime.h>
 
-#include <iomanip>
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
+#include <cstring>
 #define TILE_WIDTH 2
 
 void printMatrix(float* matrix, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            std::cout << std::setw(6) << matrix[i * cols + j] << " ";
+            printf("%6g ", matrix[i * cols + j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
 
@@ -159,12 +160,12 @@ int main(int argc, char const* argv[]) {
     int n = 3;
     int o = 2;
 
-    float* M = new float[m * n];
-    float* N = new float[n * o];
-    float* N_transposed = new float[o * n];
+    float* M = (float*)malloc(m * n * sizeof(float));
+    float* N = (float*)malloc(n * o * sizeof(float));
+    float* N_transposed = (float*)malloc(o * n * sizeof(float));
 
-    float* P1 = new float[m * o];
-    float* P2 = new float[m * o];
+    float* P1 = (float*)malloc(m * o * sizeof(float));
+    float* P2 = (float*)malloc(m * o * sizeof(float));
 
     for (int i = 0; i < m * n; i++) {
         M[i] = i;
@@ -173,36 +174,36 @@ int main(int argc, char const* argv[]) {
     for (int i = 0; i < n * o; i++) {
         N[i] = i + 1;
     }
-    std::copy(N, N + (n * o), N_transposed);
+    memcpy(N_transposed, N, n * o * sizeof(float));
 
-    std::cout << "M:\n";
+    printf("M:\n");
     printMatrix(M, m, n);
-    std::cout << "\n";
+    printf("\n");
 
-    std::cout << "N:\n";
+    printf("N:\n");
     printMatrix(N, n, o);
-    std::cout << "\n";
+    printf("\n");
 
     inPlaceMatrixTranspose(N_transposed, n, o);
-    std::cout << "\nN transposed:\n";
+    printf("\nN transposed:\n");
     printMatrix(N_transposed, o, n);
-    std::cout << "\n";
+    printf("\n");
 
-    std::cout << "First multiply:\n";
+    printf("First multiply:\n");
     matrixMulTiling(M, N, P1, m, n, o);
     printMatrix(P1, m, o);
-    std::cout << "\n";
+    printf("\n");
 
-    std::cout << "Second (col major order) multiply:\n";
+    printf("Second (col major order) multiply:\n");
     matrixMulTiling(M, N_transposed, P2, m, n, o, false);
     printMatrix(P2, m, o);
-    std::cout << "\n";
+    printf("\n");
 
-    delete[] M;
-    delete[] N;
-    delete[] N_transposed;
-    delete[] P1;
-    delete[] P2;
+    free(M);
+    free(N);
+    free(N_transposed);
+    free(P1);
+    free(P2);
 
     return 0;
 }

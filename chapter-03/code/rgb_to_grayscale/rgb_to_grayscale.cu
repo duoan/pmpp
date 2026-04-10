@@ -30,13 +30,13 @@ torch::Tensor rgb_to_gray(torch::Tensor img) {
     assert(img.device().type() == torch::kCUDA);
     assert(img.dtype() == torch::kByte);
 
-    const auto height = img.size(0);
-    const auto width = img.size(1);
+    int height = (int)img.size(0);
+    int width = (int)img.size(1);
 
     dim3 dimBlock(32, 32);
     dim3 dimGrid(cdiv(width, dimBlock.x), cdiv(height, dimBlock.y));
 
-    auto result = torch::empty({height, width, 1}, torch::TensorOptions().dtype(torch::kByte).device(img.device()));
+    torch::Tensor result = torch::empty({height, width, 1}, torch::TensorOptions().dtype(torch::kByte).device(img.device()));
 
     rgbToGrayscaleKernel<<<dimGrid, dimBlock, 0, c10::cuda::getCurrentCUDAStream()>>>(
         img.data_ptr<unsigned char>(), result.data_ptr<unsigned char>(), width, height);

@@ -6,8 +6,15 @@
 
 #include <cmath>
 #include <cstdio>
-#include <iomanip>
-#include <iostream>
+#include <cstdlib>
+
+static int min_int(int a, int b) {
+    return a < b ? a : b;
+}
+
+static int max_int(int a, int b) {
+    return a > b ? a : b;
+}
 
 int calculateOptimalTileWidth(int m, int n, int o) {
     cudaDeviceProp prop;
@@ -22,31 +29,31 @@ int calculateOptimalTileWidth(int m, int n, int o) {
     // Calculate maximum possible tile size based on hardware constraints
 
     // 1. Based on max threads per block (square tiles)
-    int tileWidth = static_cast<int>(sqrt(maxThreadsPerBlock));
+    int tileWidth = (int)sqrt((double)maxThreadsPerBlock);
 
     // 2. Based on max block dimensions
-    tileWidth = std::min(tileWidth, std::min(maxBlockDimX, maxBlockDimY));
+    tileWidth = min_int(tileWidth, min_int(maxBlockDimX, maxBlockDimY));
 
     // 3. Based on shared memory (we need 2 tiles worth of shared memory)
-    int maxTileWidthBySharedMem = static_cast<int>(sqrt(sharedMemPerBlock / (2 * sizeof(float))));
-    tileWidth = std::min(tileWidth, maxTileWidthBySharedMem);
+    int maxTileWidthBySharedMem = (int)sqrt((double)sharedMemPerBlock / (2.0 * sizeof(float)));
+    tileWidth = min_int(tileWidth, maxTileWidthBySharedMem);
 
     // 4. Based on matrix dimensions (no point in having tiles larger than matrices)
-    tileWidth = std::min(tileWidth, std::min(m, std::min(n, o)));
+    tileWidth = min_int(tileWidth, min_int(m, min_int(n, o)));
 
     // 5. Round down to nearest power of 2 for better memory alignment
-    tileWidth = 1 << static_cast<int>(log2(tileWidth));
+    tileWidth = 1 << (int)log2((double)tileWidth);
 
     // 6. Ensure minimum practical size
-    tileWidth = std::max(16, tileWidth);  // minimum tile size of 16
+    tileWidth = max_int(16, tileWidth);  // minimum tile size of 16
 
     // Print diagnostic information
-    // std::cout << "Calculated optimal tile width: " << tileWidth << std::endl;
-    // std::cout << "Based on:" << std::endl;
-    // std::cout << "- Max threads per block: " << maxThreadsPerBlock << std::endl;
-    // std::cout << "- Max block dimensions: " << maxBlockDimX << "x" << maxBlockDimY << std::endl;
-    // std::cout << "- Shared memory per block: " << sharedMemPerBlock << " bytes" << std::endl;
-    // std::cout << "- Matrix dimensions: " << m << "x" << n << "x" << o << std::endl;
+    // printf("Calculated optimal tile width: %d\n", tileWidth);
+    // printf("Based on:\n");
+    // printf("- Max threads per block: %d\n", maxThreadsPerBlock);
+    // printf("- Max block dimensions: %dx%d\n", maxBlockDimX, maxBlockDimY);
+    // printf("- Shared memory per block: %d bytes\n", sharedMemPerBlock);
+    // printf("- Matrix dimensions: %dx%dx%d\n", m, n, o);
 
     return tileWidth;
 }
@@ -170,7 +177,7 @@ void matrixMulTiled(float* M, float* N, float* P, int m, int n, int o) {
 }
 
 float benchmark(void (*func)(float*, float*, float*, int, int, int), float* M, float* N, float* P, int m, int n, int o,
-                int warmup = 25, int reps = 100) {
+                int warmup, int reps) {
     // Warmup
     for (int i = 0; i < warmup; ++i) {
         func(M, N, P, m, n, o);
@@ -201,7 +208,7 @@ float benchmark(void (*func)(float*, float*, float*, int, int, int), float* M, f
     return milliseconds / reps;
 }
 
-bool allclose(float* M, float* N, int m, int n, float tol = 1e-5) {
+bool allclose(float* M, float* N, int m, int n, float tol) {
     for (int i = 0; i < m; ++i) {
         for (int j = 0; j < n; ++j) {
             if (fabs(M[i * n + j] - N[i * n + j]) > tol) {
@@ -215,9 +222,9 @@ bool allclose(float* M, float* N, int m, int n, float tol = 1e-5) {
 void printMatrix(float* matrix, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            std::cout << std::setw(6) << matrix[i * cols + j] << " ";
+            printf("%6g ", matrix[i * cols + j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
 
@@ -225,40 +232,39 @@ int main() {
     // change these to experiment with sizes, here I get a substantial boost just via using TILING
     int m = 2010, n = 3200, o = 9111;
 
-    float* M = new float[m * n];
-    float* N = new float[n * o];
-    float* P1 = new float[m * o];
-    float* P2 = new float[m * o];
+    float* M = (float*)malloc(m * n * sizeof(float));
+    float* N = (float*)malloc(n * o * sizeof(float));
+    float* P1 = (float*)malloc(m * o * sizeof(float));
+    float* P2 = (float*)malloc(m * o * sizeof(float));
 
     for (int i = 0; i < m * n; ++i) {
-        M[i] = static_cast<float>(1);
+        M[i] = (float)1;
     }
     for (int i = 0; i < n * o; ++i) {
-        N[i] = static_cast<float>(1.5);
+        N[i] = (float)1.5;
     }
 
     // Benchmark matrixMulNaive function
-    float avgTimeMatrixMulTiled = benchmark(matrixMulTiled, M, N, P1, m, n, o);
-    std::cout << "Average time for matrixMulTiled: " << avgTimeMatrixMulTiled << " ms" << std::endl;
+    float avgTimeMatrixMulTiled = benchmark(matrixMulTiled, M, N, P1, m, n, o, 25, 100);
+    printf("Average time for matrixMulTiled: %f ms\n", avgTimeMatrixMulTiled);
 
-    float avgTimeMatrixMulNavie = benchmark(matrixMulNaive, M, N, P2, m, n, o);
-    std::cout << "Average time for matrixMulNaive: " << avgTimeMatrixMulNavie << " ms" << std::endl;
-
-    bool same = allclose(P1, P2, m, o);
-    std::cout << "Outputs are " << (same ? "approximately the same" : "different") << std::endl;
+    float avgTimeMatrixMulNavie = benchmark(matrixMulNaive, M, N, P2, m, n, o, 25, 100);
+    printf("Average time for matrixMulNaive: %f ms\n", avgTimeMatrixMulNavie);
+    bool same = allclose(P1, P2, m, o, 1e-5f);
+    printf("Outputs are %s\n", same ? "approximately the same" : "different");
 
     if (true && !same) {
-        std::cout << "\nMatrix P1 (from matrixMulTiling):" << std::endl;
+        printf("\nMatrix P1 (from matrixMulTiling):\n");
         printMatrix(P1, m, o);
 
-        std::cout << "\nMatrix P2 (from matrixMulNaive):" << std::endl;
+        printf("\nMatrix P2 (from matrixMulNaive):\n");
         printMatrix(P2, m, o);
     }
 
-    delete[] M;
-    delete[] N;
-    delete[] P1;
-    delete[] P2;
+    free(M);
+    free(N);
+    free(P1);
+    free(P2);
 
     return 0;
 }

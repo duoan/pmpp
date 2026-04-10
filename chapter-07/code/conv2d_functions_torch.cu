@@ -1,6 +1,7 @@
 #include <torch/all.h>
 #include <c10/cuda/CUDAStream.h>
 #include <torch/extension.h>
+#include <cstdio>
 
 #include "conv2d_kernels.cuh"
 
@@ -16,7 +17,7 @@ torch::Tensor conv2d_torch(torch::Tensor input, torch::Tensor kernel, int r) {
 
     int height = input.size(0);
     int width = input.size(1);
-    auto output = torch::empty_like(input);
+    torch::Tensor output = torch::empty_like(input);
 
     const dim3 dimBlock(BLOCK_SIZE, BLOCK_SIZE);
     dim3 dimGrid(cdiv(width, dimBlock.x), cdiv(height, dimBlock.y));
@@ -36,12 +37,12 @@ torch::Tensor conv2d_torch_with_constant_memory(torch::Tensor input, torch::Tens
 
     int height = input.size(0);
     int width = input.size(1);
-    auto output = torch::empty_like(input);
+    torch::Tensor output = torch::empty_like(input);
     cudaError_t error;
 
     error = initConstFilter(kernel.data_ptr<float>(), r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return output;
     }
 
@@ -63,12 +64,12 @@ torch::Tensor conv2d_torch_with_tiled_convolution(torch::Tensor input, torch::Te
 
     int height = input.size(0);
     int width = input.size(1);
-    auto output = torch::empty_like(input);
+    torch::Tensor output = torch::empty_like(input);
     cudaError_t error;
 
     error = initConstFilter(kernel.data_ptr<float>(), r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return output;
     }
 
@@ -90,12 +91,12 @@ torch::Tensor conv2d_torch_with_tiled_convolution_utilizing_caching(torch::Tenso
 
     int height = input.size(0);
     int width = input.size(1);
-    auto output = torch::empty_like(input);
+    torch::Tensor output = torch::empty_like(input);
     cudaError_t error;
 
     error = initConstFilter(kernel.data_ptr<float>(), r);
     if (error != cudaSuccess) {
-        std::cout << "Failed to initialize constant memory: " << cudaGetErrorString(error) << std::endl;
+        fprintf(stderr, "Failed to initialize constant memory: %s\n", cudaGetErrorString(error));
         return output;
     }
 

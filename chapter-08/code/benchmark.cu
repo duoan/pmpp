@@ -2,9 +2,8 @@
 #include <string.h>
 #include <time.h>
 
-#include <functional>
-#include <iostream>
-#include <vector>
+#include <cstdio>
+#include <cstdlib>
 
 #include "stencil.h"
 
@@ -25,7 +24,7 @@ void clear_l2() {
     gpuErrchk(cudaMemset(gpu_scratch_l2_clear, 0, l2_clear_size));
 }
 
-bool arrays_allclose(float* a, float* b, unsigned int size, float rtol = 1e-5f, float atol = 1e-8f) {
+bool arrays_allclose(float* a, float* b, unsigned int size, float rtol, float atol) {
     for (unsigned int i = 0; i < size; i++) {
         float diff = fabs(a[i] - b[i]);
         float tolerance = atol + rtol * fmax(fabs(a[i]), fabs(b[i]));
@@ -39,7 +38,7 @@ bool arrays_allclose(float* a, float* b, unsigned int size, float rtol = 1e-5f, 
     return true;
 }
 
-float* generate_random_3d_data(unsigned int N, unsigned int seed = 42) {
+float* generate_random_3d_data(unsigned int N, unsigned int seed) {
     float* data = (float*)malloc(N * N * N * sizeof(float));
     if (data == NULL) {
         printf("Memory allocation failed!\n");
@@ -56,7 +55,7 @@ float* generate_random_3d_data(unsigned int N, unsigned int seed = 42) {
 // Benchmark function for stencil operations
 float benchmark_stencil(void (*func)(float*, float*, unsigned int, int, int, int, int, int, int, int), float* in,
                         float* out, unsigned int N, int c0, int c1, int c2, int c3, int c4, int c5, int c6,
-                        int warmup = 5, int reps = 20) {
+                        int warmup, int reps) {
     unsigned int total_size = N * N * N;
 
     // Warmup runs
@@ -94,7 +93,7 @@ float benchmark_stencil(void (*func)(float*, float*, unsigned int, int, int, int
 // Special benchmark function for sequential (CPU) implementation
 float benchmark_stencil_sequential(void (*func)(float*, float*, unsigned int, int, int, int, int, int, int, int),
                                    float* in, float* out, unsigned int N, int c0, int c1, int c2, int c3, int c4,
-                                   int c5, int c6, int warmup = 2, int reps = 5) {
+                                   int c5, int c6, int warmup, int reps) {
     unsigned int total_size = N * N * N;
 
     // Warmup runs
@@ -122,9 +121,11 @@ float benchmark_stencil_sequential(void (*func)(float*, float*, unsigned int, in
 
 int main(int argc, char const* argv[]) {
     // Use different sizes for testing
-    std::vector<unsigned int> test_sizes = {32, 64, 128};
+    unsigned int test_sizes[] = {32, 64, 128};
+    int num_test_sizes = (int)(sizeof(test_sizes) / sizeof(test_sizes[0]));
 
-    for (unsigned int N : test_sizes) {
+    for (int test_idx = 0; test_idx < num_test_sizes; ++test_idx) {
+        unsigned int N = test_sizes[test_idx];
         printf("\n================================================================================\n");
         printf("Benchmarking 3D Stencil Operations - Grid Size: %dx%dx%d\n", N, N, N);
         printf("================================================================================\n");
@@ -132,7 +133,7 @@ int main(int argc, char const* argv[]) {
         unsigned int total_size = N * N * N;
 
         // Allocate memory for input and outputs
-        float* in = generate_random_3d_data(N);
+        float* in = generate_random_3d_data(N, 42);
         if (in == NULL) {
             printf("Failed to generate input data\n");
             continue;
@@ -157,32 +158,34 @@ int main(int argc, char const* argv[]) {
         printf("Memory per array: %.2f MB\n", (total_size * sizeof(float)) / (1024.0f * 1024.0f));
         printf("OUT_TILE_DIM: %d, IN_TILE_DIM: %d\n\n", OUT_TILE_DIM_SMALL, OUT_TILE_DIM_SMALL);
 
-        std::vector<BenchmarkResult> results;
+        BenchmarkResult results[5];
+        int results_count = 0;
 
         float sequential_time =
-            benchmark_stencil_sequential(stencil_3d_sequential, in, out_sequential, N, c0, c1, c2, c3, c4, c5, c6);
-        results.push_back({"Sequential", sequential_time, out_sequential});
+            benchmark_stencil_sequential(stencil_3d_sequential, in, out_sequential, N, c0, c1, c2, c3, c4, c5, c6, 2, 5);
+        results[results_count++] = (BenchmarkResult){"Sequential", sequential_time, out_sequential};
 
-        float basic_time = benchmark_stencil(stencil_3d_parallel_basic, in, out_basic, N, c0, c1, c2, c3, c4, c5, c6);
-        results.push_back({"Parallel Basic", basic_time, out_basic});
+        float basic_time = benchmark_stencil(stencil_3d_parallel_basic, in, out_basic, N, c0, c1, c2, c3, c4, c5, c6, 5, 20);
+        results[results_count++] = (BenchmarkResult){"Parallel Basic", basic_time, out_basic};
 
         float shared_time =
-            benchmark_stencil(stencil_3d_parallel_shared_memory, in, out_shared, N, c0, c1, c2, c3, c4, c5, c6);
-        results.push_back({"Shared Memory", shared_time, out_shared});
+            benchmark_stencil(stencil_3d_parallel_shared_memory, in, out_shared, N, c0, c1, c2, c3, c4, c5, c6, 5, 20);
+        results[results_count++] = (BenchmarkResult){"Shared Memory", shared_time, out_shared};
 
         float coarsening_time =
-            benchmark_stencil(stencil_3d_parallel_thread_coarsening, in, out_coarsening, N, c0, c1, c2, c3, c4, c5, c6);
-        results.push_back({"Thread Coarsening", coarsening_time, out_coarsening});
+            benchmark_stencil(stencil_3d_parallel_thread_coarsening, in, out_coarsening, N, c0, c1, c2, c3, c4, c5, c6, 5, 20);
+        results[results_count++] = (BenchmarkResult){"Thread Coarsening", coarsening_time, out_coarsening};
 
         float register_time =
-            benchmark_stencil(stencil_3d_parallel_register_tiling, in, out_register, N, c0, c1, c2, c3, c4, c5, c6);
-        results.push_back({"Register Tiling", register_time, out_register});
+            benchmark_stencil(stencil_3d_parallel_register_tiling, in, out_register, N, c0, c1, c2, c3, c4, c5, c6, 5, 20);
+        results[results_count++] = (BenchmarkResult){"Register Tiling", register_time, out_register};
 
         printf("\nResults:\n");
         printf("Implementation           | Time (ms) | Speedup vs Sequential | Speedup vs Basic\n");
         printf("-------------------------|-----------|----------------------|------------------\n");
 
-        for (const auto& result : results) {
+        for (int i = 0; i < results_count; ++i) {
+            BenchmarkResult result = results[i];
             float speedup_vs_seq = sequential_time / result.time_ms;
             float speedup_vs_basic = basic_time / result.time_ms;
             printf("%-23s | %8.3f  | %19.2fx | %15.2fx\n", result.name, result.time_ms, speedup_vs_seq,
@@ -193,8 +196,8 @@ int main(int argc, char const* argv[]) {
         printf("\nCorrectness Verification:\n");
         bool all_correct = true;
 
-        for (size_t i = 1; i < results.size(); i++) {
-            bool correct = arrays_allclose(out_sequential, results[i].output, total_size);
+        for (int i = 1; i < results_count; ++i) {
+            bool correct = arrays_allclose(out_sequential, results[i].output, total_size, 1e-5f, 1e-8f);
             printf("%s vs Sequential: %s\n", results[i].name, correct ? "✓ PASS" : "✗ FAIL");
             if (!correct) {
                 all_correct = false;

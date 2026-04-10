@@ -46,8 +46,8 @@ torch::Tensor matrixRowMul(torch::Tensor M, torch::Tensor N) {
     assert(M.dtype() == torch::kFloat32 && N.dtype() == torch::kFloat32);
     assert(M.size(0) == M.size(1) && N.size(0) == N.size(1) && M.size(0) == N.size(0));
 
-    const auto size = M.size(0);
-    auto P = torch::empty_like(N);
+    int size = (int)M.size(0);
+    torch::Tensor P = torch::empty_like(N);
 
     dim3 dimBlock(16);
     dim3 dimGrid(cdiv(size, dimBlock.x));
@@ -64,8 +64,8 @@ torch::Tensor matrixColMul(torch::Tensor M, torch::Tensor N) {
     assert(M.dtype() == torch::kFloat32 && N.dtype() == torch::kFloat32);
     assert(M.size(0) == M.size(1) && N.size(0) == N.size(1) && M.size(0) == N.size(0));
 
-    const auto size = M.size(0);
-    auto P = torch::empty_like(N);
+    int size = (int)M.size(0);
+    torch::Tensor P = torch::empty_like(N);
 
     dim3 dimBlock(16);
     dim3 dimGrid(cdiv(size, dimBlock.x));

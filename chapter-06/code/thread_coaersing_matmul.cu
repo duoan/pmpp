@@ -15,8 +15,8 @@
 #include <cuda_runtime.h>
 
 #include <cmath>
-#include <iomanip>
-#include <iostream>
+#include <cstdio>
+#include <cstdlib>
 #define TILE_WIDTH 32
 #define COARSE_FACTOR 4
 
@@ -219,45 +219,45 @@ bool allclose(float* M, float* N, int m, int n, float tol = 1e-5) {
 void printMatrix(float* matrix, int rows, int cols) {
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            std::cout << std::setw(6) << matrix[i * cols + j] << " ";
+            printf("%6g ", matrix[i * cols + j]);
         }
-        std::cout << std::endl;
+        printf("\n");
     }
 }
 
 int main() {
     int m = 4096, n = 4096, o = 4096;
 
-    float* M = new float[m * n];
-    float* N = new float[n * o];
-    float* P1 = new float[m * o];
-    float* P2 = new float[m * o];
+    float* M = (float*)malloc(m * n * sizeof(float));
+    float* N = (float*)malloc(n * o * sizeof(float));
+    float* P1 = (float*)malloc(m * o * sizeof(float));
+    float* P2 = (float*)malloc(m * o * sizeof(float));
 
     for (int i = 0; i < m * n; ++i) {
-        M[i] = static_cast<float>(1);
+        M[i] = (float)1;
     }
     for (int i = 0; i < n * o; ++i) {
-        N[i] = static_cast<float>(1.5);
+        N[i] = (float)1.5;
     }
 
     float avgTimeMatrixMulTiling = benchmark(matrixMulTilingWithThreadCoarsing, M, N, P1, m, n, o);
-    std::cout << "Average time for matrixMulTilingWithThreadCoarsing: " << avgTimeMatrixMulTiling << " ms" << std::endl;
+    printf("Average time for matrixMulTilingWithThreadCoarsing: %f ms\n", avgTimeMatrixMulTiling);
 
     float avgTimeMatrixMul = benchmark(matrixMul, M, N, P2, m, n, o);
-    std::cout << "Average time for matrixMul: " << avgTimeMatrixMul << " ms" << std::endl;
+    printf("Average time for matrixMul: %f ms\n", avgTimeMatrixMul);
 
     bool same = allclose(P1, P2, m, o);
-    std::cout << "Outputs are " << (same ? "approximately the same" : "different") << std::endl;
+    printf("Outputs are %s\n", same ? "approximately the same" : "different");
 
     // printf("\n");
     // printMatrix(P1, m, o);
     // printf("\n");
     // printMatrix(P2, m, o);
 
-    delete[] M;
-    delete[] N;
-    delete[] P1;
-    delete[] P2;
+    free(M);
+    free(N);
+    free(P1);
+    free(P2);
 
     return 0;
 }
