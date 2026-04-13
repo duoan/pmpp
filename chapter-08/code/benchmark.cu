@@ -2,7 +2,7 @@
 #include <string.h>
 #include <time.h>
 
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 
 #include "stencil.h"

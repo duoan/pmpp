@@ -15,7 +15,7 @@
 #include <cuda_runtime.h>
 
 #include <cmath>
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 #define TILE_WIDTH 32
 #define COARSE_FACTOR 4

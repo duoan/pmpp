@@ -1,7 +1,7 @@
 #include <torch/all.h>
 #include <c10/cuda/CUDAStream.h>
 #include <torch/extension.h>
-#include <cstdio>
+#include <stdio.h>
 
 #include "conv2d_kernels.cuh"
 

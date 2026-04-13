@@ -1,8 +1,16 @@
 {
-  "julia.executablePath": "${userHome}/.juliaup/bin/julia",
-  "julia.environmentPath": "${workspaceFolder}",
+  "C_Cpp.intelliSenseEngine": "disabled",
   "files.associations": {
-    "*.cu": "cuda-cpp",
-    "*.cuh": "cuda-cpp"
-  }
+      "*.cu": "cuda-cpp",
+      "*.cuh": "cuda-cpp"
+  },
+  "clangd.arguments": [
+      "--background-index",
+      "--clang-tidy",
+      "--header-insertion=iwyu",
+      "--completion-style=detailed",
+      "--function-arg-placeholders",
+      "-j=8"
+  ],
+  "clangd.path": "/usr/local/bin/clangd"
 }

@@ -4,13 +4,26 @@
             "name": "Linux",
             "includePath": [
                 "${workspaceFolder}/**",
+                "/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12/",
+
+                "/usr/local/cuda/include",
+                "/usr/local/cuda/targets/x86_64-linux/include",
+
                 "${workspaceFolder}/.venv/lib/python3.12/site-packages/torch/include",
                 "${workspaceFolder}/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include",
+                "${workspaceFolder}/.venv/lib/python3.12/site-packages/torch/include/TH",
+                "${workspaceFolder}/.venv/lib/python3.12/site-packages/torch/include/THC",
                 "/usr/include",
-                "/usr/local/include",
-                "/usr/local/cuda/include"
+                "/usr/local/include"
             ],
-            "defines": ["__CUDACC__"],
+            "defines": [
+                "__CUDACC__",
+                "__CUDA_ARCH__=900",
+                "TORCH_API_INCLUDE_EXTENSION_H"
+            ],
+            "forcedInclude": [
+              "/usr/local/cuda/include/cuda_runtime.h"
+            ],
             "compilerPath": "/usr/bin/g++",
             "cStandard": "c17",
             "cppStandard": "c++17",

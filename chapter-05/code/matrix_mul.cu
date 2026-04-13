@@ -1,9 +1,12 @@
-#include <cstdio>
+#include <stdio.h>
+#include <math.h>
 #include <cuda_runtime.h>
 #include <assert.h>
 
 
+
 #define TILE_WIDTH 32
+#define N 1024 // Matrix width (Assuming square matrices)
 
 // =====================================================================
 // Tiled Matrix Multiplication Kernel: C = A * B   (square: width x width)
@@ -204,15 +207,15 @@ __global__ void matmul_kernel(
 }
 
 int main() {
-    int width = 1024; // Matrix width (Assuming square matrices)
-    size_t size = width * width * sizeof(float);
+    
+    size_t size = N * N * sizeof(float);
 
     // Allocate and initialize host memory
     float* h_A = (float*)malloc(size);
     float* h_B = (float*)malloc(size);
     float* h_C = (float*)malloc(size);
 
-    for (int i = 0; i < width * width; ++i) {
+    for (int i = 0; i < N * N; ++i) {
         h_A[i] = (float)(rand() % 100);
         h_B[i] = (float)(rand() % 100);
     }
@@ -285,13 +288,13 @@ int main() {
     //  Each block's 1024 threads compute a 32x32 sub-block of output matrix C
     //  Total: 1024 blocks x 1024 threads/block = 1,048,576 threads (= 1024x1024)
     //
-    dim3 dimGrid(width / TILE_WIDTH, width / TILE_WIDTH);
+    dim3 dimGrid(N / TILE_WIDTH, N / TILE_WIDTH);
 
     cudaEventRecord(start);
 
     // <<<dimGrid, dimBlock>>> is CUDA's kernel launch syntax
     // CPU returns immediately (asynchronous), GPU executes in the background
-    matmul_kernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, width);
+    matmul_kernel<<<dimGrid, dimBlock>>>(d_A, d_B, d_C, N);
 
     cudaEventRecord(stop);
 
@@ -303,7 +306,7 @@ int main() {
     printf("Kernel execution time: %f ms\n", ms);
 
     // FLOPs for matrix multiply: 2*N^3 (N^3 multiplications + N^3 additions)
-    double gflops = 2.0 * width * width * width / (ms * 1e6);
+    double gflops = 2.0 * N * N * N / (ms * 1e6);
     printf("Performance: %f GFLOPS\n", gflops);
 
     cudaEventDestroy(start);
@@ -313,14 +316,15 @@ int main() {
     cudaMemcpy(h_C, d_C, size, cudaMemcpyDeviceToHost);
 
     // Verify results with CPU multiplication for correctness
-    for (int i = 0; i < width; ++i) {
-        for (int j = 0; j < width; ++j) {
+    #pragma omp parallel for collapse(2)
+    for (int i = 0; i < N; ++i) {
+        for (int j = 0; j < N; ++j) {
             float sum = 0.0;
-            for (int k = 0; k < width; ++k) {
-                sum += h_A[i * width + k] * h_B[k * width + j];
+            for (int k = 0; k < N; ++k) {
+                sum += h_A[i * N + k] * h_B[k * N + j];
             }
             // printf("%d %d %f %f\n", i, j, h_C[i * width + j], sum);
-            assert(fabs(h_C[i * width + j] - sum) < 1e-3);
+            assert(fabs(h_C[i * N + j] - sum) < 1e-3);
         }
     }
     printf("Matrix multiplication completed successfully.\n");

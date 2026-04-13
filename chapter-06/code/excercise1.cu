@@ -2,7 +2,7 @@
 
 #include <cuda_runtime.h>
 
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 #include <cstring>
 #define TILE_WIDTH 2

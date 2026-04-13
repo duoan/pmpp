@@ -1,6 +1,5 @@
 #include <cuda_runtime.h>
-#include <cstdio>
-#include <cstdlib>
+#include <stdio.h>
 
 
 // Definitions for utility functions

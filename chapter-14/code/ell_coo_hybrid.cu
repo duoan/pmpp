@@ -1,6 +1,6 @@
 #include <cuda_runtime.h>
 
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 
 typedef struct {

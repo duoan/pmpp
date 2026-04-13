@@ -2,7 +2,7 @@
 #include <torch/all.h>
 #include <c10/cuda/CUDAException.h>
 #include <c10/cuda/CUDAStream.h>
-#include <cassert>
+#include <assert.h>
 
 
 __global__ void vecAddKernel(float* A, float* B, float* C, int n) {

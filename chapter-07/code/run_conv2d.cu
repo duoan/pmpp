@@ -1,7 +1,7 @@
 // nvcc run_conv2d.cu conv2d_functions.cu conv2d_kernels.cu -o conv2d_program
 #include <assert.h>
 
-#include <cstdio>
+#include <stdio.h>
 
 #include "conv2d_functions.cuh"
 #include "conv2d_kernels.cuh"

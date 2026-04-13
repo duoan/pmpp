@@ -16,7 +16,8 @@
 //   gridDim  = (ceil(N / (BK*V)), ceil(N / (BK*V)))
 //   每个 block 覆盖 C 中 (BK*V) × (BK*V) 的输出区域
 
-#include <cstdio>
+#include <stdio.h>
+#include <math.h>
 #include <cuda_runtime.h>
 #include <assert.h>
 

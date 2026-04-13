@@ -5,7 +5,7 @@
 #include <cuda_runtime.h>
 
 #include <cmath>
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
 
 static int min_int(int a, int b) {

@@ -1,4 +1,4 @@
-#include <cstdio>
+#include <stdio.h>
 
 #include "conv2d_functions.cuh"
 #include "conv2d_kernels.cuh"

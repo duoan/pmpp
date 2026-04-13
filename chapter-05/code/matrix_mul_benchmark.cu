@@ -3,9 +3,10 @@
 #include <cuda_runtime.h>
 
 #include <cmath>
-#include <cstdio>
+#include <stdio.h>
 #include <cstdlib>
-#define TILE_WIDTH 64
+
+#define TILE_WIDTH 32
 
 #define gpuErrchk(ans) \
     { gpuAssert((ans), __FILE__, __LINE__); }

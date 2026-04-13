@@ -1,5 +1,5 @@
 #include <cuda_runtime.h>
-#include <cstdio>
+#include "stdio.h"
 
 __global__ void reduce_sum(int* input, int* output, int N) {
     extern __shared__ int blockSum[];
