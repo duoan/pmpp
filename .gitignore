@@ -94,3 +94,5 @@ chapter-16/code/autograd_manual/data/
 graphify-out/cache/
 .cache/
 .idea/
+
+cuda-sgemm/sgemm

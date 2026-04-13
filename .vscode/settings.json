@@ -12,5 +12,10 @@
       "--function-arg-placeholders",
       "-j=8"
   ],
-  "clangd.path": "/usr/local/bin/clangd"
+  "clangd.path": "/usr/local/bin/clangd",
+  "editor.formatOnSave": true,
+  "[cuda-cpp]": {
+      "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+      "editor.formatOnSave": true
+  }
 }

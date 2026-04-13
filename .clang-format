@@ -1,25 +1,2 @@
 Language: Cpp
 BasedOnStyle: Google
-DerivePointerAlignment: false
-PointerAlignment: Left
-ColumnLimit: 120
-IndentWidth: 4
-AccessModifierOffset: -4
-NamespaceIndentation: All
-InsertNewlineAtEOF: true
-AllowShortFunctionsOnASingleLine: Empty
-AllowShortIfStatementsOnASingleLine: false
-AllowShortLoopsOnASingleLine: false
-SortIncludes: CaseInsensitive
-IncludeCategories:
-  - Regex: '^<.*\.h>'
-    Priority: 1
-  - Regex: '^<.*'
-    Priority: 2
-  - Regex: '.*'
-    Priority: 3
-InsertBraces: true
-RemoveBracesLLVM: false
-BraceWrapping:
-  AfterControlStatement: false
-  BeforeElse: false
