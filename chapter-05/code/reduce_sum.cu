@@ -1,66 +1,61 @@
 #include <cuda_runtime.h>
-#include "stdio.h"
+#include <stdio.h>
 
-__global__ void reduce_sum(int* input, int* output, int N) {
-    extern __shared__ int blockSum[];
-    int tid = threadIdx.x;
-    int idx = blockIdx.x * blockDim.x + tid;
+__global__ void reduce_sum(double* input, double* output, int N) {
+    extern __shared__ double blockSum[];
+    unsigned int tid = threadIdx.x;
+
+    unsigned int idx = blockIdx.x * (blockDim.x * 2) + tid;
     if (idx < N) {
-        blockSum[tid] = input[idx];
+        blockSum[tid] = input[idx] + (idx + blockDim.x < N ? input[idx + blockDim.x] : 0.0);
     } else {
-        blockSum[tid] = 0;
+        blockSum[tid] = 0.0;
     }
     __syncthreads();
-    for (int stride = 1; stride < blockDim.x; stride *= 2) {
-        if (tid % (2 * stride) == 0) {
+
+    for (unsigned int stride = blockDim.x / 2; stride > 0; stride >>= 1) {
+        if (tid < stride) {
             blockSum[tid] += blockSum[tid + stride];
         }
         __syncthreads();
     }
+
     if (tid == 0) {
         atomicAdd(output, blockSum[0]);
     }
 }
 
 int main() {
-    const int N = 1024;
-    const int bytes = N * sizeof(int);
-    
-    // Allocate host memory
-    int* h_input = (int*)malloc(bytes);
-    int* h_output = (int*)malloc(sizeof(int));
+    const int N = 1 << 20;
+    const int bytes = N * sizeof(double);
 
-    // Initialize input dat
+    double* h_input = (double*)malloc(bytes);
+    double h_output = 0.0;
+
     for (int i = 0; i < N; ++i) {
-        h_input[i] = i; // Filling the array with 1s
+        h_input[i] = (double)(i + 1);
     }
 
-    h_output[0] = 0;
-
-    // Allocate device memory
-    int *d_input, *d_output;
+    double *d_input, *d_output;
     cudaMalloc((void**)&d_input, bytes);
-    cudaMalloc((void**)&d_output, sizeof(int));
+    cudaMalloc((void**)&d_output, sizeof(double));
 
-    // Copy input data to device
     cudaMemcpy(d_input, h_input, bytes, cudaMemcpyHostToDevice);
-    cudaMemcpy(d_input, h_input, sizeof(int), cudaMemcpyHostToDevice);
+    cudaMemset(d_output, 0, sizeof(double));
 
-    // Kernel execution configuration
-    int blockSize = 256;
-    int grideSize = (N + blockSize - 1) / blockSize;
-    reduce_sum<<<grideSize, blockSize, blockSize * sizeof(int)>>>(d_input, d_output, N);
+    int threadsPerBlock = 512;
+    int blockPerGrid = (N + threadsPerBlock * 2 - 1) / (threadsPerBlock * 2);
+    reduce_sum<<<blockPerGrid, threadsPerBlock, threadsPerBlock * sizeof(double)>>>(d_input, d_output, N);
 
-    // Synchronize device
     cudaDeviceSynchronize();
 
-    cudaMemcpy(h_output, d_output, sizeof(int), cudaMemcpyDeviceToHost);
-    printf("Reduced Sum: %d\n", h_output[0]);
-    
+    cudaMemcpy(&h_output, d_output, sizeof(double), cudaMemcpyDeviceToHost);
+    double expected = (double)N * (N + 1) / 2.0;
+    printf("Reduced Sum: %.0f, expected %.0f\n", h_output, expected);
+
     cudaFree(d_input);
     cudaFree(d_output);
     free(h_input);
-    free(h_output);
 
     return 0;
 }
