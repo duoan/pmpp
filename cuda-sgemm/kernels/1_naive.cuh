@@ -26,7 +26,8 @@ __global__ void sgemm_naive(int M, int N, int K, float alpha, const float* A,
   // so we launched M * N threads,
   // finally, the total flops = M * N * (2K + 3)
   // when M = N = K = 4092
-  // 137,086,926,768 flops => 137 GFLOPS
+  // 137,086,926,768 FLOPs => ~137 GFLOPs (total work, not speed)
+  // performance (GFLOPS) = 137 GFLOPs / time_sec
 
   // data to read
   // per thread: K * 2 * 4 + 4 => total: M * N * (8K + 4)

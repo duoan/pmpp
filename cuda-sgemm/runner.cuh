@@ -10,9 +10,19 @@
 
 #define CEIL_DIV(M, N) (((M) + (N) - 1) / (N))
 
-void cudaCheck(cudaError_t error, const char *file,
-               int line); // CUDA error check
-void CudaDeviceInfo();    // print CUDA information
+void cudaCheck(cudaError_t error, const char *file, int line);
+void cublasCheck(cublasStatus_t status, const char *file, int line);
+
+#define CUDA_CHECK(err) cudaCheck(err, __FILE__, __LINE__)
+
+#define CUDA_KERNEL_CHECK()                      \
+  do {                                           \
+    cudaCheck(cudaGetLastError(), __FILE__, __LINE__); \
+  } while (0)
+
+#define CUBLAS_CHECK(err) cublasCheck(err, __FILE__, __LINE__)
+
+void CudaDeviceInfo();
 
 void range_init_matrix(float *mat, int N);
 void randomize_matrix(float *mat, int N);

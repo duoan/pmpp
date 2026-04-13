@@ -3,8 +3,8 @@
 #include <fstream>
 #include <iomanip>
 
-#include "kernels.cuh"
 #include "runner.cuh"
+#include "kernels.cuh"
 
 float get_sec() {
   struct timeval time;
@@ -20,37 +20,67 @@ void cudaCheck(cudaError_t error, const char* file, int line) {
            cudaGetErrorString(error));
     exit(EXIT_FAILURE);
   }
-};
+}
+
+void cublasCheck(cublasStatus_t status, const char* file, int line) {
+  if (status != CUBLAS_STATUS_SUCCESS) {
+    printf("[cuBLAS ERROR] at file %s:%d: status code %d\n", file, line,
+           status);
+    exit(EXIT_FAILURE);
+  }
+}
 
 void CudaDeviceInfo() {
   int deviceId;
-
   cudaGetDevice(&deviceId);
 
   cudaDeviceProp props{};
   cudaGetDeviceProperties(&props, deviceId);
 
+  int clockRateKHz = 0, memClockRateKHz = 0;
+  cudaDeviceGetAttribute(&clockRateKHz, cudaDevAttrClockRate, deviceId);
+  cudaDeviceGetAttribute(&memClockRateKHz, cudaDevAttrMemoryClockRate,
+                         deviceId);
+
+  // FP32 cores per SM varies by arch; 128 is typical for Ampere/Blackwell
+  double fp32_tflops =
+      (double)props.multiProcessorCount * 128 * 2 * clockRateKHz * 1e-9;
+  // memClockRate (KHz) * busWidth (bits) * 2 (DDR) / 8 (bits->bytes)
+  double mem_bw_gb =
+      (double)memClockRateKHz * 1e-6 * (props.memoryBusWidth / 8) * 2;
+
   printf(
-      "Device ID: %d\n\
-    Name: %s\n\
-    Compute Capability: %d.%d\n\
-    memoryBusWidth: %d\n\
-    maxThreadsPerBlock: %d\n\
-    maxThreadsPerMultiProcessor: %d\n\
-    maxRegsPerBlock: %d\n\
-    maxRegsPerMultiProcessor: %d\n\
-    totalGlobalMem: %zuMB\n\
-    sharedMemPerBlock: %zuKB\n\
-    sharedMemPerMultiprocessor: %zuKB\n\
-    totalConstMem: %zuKB\n\
-    multiProcessorCount: %d\n\
-    Warp Size: %d\n",
-      deviceId, props.name, props.major, props.minor, props.memoryBusWidth,
-      props.maxThreadsPerBlock, props.maxThreadsPerMultiProcessor,
-      props.regsPerBlock, props.regsPerMultiprocessor,
-      props.totalGlobalMem / 1024 / 1024, props.sharedMemPerBlock / 1024,
-      props.sharedMemPerMultiprocessor / 1024, props.totalConstMem / 1024,
-      props.multiProcessorCount, props.warpSize);
+      "Device ID: %d\n"
+      "  Name:                          %s\n"
+      "  Compute Capability:            %d.%d\n"
+      "  Warp Size:                     %d\n"
+      "  SM Count:                      %d\n"
+      "  Clock Rate:                    %.0f MHz\n"
+      "  FP32 Peak (est.):              %.1f TFLOPS\n"
+      "\n"
+      "  Global Memory:                 %zu MB\n"
+      "  Memory Bus Width:              %d-bit\n"
+      "  Memory Clock:                  %.0f MHz\n"
+      "  Memory Bandwidth (est.):       %.1f GB/s\n"
+      "  L2 Cache Size:                 %d KB\n"
+      "\n"
+      "  Shared Memory / Block:         %zu KB\n"
+      "  Shared Memory / SM:            %zu KB\n"
+      "  Registers / Block:             %d\n"
+      "  Registers / SM:                %d\n"
+      "\n"
+      "  Max Threads / Block:           %d\n"
+      "  Max Threads / SM:              %d\n"
+      "  Max Blocks / SM:               %d\n"
+      "  Const Memory:                  %zu KB\n",
+      deviceId, props.name, props.major, props.minor, props.warpSize,
+      props.multiProcessorCount, clockRateKHz / 1000.0, fp32_tflops,
+      props.totalGlobalMem / 1024 / 1024, props.memoryBusWidth,
+      memClockRateKHz / 1000.0, mem_bw_gb, props.l2CacheSize / 1024,
+      props.sharedMemPerBlock / 1024, props.sharedMemPerMultiprocessor / 1024,
+      props.regsPerBlock, props.regsPerMultiprocessor, props.maxThreadsPerBlock,
+      props.maxThreadsPerMultiProcessor, props.maxBlocksPerMultiProcessor,
+      props.totalConstMem / 1024);
 };
 
 void randomize_matrix(float* mat, int N) {
@@ -130,9 +160,10 @@ int div_ceil(int numerator, int denominator) {
 
 void run_sgemm_naive(int M, int N, int K, float alpha, float* A, float* B,
                      float beta, float* C) {
-  dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
   dim3 blockDim(32, 32);
+  dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
   sgemm_naive<<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+  CUDA_KERNEL_CHECK();
 }
 
 void run_kernel(int kernel_num, int M, int N, int K, float alpha, float* A,

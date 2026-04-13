@@ -1,12 +1,7 @@
-#include <cublas_v2.h>
-#include <cuda_runtime.h>
-
 #include <cstdio>
 #include <cstdlib>
 
 #include "runner.cuh"
-
-#define cudaCheck(err) (cudaCheck(err, __FILE__, __LINE__))
 
 const int WARMUP_RUNS = 5;
 const int BENCH_RUNS = 10;
@@ -44,20 +39,20 @@ int main(int argc, char** argv) {
 
   // device memory
   float *dA, *dB, *dC, *dC_ref;
-  cudaCheck(cudaMalloc(&dA, M * K * sizeof(float)));
-  cudaCheck(cudaMalloc(&dB, K * N * sizeof(float)));
-  cudaCheck(cudaMalloc(&dC, M * N * sizeof(float)));
-  cudaCheck(cudaMalloc(&dC_ref, M * N * sizeof(float)));
+  CUDA_CHECK(cudaMalloc(&dA, M * K * sizeof(float)));
+  CUDA_CHECK(cudaMalloc(&dB, K * N * sizeof(float)));
+  CUDA_CHECK(cudaMalloc(&dC, M * N * sizeof(float)));
+  CUDA_CHECK(cudaMalloc(&dC_ref, M * N * sizeof(float)));
 
-  cudaCheck(cudaMemcpy(dA, hA, M * K * sizeof(float), cudaMemcpyHostToDevice));
-  cudaCheck(cudaMemcpy(dB, hB, K * N * sizeof(float), cudaMemcpyHostToDevice));
-  cudaCheck(cudaMemcpy(dC, hC, M * N * sizeof(float), cudaMemcpyHostToDevice));
-  cudaCheck(cudaMemcpy(dC_ref, hC_ref, M * N * sizeof(float),
+  CUDA_CHECK(cudaMemcpy(dA, hA, M * K * sizeof(float), cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(dB, hB, K * N * sizeof(float), cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(dC, hC, M * N * sizeof(float), cudaMemcpyHostToDevice));
+  CUDA_CHECK(cudaMemcpy(dC_ref, hC_ref, M * N * sizeof(float),
                        cudaMemcpyHostToDevice));
 
   // cuBLAS handle
   cublasHandle_t handle;
-  cublasCreate(&handle);
+  CUBLAS_CHECK(cublasCreate(&handle));
 
   // --- cuBLAS reference ---
   printf("Running cuBLAS reference...\n");
@@ -66,14 +61,14 @@ int main(int argc, char** argv) {
 
   // --- verify target kernel against cuBLAS ---
   if (kernel_num > 0) {
-    cudaCheck(
+    CUDA_CHECK(
         cudaMemcpy(dC, hC, M * N * sizeof(float), cudaMemcpyHostToDevice));
     run_kernel(kernel_num, M, N, K, alpha, dA, dB, beta, dC, handle);
     cudaDeviceSynchronize();
 
-    cudaCheck(
+    CUDA_CHECK(
         cudaMemcpy(hC, dC, M * N * sizeof(float), cudaMemcpyDeviceToHost));
-    cudaCheck(cudaMemcpy(hC_ref, dC_ref, M * N * sizeof(float),
+    CUDA_CHECK(cudaMemcpy(hC_ref, dC_ref, M * N * sizeof(float),
                          cudaMemcpyDeviceToHost));
 
     if (verify_matrix(hC_ref, hC, M * N)) {
@@ -112,11 +107,11 @@ int main(int argc, char** argv) {
   // cleanup
   cudaEventDestroy(start);
   cudaEventDestroy(stop);
-  cublasDestroy(handle);
-  cudaFree(dA);
-  cudaFree(dB);
-  cudaFree(dC);
-  cudaFree(dC_ref);
+  CUBLAS_CHECK(cublasDestroy(handle));
+  CUDA_CHECK(cudaFree(dA));
+  CUDA_CHECK(cudaFree(dB));
+  CUDA_CHECK(cudaFree(dC));
+  CUDA_CHECK(cudaFree(dC_ref));
   delete[] hA;
   delete[] hB;
   delete[] hC;
