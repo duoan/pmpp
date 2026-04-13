@@ -16,7 +16,7 @@ SRCS   := main.cu runner.cu
 
 all: $(TARGET)
 
-$(TARGET): $(SRCS) runner.cuh kernels.cuh kernels/0_cublas.cuh kernels/1_naive.cuh
+$(TARGET): $(SRCS) runner.cuh kernels.cuh kernels/*.cuh
 	$(NVCC) $(NVCCFLAGS) $(SRCS) -o $@ $(LDFLAGS)
 
 run: $(TARGET)
