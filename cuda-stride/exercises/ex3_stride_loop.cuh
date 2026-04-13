@@ -41,9 +41,9 @@ __global__ void double_elements(const float* A, float* C, int N) {
   // Step 2: compute the stride (total number of threads in the entire grid)
   // Step 3: loop from start to N with that stride
 
-  int i = blockIdx.x * blockDim.x + threadIdx.x;
-  int stride = gridDim.x * blockDim.x;
-  for (; i < N; i += stride) {
-    C[i] = A[i] * 2.0f;
-  }
+  // int i = ???;
+  // int stride = ???;
+  // for ( ??? ) {
+  //   C[i] = A[i] * 2.0f;
+  // }
 }

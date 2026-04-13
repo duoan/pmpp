@@ -33,10 +33,10 @@
 
 __global__ void vector_add(const float* A, const float* B, float* C, int N) {
   // TODO 1: compute your global thread index
-  int i = blockDim.x * blockIdx.x + threadIdx.x;  // ← REPLACE THIS
+  int i = 0;  // ← REPLACE THIS
 
   // TODO 2: bounds check — don't access out-of-range memory
-  if (i < N) {
-    C[i] = A[i] + B[i];
-  }
+  // if ( ??? ) {
+  C[i] = A[i] + B[i];
+  // }
 }

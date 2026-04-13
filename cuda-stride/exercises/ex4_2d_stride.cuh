@@ -39,17 +39,17 @@
 
 __global__ void transpose(const float* A, float* B, int M, int N) {
   // TODO 1: compute starting row and col
-  int startRow = blockIdx.x * blockDim.x + threadIdx.x;
-  int startCol = blockIdx.y * blockDim.y + threadIdx.y;
+  // int startRow = ???;
+  // int startCol = ???;
 
   // TODO 2: compute strides (total threads in each dimension)
-  int strideRow = gridDim.x * blockDim.x;
-  int strideCol = gridDim.y * blockDim.y;
+  // int strideRow = ???;
+  // int strideCol = ???;
 
   // TODO 3: nested grid-stride loop
-  for (int row = startRow; row < M; row += strideRow) {
-    for (int col = startCol; col < N; col += strideCol) {
-      B[col * M + row] = A[row * N + col];
-    }
-  }
+  // for (int row = startRow; row < M; row += strideRow) {
+  //   for (int col = startCol; col < N; col += strideCol) {
+  //     B[???] = A[???];
+  //   }
+  // }
 }

@@ -34,14 +34,11 @@
 
 __global__ void matrix_fill(float* C, int M, int N) {
   // TODO 1: compute row from blockIdx.x and threadIdx.x
-  int row = blockIdx.x * blockDim.x + threadIdx.x;  // ← REPLACE THIS
+  int row = 0;  // ← REPLACE THIS
 
   // TODO 2: compute col from blockIdx.y and threadIdx.y
-  int col = blockIdx.y * blockDim.y + threadIdx.y;  // ← REPLACE THIS
+  int col = 0;  // ← REPLACE THIS
 
   // TODO 3: bounds check, then write: C[???] = row * 1000 + col
   // Remember: row-major means address = row * N + col
-  if (row < M && col < N) {
-    C[row * N + col] = row * 1000 + col;
-  }
 }
