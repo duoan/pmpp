@@ -48,7 +48,7 @@ int main(int argc, char** argv) {
   CUDA_CHECK(cudaMemcpy(dB, hB, K * N * sizeof(float), cudaMemcpyHostToDevice));
   CUDA_CHECK(cudaMemcpy(dC, hC, M * N * sizeof(float), cudaMemcpyHostToDevice));
   CUDA_CHECK(cudaMemcpy(dC_ref, hC_ref, M * N * sizeof(float),
-                       cudaMemcpyHostToDevice));
+                        cudaMemcpyHostToDevice));
 
   // cuBLAS handle
   cublasHandle_t handle;
@@ -69,7 +69,7 @@ int main(int argc, char** argv) {
     CUDA_CHECK(
         cudaMemcpy(hC, dC, M * N * sizeof(float), cudaMemcpyDeviceToHost));
     CUDA_CHECK(cudaMemcpy(hC_ref, dC_ref, M * N * sizeof(float),
-                         cudaMemcpyDeviceToHost));
+                          cudaMemcpyDeviceToHost));
 
     if (verify_matrix(hC_ref, hC, M * N)) {
       printf("Kernel %d: PASSED correctness check.\n\n", kernel_num);
