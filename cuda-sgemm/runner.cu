@@ -3,8 +3,8 @@
 #include <fstream>
 #include <iomanip>
 
-#include "runner.cuh"
 #include "kernels.cuh"
+#include "runner.cuh"
 
 float get_sec() {
   struct timeval time;
@@ -166,13 +166,67 @@ void run_sgemm_naive(int M, int N, int K, float alpha, float* A, float* B,
   CUDA_KERNEL_CHECK();
 }
 
-void run_sgemm_coalesce(int M, int N, int K, float alpha, float* A, float* B,
-                        float beta, float* C) {
+void run_sgemm_global_mem_coalesce(int M, int N, int K, float alpha, float* A,
+                                   float* B, float beta, float* C) {
   dim3 blockDim(32 * 32);
   dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
   sgemm_global_mem_coalesce<32>
       <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
   CUDA_KERNEL_CHECK();
+}
+
+void run_sgemm_shared_mem_block(int M, int N, int K, float alpha, float* A,
+                                float* B, float beta, float* C) {
+  dim3 gridDim(CEIL_DIV(M, 32), CEIL_DIV(N, 32));
+  dim3 blockDim(32 * 32);
+  // L1 cache becomes useless, since we access GMEM only via SMEM, so we carve
+  // out all of L1 to SMEM. This doesn't currently make a difference, since
+  // occupancy is limited by reg and thread count, but it's good to do anyway.
+  cudaFuncSetAttribute(sgemm_shared_mem_block<32>,
+                       cudaFuncAttributePreferredSharedMemoryCarveout,
+                       cudaSharedmemCarveoutMaxShared);
+  sgemm_shared_mem_block<32>
+      <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+  CUDA_KERNEL_CHECK();
+}
+
+void run_sgemm_1d_blocktiling(int M, int N, int K, float alpha, float* A,
+                              float* B, float beta, float* C) {
+  const uint BM = 64;
+  const uint BN = 64;
+  const uint BK = 8;
+  const uint TM = 8;
+  dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
+  dim3 blockDim((BM * BN) / TM);
+  sgemm_1d_blocktiling<BM, BN, BK, TM>
+      <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+  CUDA_KERNEL_CHECK();
+}
+
+void run_sgemm_2d_blocktiling(int M, int N, int K, float alpha, float* A,
+                              float* B, float beta, float* C) {
+  const uint BK = 8;
+  const uint TM = 8;
+  const uint TN = 8;
+  if (M >= 128 and N >= 128) {
+    const uint BM = 128;
+    const uint BN = 128;
+    dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
+    dim3 blockDim((BM * BN) / (TM * TN));
+    sgemm_2d_blocktiling<BM, BN, BK, TM, TN>
+        <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+  } else {
+    // this is a hacky solution to the underlying problem
+    // of not having proper bounds checking in the kernel
+    const uint BM = 64;
+    const uint BN = 64;
+    dim3 gridDim(CEIL_DIV(N, BN), CEIL_DIV(M, BM));
+    dim3 blockDim((BM * BN) / (TM * TN));
+    sgemm_2d_blocktiling<BM, BN, BK, TM, TN>
+        <<<gridDim, blockDim>>>(M, N, K, alpha, A, B, beta, C);
+
+    CUDA_KERNEL_CHECK();
+  }
 }
 
 void run_kernel(int kernel_num, int M, int N, int K, float alpha, float* A,
@@ -185,7 +239,16 @@ void run_kernel(int kernel_num, int M, int N, int K, float alpha, float* A,
       run_sgemm_naive(M, N, K, alpha, A, B, beta, C);
       break;
     case 2:
-      run_sgemm_coalesce(M, N, K, alpha, A, B, beta, C);
+      run_sgemm_global_mem_coalesce(M, N, K, alpha, A, B, beta, C);
+      break;
+    case 3:
+      run_sgemm_shared_mem_block(M, N, K, alpha, A, B, beta, C);
+      break;
+    case 4:
+      run_sgemm_1d_blocktiling(M, N, K, alpha, A, B, beta, C);
+      break;
+    case 5:
+      run_sgemm_2d_blocktiling(M, N, K, alpha, A, B, beta, C);
       break;
     default:
       throw std::invalid_argument("Unknown kernel number");

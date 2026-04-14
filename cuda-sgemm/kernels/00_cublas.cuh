@@ -1,4 +1,4 @@
-#include "cublas_v2.h"
+#include "../runner.cuh"
 
 void run_sgemm_cublas(int M, int N, int K, float alpha, float* A, float* B,
                       float beta, float* C, cublasHandle_t handle) {
