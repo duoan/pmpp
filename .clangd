@@ -17,6 +17,7 @@ CompileFlags:
     - -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims
     - -I/usr/local/cuda/include
     - -I/usr/local/cuda/include/cccl
+    - -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include
     - -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include
     - -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include
     - -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12

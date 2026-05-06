@@ -1,37 +1,42 @@
 [
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-02/code/vecAddTorchTensor.cu -o /tmp/vecAddTorchTensor.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-02/code/vecAddTorchTensor.cu -o /tmp/vecAddTorchTensor.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-02/code/vecAddTorchTensor.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/matrix_multiplication/matrix_multiplication.cu -o /tmp/matrix_multiplication.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/matrix_multiplication/matrix_multiplication.cu -o /tmp/matrix_multiplication.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-03/code/matrix_multiplication/matrix_multiplication.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/exercise_1/matrix_multiplication_row_and_col.cu -o /tmp/matrix_multiplication_row_and_col.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/exercise_1/matrix_multiplication_row_and_col.cu -o /tmp/matrix_multiplication_row_and_col.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-03/code/exercise_1/matrix_multiplication_row_and_col.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/exercise_2/matrix_vector_multiplication.cu -o /tmp/matrix_vector_multiplication.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/exercise_2/matrix_vector_multiplication.cu -o /tmp/matrix_vector_multiplication.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-03/code/exercise_2/matrix_vector_multiplication.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/gaussian_blur/gaussian_blur.cu -o /tmp/gaussian_blur.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/gaussian_blur/gaussian_blur.cu -o /tmp/gaussian_blur.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-03/code/gaussian_blur/gaussian_blur.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.cu -o /tmp/rgb_to_grayscale.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.cu -o /tmp/rgb_to_grayscale.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-03/code/rgb_to_grayscale/rgb_to_grayscale.cu"
   },
   {
     "directory": "/home/duo.an/workspaces/pmpp",
-    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-07/code/conv2d_functions_torch.cu -o /tmp/conv2d_functions_torch.o",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include -I/home/duo.an/workspaces/pmpp/.venv/lib/python3.12/site-packages/torch/include/torch/csrc/api/include -I/home/duo.an/.local/share/uv/python/cpython-3.12.13-linux-x86_64-gnu/include/python3.12 -c /home/duo.an/workspaces/pmpp/chapter-07/code/conv2d_functions_torch.cu -o /tmp/conv2d_functions_torch.o",
     "file": "/home/duo.an/workspaces/pmpp/chapter-07/code/conv2d_functions_torch.cu"
+  },
+  {
+    "directory": "/home/duo.an/workspaces/pmpp",
+    "command": "nvcc -std=c++17 -I/home/duo.an/workspaces/pmpp/.clangd-cuda-shims -I/usr/local/cuda/include -I/usr/local/cuda/include/cccl -I/home/duo.an/workspaces/pmpp/third_party/cutlass/include -c /home/duo.an/workspaces/pmpp/example/cutlass_gemm_basic.cu -o /tmp/cutlass_gemm_basic.o",
+    "file": "/home/duo.an/workspaces/pmpp/example/cutlass_gemm_basic.cu"
   }
 ]
