@@ -1,5 +1,8 @@
 #include <cuda.h>
+#include <cuda_runtime.h>
+#include <float.h>
 #include <math.h>
+#include <math_constants.h>
 #include <stdio.h>
 #include <time.h>
 
@@ -24,6 +27,75 @@
       exit(1);                                                               \
     }                                                                        \
   } while (0)
+
+struct BenchmarkResult {
+  float avg_ms;
+  float min_ms;
+  float max_ms;
+  float bandwidth_gbps;  // optional, 0 if bytes == 0
+};
+
+template <typename LaunchFunc>
+BenchmarkResult benchmark_cuda_kernel_batched(
+    LaunchFunc launch, int warmup = 20, int iters = 100,
+    int inner_repeats = 100, size_t bytes_moved_per_launch = 0) {
+  cudaEvent_t start, stop;
+  CHECK_CUDA(cudaEventCreate(&start));
+  CHECK_CUDA(cudaEventCreate(&stop));
+
+  for (int i = 0; i < warmup; ++i) {
+    for (int j = 0; j < inner_repeats; ++j) launch();
+  }
+  CHECK_CUDA(cudaGetLastError());
+  CHECK_CUDA(cudaDeviceSynchronize());
+
+  float total_ms = 0.f;
+  float min_ms = FLT_MAX;
+  float max_ms = 0.f;
+
+  for (int i = 0; i < iters; ++i) {
+    CHECK_CUDA(cudaEventRecord(start));
+    for (int j = 0; j < inner_repeats; ++j) launch();
+    CHECK_CUDA(cudaEventRecord(stop));
+    CHECK_CUDA(cudaEventSynchronize(stop));
+    CHECK_CUDA(cudaGetLastError());
+
+    float ms = 0.f;
+    CHECK_CUDA(cudaEventElapsedTime(&ms, start, stop));
+
+    float per_launch_ms = ms / inner_repeats;
+    total_ms += per_launch_ms;
+    if (per_launch_ms < min_ms) min_ms = per_launch_ms;
+    if (per_launch_ms > max_ms) max_ms = per_launch_ms;
+  }
+
+  CHECK_CUDA(cudaEventDestroy(start));
+  CHECK_CUDA(cudaEventDestroy(stop));
+
+  BenchmarkResult result;
+  result.avg_ms = total_ms / iters;
+  result.min_ms = min_ms;
+  result.max_ms = max_ms;
+
+  if (bytes_moved_per_launch > 0) {
+    result.bandwidth_gbps =
+        (bytes_moved_per_launch / 1e9) / (result.avg_ms / 1e3);
+  } else {
+    result.bandwidth_gbps = 0.f;
+  }
+
+  return result;
+}
+
+void print_benchmark(const char* name, const BenchmarkResult& r) {
+  printf("[%s]\n", name);
+  printf("  avg: %.3f ms\n", r.avg_ms);
+  printf("  min: %.3f ms\n", r.min_ms);
+  printf("  max: %.3f ms\n", r.max_ms);
+  if (r.bandwidth_gbps > 0) {
+    printf("  bw : %.2f GB/s\n", r.bandwidth_gbps);
+  }
+}
 
 void softmax_fwd_cpu(float* out, const float* inp, int N, int C) {
   for (int i = 0; i < N; i++) {
@@ -90,7 +162,7 @@ __global__ void softmax_fwd_kernell_2(float* out, const float* inp, int N,
 
   // thread coarsening
   float maxval = -INFINITY;
-  for (int i = tid; i < C; i++) {
+  for (int i = tid; i < C; i += block_size) {
     maxval = fmaxf(maxval, x[i]);
   }
   shared[tid] = maxval;
@@ -139,15 +211,17 @@ __global__ void softmax_fwd_kernell_2(float* out, const float* inp, int N,
 }
 
 // Kernel 3
-__device__ float warpReduceMax(float val) {
-  for (int offset = 16; offset > 0; offset /= 2) {
-    val = fmaxf(val, __shfl_down_sync(0xFFFFFFFF, val, offset));
+template <typename T>
+__device__ __forceinline__ T warp_reduce_max(T val) {
+  for (int offset = 16; offset > 0; offset >>= 1) {
+    val = max(val, __shfl_down_sync(0xFFFFFFFF, val, offset));
   }
   return val;
 }
 
-__device__ float warpReduceSum(float val) {
-  for (int offset = 16; offset > 0; offset /= 2) {
+template <typename T>
+__device__ __forceinline__ T warp_reduce_sum(T val) {
+  for (int offset = 16; offset > 0; offset >>= 1) {
     val += __shfl_down_sync(0xFFFFFFFF, val, offset);
   }
   return val;
@@ -165,7 +239,7 @@ __global__ void softmax_fwd_kernell_3(float* out, const float* inp, int N,
   for (int i = tid; i < C; i += blockDim.x) {
     maxval = fmaxf(maxval, x[i]);
   }
-  maxval = warpReduceMax(maxval);
+  maxval = warp_reduce_max(maxval);
 
   float offset = __shfl_sync(0xFFFFFFFF, maxval, 0);
   // compute expf and write the result to global memory
@@ -180,7 +254,7 @@ __global__ void softmax_fwd_kernell_3(float* out, const float* inp, int N,
   for (int i = tid; i < C; i += block_size) {
     sumval += x[i];
   }
-  sumval = warpReduceSum(sumval);
+  sumval = warp_reduce_sum(sumval);
 
   float sum = __shfl_sync(0xFFFFFFFF, sumval, 0);
   // divide the input value by the sum
@@ -216,7 +290,7 @@ __global__ void softmax_fwd_kernell_4(float* out, const float* inp, int N,
     maxval = fmaxf(maxval, x[i]);
   }
   // now within-warp reductions for maxval
-  maxval = warpReduceMax(maxval);
+  maxval = warp_reduce_max(maxval);
 
   // the 0-th thread of each warp writes the maxval of that warp to shared
   // memory
@@ -254,7 +328,7 @@ __global__ void softmax_fwd_kernell_4(float* out, const float* inp, int N,
     sumval += x[i];
   }
   // within-warp reduction for sumval
-  sumval = warpReduceSum(sumval);
+  sumval = warp_reduce_sum(sumval);
 
   // write sumval to shared memory
   if (laneId == 0) {
@@ -279,6 +353,110 @@ __global__ void softmax_fwd_kernell_4(float* out, const float* inp, int N,
   }
 }
 
+template <int BLOCK_THREADS>
+__device__ __forceinline__ float block_reduce_max(float v) {
+  __shared__ float shared[32];  // one per warp
+  int lane = threadIdx.x & 31;
+  int warp = threadIdx.x >> 5;
+
+  v = warp_reduce_max(v);
+  if (lane == 0) shared[warp] = v;
+  __syncthreads();
+
+  float out = -CUDART_INF_F;
+  if (warp == 0) {
+    int num_warps = BLOCK_THREADS / 32;
+    out = (lane < num_warps) ? shared[lane] : -CUDART_INF_F;
+    out = warp_reduce_max(out);
+    if (lane == 0) shared[0] = out;
+  }
+  __syncthreads();
+  return shared[0];
+}
+
+template <int BLOCK_THREADS>
+__device__ __forceinline__ float block_reduce_sum(float v) {
+  __shared__ float shared[32];  // one per warp
+  int lane = threadIdx.x & 31;
+  int warp = threadIdx.x >> 5;
+
+  v = warp_reduce_sum(v);
+  if (lane == 0) shared[warp] = v;
+  __syncthreads();
+
+  float out = 0.f;
+  if (warp == 0) {
+    int num_warps = BLOCK_THREADS / 32;
+    out = (lane < num_warps) ? shared[lane] : 0.f;
+    out = warp_reduce_sum(out);
+    if (lane == 0) shared[0] = out;
+  }
+  __syncthreads();
+  return shared[0];
+}
+
+template <int BLOCK_THREADS = 256, int PACKS_PER_THREAD = 4>
+__global__ void softmax_fwd_kernel_5_fp32_c4096(float* __restrict__ out,
+                                                const float* __restrict__ inp,
+                                                int N) {
+  constexpr int VEC = 4;  // float4
+  constexpr int C = 4096;
+  constexpr int PACKS_PER_ROW = C / VEC;  // 1024 float4
+
+  int row = blockIdx.x;
+  if (row >= N) return;
+
+  const float4* row_in = reinterpret_cast<const float4*>(inp + row * C);
+  float4* row_out = reinterpret_cast<float4*>(out + row * C);
+
+  // each thread has 4 float4 -> 16 float
+  float4 reg[PACKS_PER_THREAD];
+
+  float thread_max = -CUDART_INF_F;
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    int idx4 = threadIdx.x + p * BLOCK_THREADS;  // 0..1023
+    float4 v = row_in[idx4];
+    reg[p] = v;
+
+    thread_max = fmaxf(thread_max, v.x);
+    thread_max = fmaxf(thread_max, v.y);
+    thread_max = fmaxf(thread_max, v.z);
+    thread_max = fmaxf(thread_max, v.w);
+  }
+
+  float row_max = block_reduce_max<BLOCK_THREADS>(thread_max);
+
+  float thread_sum = 0.f;
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    float4 v = reg[p];
+    v.x = __expf(v.x - row_max);
+    v.y = __expf(v.y - row_max);
+    v.z = __expf(v.z - row_max);
+    v.w = __expf(v.w - row_max);
+
+    reg[p] = v;
+
+    thread_sum += v.x + v.y + v.z + v.w;
+  }
+
+  float row_sum = block_reduce_sum<BLOCK_THREADS>(thread_sum);
+  float inv_sum = __fdividef(1.f, row_sum);
+
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    float4 v = reg[p];
+    v.x *= inv_sum;
+    v.y *= inv_sum;
+    v.z *= inv_sum;
+    v.w *= inv_sum;
+
+    int idx4 = threadIdx.x + p * BLOCK_THREADS;
+    row_out[idx4] = v;
+  }
+}
+
 inline unsigned int cdiv(unsigned int a, unsigned int b) {
   return (a + b - 1) / b;
 }
@@ -295,7 +473,7 @@ int main() {
 
   for (int n = 0; n < N; n++) {
     for (int c = 0; c < C; c++) {
-      inp[n * C + c] = float(C);
+      inp[n * C + c] = ((float)rand() / RAND_MAX) * 20.f - 10.f;
     }
   }
 
@@ -304,16 +482,11 @@ int main() {
   clock_t end_cpu = clock();
   double time_cpu = (double)(end_cpu - start_cpu) / CLOCKS_PER_SEC;
 
-  cudaEvent_t start, stop;
-  cudaEventCreate(&start);
-  cudaEventCreate(&stop);
-
   float *d_out, *d_inp;
   CHECK_CUDA(cudaMalloc((void**)&d_out, N * C * sizeof(float)));
   CHECK_CUDA(cudaMalloc((void**)&d_inp, N * C * sizeof(float)));
-  CHECK_CUDA(cudaMemcpy(d_inp, inp, numel, cudaMemcpyHostToDevice));
-
-  cudaEventRecord(start);
+  CHECK_CUDA(
+      cudaMemcpy(d_inp, inp, numel * sizeof(float), cudaMemcpyHostToDevice));
 
   // Launch kernel
   // kernel 1
@@ -334,28 +507,42 @@ int main() {
   // softmax_fwd_kernell_3<<<numBlocks, blockSize>>>(d_out, d_inp, N, C);
 
   // kernel 4
-  int blockSize = 512;
+  // int blockSize = 512;
+  // int numBlocks = N;
+  // softmax_fwd_kernell_4<<<numBlocks, blockSize,
+  //                         2 * blockSize / 32 * sizeof(float)>>>(d_out, d_inp,
+  //                         N,
+  //                                                               C);
+
+  // kernel 5
+  constexpr int BLOCK_THREADS = 256;
+  constexpr int PACKS_PER_THREAD = 4;
+
+  if (C != 4096) {
+    printf("This v5 kernel only supports C=4096\n");
+    return 1;
+  }
+
   int numBlocks = N;
-  softmax_fwd_kernell_4<<<numBlocks, blockSize,
-                          2 * blockSize / 32 * sizeof(float)>>>(d_out, d_inp, N,
-                                                                C);
+
+  // benchmark
+  size_t bytes_moved = 2ull * N * C * sizeof(float);
+  // read inp + write out
+
+  auto result = benchmark_cuda_kernel_batched(
+      [&] {
+        softmax_fwd_kernel_5_fp32_c4096<BLOCK_THREADS, PACKS_PER_THREAD>
+            <<<N, BLOCK_THREADS>>>(d_out, d_inp, N);
+      },
+      20,   // warmup
+      100,  // iters
+      100,  // inner_repeats
+      bytes_moved);
 
   CHECK_LAST_CUDA_ERROR();
-  cudaEventRecord(stop);
-
-  // Wait for the event to compute
-  CHECK_CUDA(cudaEventSynchronize(stop));
-  float gpu_time_ms = 0;
-  cudaEventElapsedTime(&gpu_time_ms, start, stop);
-
   // Copy result back to host
-  cudaMemcpy(out_gpu, d_out, numel * sizeof(float), cudaMemcpyDeviceToHost);
-
-  // cleanup
-  cudaFree(d_out);
-  cudaFree(d_inp);
-  cudaEventDestroy(start);
-  cudaEventDestroy(stop);
+  CHECK_CUDA(cudaMemcpy(out_gpu, d_out, numel * sizeof(float),
+                        cudaMemcpyDeviceToHost));
 
   // compare the result
   bool correct = true;
@@ -371,10 +558,16 @@ int main() {
     printf("Result verification passed!\n");
   }
 
+  print_benchmark("softmax_v5", result);
+
   // Print performance comparition
   printf("CPU time: %f ms\n", time_cpu * 1000.0);
-  printf("GPU time: %f ms\n", gpu_time_ms);
-  printf("Speedup: %fx\n", time_cpu / (gpu_time_ms / 1000.0f));
+  printf("GPU time: %f ms\n", result.avg_ms);
+  printf("Speedup: %fx\n", time_cpu / (result.avg_ms / 1000.0f));
+
+  // cleanup
+  cudaFree(d_out);
+  cudaFree(d_inp);
 
   free(inp);
   free(out_cpu);
