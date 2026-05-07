@@ -6,6 +6,13 @@
 #include <stdio.h>
 #include <time.h>
 
+#ifdef BUILD_PYTORCH_EXTENSION
+#include <ATen/ATen.h>
+#include <ATen/cuda/CUDAContext.h>
+#include <c10/cuda/CUDAException.h>
+#include <c10/cuda/CUDAGuard.h>
+#endif
+
 #define CHECK_CUDA(call)                                                       \
   do {                                                                         \
     cudaError_t err = call;                                                    \
@@ -457,10 +464,265 @@ __global__ void softmax_fwd_kernel_5_fp32_c4096(float* __restrict__ out,
   }
 }
 
+// kernel 6: fixed-C template version of v5.
+//
+// v5 is excellent for C=4096 because every row stays in registers after the
+// first global load. v6 keeps that idea but moves C into a template parameter,
+// so common softmax widths can each get a fully unrolled, vectorized kernel.
+template <int C, int BLOCK_THREADS>
+__global__ void softmax_fwd_kernel_6_fp32_fixed_c(float* __restrict__ out,
+                                                  const float* __restrict__ inp,
+                                                  int N) {
+  constexpr int VEC = 4;  // float4
+  static_assert(C % (VEC * BLOCK_THREADS) == 0,
+                "C must be covered exactly by float4 packs");
+  constexpr int PACKS_PER_THREAD = C / (VEC * BLOCK_THREADS);
+
+  int row = blockIdx.x;
+  if (row >= N) return;
+
+  const float4* row_in = reinterpret_cast<const float4*>(inp + row * C);
+  float4* row_out = reinterpret_cast<float4*>(out + row * C);
+
+  float4 reg[PACKS_PER_THREAD];
+
+  float thread_max = -CUDART_INF_F;
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    int idx4 = threadIdx.x + p * BLOCK_THREADS;
+    float4 v = row_in[idx4];
+    reg[p] = v;
+
+    thread_max = fmaxf(thread_max, v.x);
+    thread_max = fmaxf(thread_max, v.y);
+    thread_max = fmaxf(thread_max, v.z);
+    thread_max = fmaxf(thread_max, v.w);
+  }
+
+  float row_max = block_reduce_max<BLOCK_THREADS>(thread_max);
+
+  float thread_sum = 0.f;
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    float4 v = reg[p];
+    v.x = __expf(v.x - row_max);
+    v.y = __expf(v.y - row_max);
+    v.z = __expf(v.z - row_max);
+    v.w = __expf(v.w - row_max);
+
+    reg[p] = v;
+    thread_sum += v.x + v.y + v.z + v.w;
+  }
+
+  float row_sum = block_reduce_sum<BLOCK_THREADS>(thread_sum);
+  float inv_sum = __fdividef(1.f, row_sum);
+
+#pragma unroll
+  for (int p = 0; p < PACKS_PER_THREAD; ++p) {
+    float4 v = reg[p];
+    v.x *= inv_sum;
+    v.y *= inv_sum;
+    v.z *= inv_sum;
+    v.w *= inv_sum;
+
+    int idx4 = threadIdx.x + p * BLOCK_THREADS;
+    row_out[idx4] = v;
+  }
+}
+
+// kernel 7a: generic fused softmax for arbitrary C that fits in shared memory.
+//
+// This replaces the old kernel_4 fallback. kernel_4 writes exp(x - max) to
+// global memory, reads it back to sum, then writes normalized output. v7a keeps
+// that intermediate in shared memory, so the fallback path no longer burns
+// extra global bandwidth.
+template <int BLOCK_THREADS>
+__global__ void softmax_fwd_kernel_7_fp32_shared(float* __restrict__ out,
+                                                 const float* __restrict__ inp,
+                                                 int N, int C) {
+  extern __shared__ float row_exp[];
+
+  int row = blockIdx.x;
+  if (row >= N) return;
+
+  const float* x = inp + row * C;
+  float* y = out + row * C;
+
+  float thread_max = -CUDART_INF_F;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    thread_max = fmaxf(thread_max, x[i]);
+  }
+  float row_max = block_reduce_max<BLOCK_THREADS>(thread_max);
+
+  float thread_sum = 0.f;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    float v = __expf(x[i] - row_max);
+    row_exp[i] = v;
+    thread_sum += v;
+  }
+  float row_sum = block_reduce_sum<BLOCK_THREADS>(thread_sum);
+  float inv_sum = __fdividef(1.f, row_sum);
+
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    y[i] = row_exp[i] * inv_sum;
+  }
+}
+
+// kernel 7b: arbitrary-C streaming fallback when one full row does not fit in
+// shared memory. It reads input three times but still avoids global-memory
+// intermediate writes.
+template <int BLOCK_THREADS>
+__global__ void softmax_fwd_kernel_7_fp32_streaming(
+    float* __restrict__ out, const float* __restrict__ inp, int N, int C) {
+  int row = blockIdx.x;
+  if (row >= N) return;
+
+  const float* x = inp + row * C;
+  float* y = out + row * C;
+
+  float thread_max = -CUDART_INF_F;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    thread_max = fmaxf(thread_max, x[i]);
+  }
+  float row_max = block_reduce_max<BLOCK_THREADS>(thread_max);
+
+  float thread_sum = 0.f;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    thread_sum += __expf(x[i] - row_max);
+  }
+  float row_sum = block_reduce_sum<BLOCK_THREADS>(thread_sum);
+  float inv_sum = __fdividef(1.f, row_sum);
+
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    y[i] = __expf(x[i] - row_max) * inv_sum;
+  }
+}
+
+// kernel 8: arbitrary-C shared-memory fallback with one global input read.
+//
+// v7a still reads input twice from global memory: once for max and once for
+// exp/sum. v8 first stages the whole row into shared memory, then does max,
+// exp/sum, and output from that shared copy. For row widths that fit in shared
+// memory, this matches the ideal global-memory traffic of read input + write
+// output.
+template <int BLOCK_THREADS>
+__global__ void softmax_fwd_kernel_8_fp32_shared_input(
+    float* __restrict__ out, const float* __restrict__ inp, int N, int C) {
+  extern __shared__ float row_vals[];
+
+  int row = blockIdx.x;
+  if (row >= N) return;
+
+  const float* x = inp + row * C;
+  float* y = out + row * C;
+
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    row_vals[i] = x[i];
+  }
+  __syncthreads();
+
+  float thread_max = -CUDART_INF_F;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    thread_max = fmaxf(thread_max, row_vals[i]);
+  }
+  float row_max = block_reduce_max<BLOCK_THREADS>(thread_max);
+
+  float thread_sum = 0.f;
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    float v = __expf(row_vals[i] - row_max);
+    row_vals[i] = v;
+    thread_sum += v;
+  }
+  float row_sum = block_reduce_sum<BLOCK_THREADS>(thread_sum);
+  float inv_sum = __fdividef(1.f, row_sum);
+
+  for (int i = threadIdx.x; i < C; i += BLOCK_THREADS) {
+    y[i] = row_vals[i] * inv_sum;
+  }
+}
+
 inline unsigned int cdiv(unsigned int a, unsigned int b) {
   return (a + b - 1) / b;
 }
 
+#ifdef BUILD_PYTORCH_EXTENSION
+template <int C, int BLOCK_THREADS>
+void launch_softmax_v6(float* out, const float* x, int N, cudaStream_t stream) {
+  softmax_fwd_kernel_6_fp32_fixed_c<C, BLOCK_THREADS>
+      <<<N, BLOCK_THREADS, 0, stream>>>(out, x, N);
+}
+
+template <int BLOCK_THREADS>
+void launch_softmax_v7(float* out, const float* x, int N, int C,
+                       cudaStream_t stream) {
+  constexpr int MAX_DYNAMIC_SHARED_BYTES = 96 * 1024;
+  size_t shared_bytes = static_cast<size_t>(C) * sizeof(float);
+  if (shared_bytes <= MAX_DYNAMIC_SHARED_BYTES) {
+    C10_CUDA_CHECK(cudaFuncSetAttribute(
+        softmax_fwd_kernel_8_fp32_shared_input<BLOCK_THREADS>,
+        cudaFuncAttributeMaxDynamicSharedMemorySize, MAX_DYNAMIC_SHARED_BYTES));
+    softmax_fwd_kernel_8_fp32_shared_input<BLOCK_THREADS>
+        <<<N, BLOCK_THREADS, shared_bytes, stream>>>(out, x, N, C);
+  } else {
+    softmax_fwd_kernel_7_fp32_streaming<BLOCK_THREADS>
+        <<<N, BLOCK_THREADS, 0, stream>>>(out, x, N, C);
+  }
+}
+
+at::Tensor softmax_cuda(at::Tensor input) {
+  TORCH_CHECK(input.is_cuda(), "softmax_cuda expects a CUDA tensor");
+  TORCH_CHECK(input.scalar_type() == at::kFloat,
+              "softmax_cuda only supports float32");
+  TORCH_CHECK(input.dim() == 2, "softmax_cuda expects a 2D tensor");
+  TORCH_CHECK(input.size(0) <= INT_MAX, "row count exceeds int32 range");
+  TORCH_CHECK(input.size(1) <= INT_MAX, "column count exceeds int32 range");
+
+  c10::cuda::CUDAGuard device_guard(input.device());
+
+  auto x = input.contiguous();
+  auto out = at::empty_like(x);
+
+  int N = static_cast<int>(x.size(0));
+  int C = static_cast<int>(x.size(1));
+  cudaStream_t stream = at::cuda::getCurrentCUDAStream();
+
+  float* out_ptr = out.data_ptr<float>();
+  const float* x_ptr = x.data_ptr<float>();
+
+  switch (C) {
+    case 256:
+      launch_softmax_v6<256, 64>(out_ptr, x_ptr, N, stream);
+      break;
+    case 512:
+      launch_softmax_v6<512, 128>(out_ptr, x_ptr, N, stream);
+      break;
+    case 1024:
+      launch_softmax_v6<1024, 128>(out_ptr, x_ptr, N, stream);
+      break;
+    case 2048:
+      launch_softmax_v6<2048, 128>(out_ptr, x_ptr, N, stream);
+      break;
+    case 4096:
+      launch_softmax_v6<4096, 256>(out_ptr, x_ptr, N, stream);
+      break;
+    case 8192:
+      launch_softmax_v6<8192, 256>(out_ptr, x_ptr, N, stream);
+      break;
+    default:
+      if (C <= 1024) {
+        launch_softmax_v7<128>(out_ptr, x_ptr, N, C, stream);
+      } else {
+        launch_softmax_v7<256>(out_ptr, x_ptr, N, C, stream);
+      }
+      break;
+  }
+
+  C10_CUDA_KERNEL_LAUNCH_CHECK();
+  return out;
+}
+#endif
+
+#ifndef BUILD_PYTORCH_EXTENSION
 int main() {
   int N = 1024;  // Example array size
   int C = 4096;
@@ -575,3 +837,4 @@ int main() {
 
   return 0;
 }
+#endif
