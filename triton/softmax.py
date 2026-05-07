@@ -2,7 +2,6 @@ import argparse
 import torch
 import triton
 import triton.language as tl
-from pathlib import Path
 from torch import Tensor
 from triton.runtime import driver
 from jaxtyping import Float
@@ -67,7 +66,9 @@ def _softmax_backward_kernel(
         mask = col_offset < n_cols
 
         probs_ptrs = probs_ptr + row_idx * probs_row_stride + col_offset
-        grad_output_ptrs = grad_output_ptr + row_idx * grad_output_row_stride + col_offset
+        grad_output_ptrs = (
+            grad_output_ptr + row_idx * grad_output_row_stride + col_offset
+        )
 
         probs = tl.load(probs_ptrs, mask=mask, other=0.0)
         grad_output = tl.load(grad_output_ptrs, mask=mask, other=0.0)
@@ -333,36 +334,52 @@ def benchmark(
         raise RuntimeError("CUDA is required for this benchmark")
 
     print(f"device={torch.cuda.get_device_name()} rows={n_rows} dtype={dtype}")
-    print(f"{'mode':<10} {'cols':>8} {'torch ms':>12} {'triton ms':>12} {'speedup':>10}")
+    print(
+        f"{'mode':<10} {'cols':>8} {'torch ms':>12} {'triton ms':>12} {'speedup':>10}"
+    )
     print("-" * 58)
 
     for n_cols in cols:
         if check:
             _validate_softmax(min(n_rows, 64), n_cols, dtype)
 
-        x = torch.randn((n_rows, n_cols), device="cuda", dtype=dtype, requires_grad=True)
+        x = torch.randn(
+            (n_rows, n_cols), device="cuda", dtype=dtype, requires_grad=True
+        )
         grad_output = torch.randn_like(x)
 
         if mode in ("forward", "all"):
             torch_ms, _, _ = _benchmark_forward("torch", x)
             triton_ms, _, _ = _benchmark_forward("triton", x)
             speedup = torch_ms / triton_ms
-            print(f"{'forward':<10} {n_cols:>8} {torch_ms:>12.4f} {triton_ms:>12.4f} {speedup:>10.2f}x")
+            print(
+                f"{'forward':<10} {n_cols:>8} {torch_ms:>12.4f} {triton_ms:>12.4f} {speedup:>10.2f}x"
+            )
 
         if mode in ("backward", "all"):
             torch_ms, _, _ = _benchmark_backward("torch", x, grad_output)
             triton_ms, _, _ = _benchmark_backward("triton", x, grad_output)
             speedup = torch_ms / triton_ms
-            print(f"{'backward':<10} {n_cols:>8} {torch_ms:>12.4f} {triton_ms:>12.4f} {speedup:>10.2f}x")
+            print(
+                f"{'backward':<10} {n_cols:>8} {torch_ms:>12.4f} {triton_ms:>12.4f} {speedup:>10.2f}x"
+            )
 
 
 def main() -> None:
-    parser = argparse.ArgumentParser(description="Benchmark row-wise softmax: PyTorch vs Triton")
+    parser = argparse.ArgumentParser(
+        description="Benchmark row-wise softmax: PyTorch vs Triton"
+    )
     parser.add_argument("--rows", type=int, default=4096)
-    parser.add_argument("--cols", type=str, default="128,256,512,1024,2048,4096,8192,16384")
+    parser.add_argument(
+        "--cols", type=str, default="128,256,512,1024,2048,4096,8192,16384"
+    )
     parser.add_argument("--dtype", choices=("fp16", "bf16", "fp32"), default="fp32")
     parser.add_argument("--mode", choices=("forward", "backward", "all"), default="all")
-    parser.add_argument("--check", action="store_true", help="Validate correctness before each column benchmark")
+    parser.add_argument(
+        "--check",
+        action="store_true",
+        help="Validate correctness before each column benchmark",
+    )
     args = parser.parse_args()
 
     benchmark(
