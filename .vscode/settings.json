@@ -14,6 +14,12 @@
   ],
   "clangd.path": "/usr/local/bin/clangd",
   "editor.formatOnSave": true,
+  "python.analysis.diagnosticSeverityOverrides": {
+      "reportUnreachable": "none"
+  },
+  "basedpyright.analysis.diagnosticSeverityOverrides": {
+      "reportUnreachable": "none"
+  },
   "[cuda-cpp]": {
       "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
       "editor.formatOnSave": true
