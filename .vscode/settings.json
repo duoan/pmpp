@@ -1,27 +1,32 @@
 {
-  "C_Cpp.intelliSenseEngine": "disabled",
-  "files.associations": {
-      "*.cu": "cuda-cpp",
-      "*.cuh": "cuda-cpp"
-  },
-  "clangd.arguments": [
-      "--background-index",
-      "--clang-tidy",
-      "--header-insertion=never",
-      "--completion-style=detailed",
-      "--function-arg-placeholders",
-      "-j=8"
-  ],
-  "clangd.path": "/usr/local/bin/clangd",
-  "editor.formatOnSave": true,
-  "python.analysis.diagnosticSeverityOverrides": {
-      "reportUnreachable": "none"
-  },
-  "basedpyright.analysis.diagnosticSeverityOverrides": {
-      "reportUnreachable": "none"
-  },
-  "[cuda-cpp]": {
-      "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
-      "editor.formatOnSave": true
-  }
+    "C_Cpp.intelliSenseEngine": "disabled",
+    "files.associations": {
+        "*.cu": "cuda-cpp",
+        "*.cuh": "cuda-cpp"
+    },
+    "clangd.arguments": [
+        "--background-index",
+        "--clang-tidy",
+        "--header-insertion=never",
+        "--completion-style=detailed",
+        "--function-arg-placeholders",
+        "-j=8"
+    ],
+    "clangd.path": "/usr/bin/clangd",
+    "editor.formatOnSave": true,
+    "python.analysis.diagnosticSeverityOverrides": {
+        "reportUnreachable": "none"
+    },
+    "basedpyright.analysis.diagnosticSeverityOverrides": {
+        "reportUnreachable": "none"
+    },
+    "[cuda-cpp]": {
+        "editor.defaultFormatter": "llvm-vs-code-extensions.vscode-clangd",
+        "editor.formatOnSave": true
+    },
+    "python.testing.pytestArgs": [
+        "triton"
+    ],
+    "python.testing.unittestEnabled": false,
+    "python.testing.pytestEnabled": true
 }
